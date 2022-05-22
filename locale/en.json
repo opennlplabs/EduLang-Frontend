@@ -1,0 +1,29 @@
+{
+  "general": {
+    "login": "login",
+    "sign_up": "sign up",
+    "password": "Password",
+    "email": "Email",
+    "save": "Save",
+    "appSubstring": "Bridging the language gap through stories",
+    "strong_password": "Password is not strong enough. Add additional characters including special characters and numbers."
+  },
+  "reg": {
+    "username": "Username",
+    "grade_level": "Grade Level",
+    "phone_number": "Phone Number",
+    "native_language": "Native Language",
+    "register": "Register"
+  },
+  "home": {
+    "welcome": "Welcome",
+    "library": "Library"
+  },
+  "book_info": {
+    "start_reading": "Start Reading"
+  },
+  "settings": {
+    "native_language": "Select Native Language",
+    "grade_level": "Select Grade Level"
+  }
+}
