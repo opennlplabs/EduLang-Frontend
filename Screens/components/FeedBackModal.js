@@ -58,7 +58,7 @@ const FeedbackModal = ({ visible, hideModal }) => {
             style={styles.textinput}
             textAlignVertical="top"
             multiline
-            placeholder="Enter your feedback"
+            placeholder="please Enter your feedback"
           />
           <View>
             <Pressable onPress={hideModal} style={styles.buttonStyle}>
