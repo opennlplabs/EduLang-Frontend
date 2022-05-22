@@ -12,17 +12,6 @@ const Settings = () => {
   const { t } = useTranslation();
   const [gradeLevel, setGradeLevel] = useState(0);
   const [nativelanguage, setnativeLanguage] = useState({});
-  // const firestore = getFirestore();
-  // const currentUser = getAuth().currentUser;
-
-  // const handleRegister = async () => {
-  //   console.log(gradeLevel, language);
-  //   await setDoc(doc(firestore, "userInfo", currentUser.uid), {
-  //     grade: gradeLevel,
-  //     nativeLanguage: language,
-  //   });
-  //   navigation.navigate("Home");
-  // };
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -72,7 +61,9 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
-        <Text>{t("settings.native_language")}</Text>
+        <Text style={styles.paddingBottomText}>
+          {t("settings.native_language")}
+        </Text>
         <RadioButtonRN
           data={languageConfig}
           selectedBtn={(e) => {
@@ -81,7 +72,9 @@ const Settings = () => {
           }}
         />
 
-        <Text>{t("settings.grade_level")}</Text>
+        <Text style={styles.paddingBottomText}>
+          {t("settings.grade_level")}
+        </Text>
         <RadioButtonRN
           data={gradeConfig}
           selectedBtn={(e) => setGradeLevel(e.label)}
@@ -105,6 +98,9 @@ const styles = StyleSheet.create({
     flexDirection: "row",
     alignItems: "center",
     justifyContent: "space-evenly",
+  },
+  paddingBottomText: {
+    padding: 15,
   },
 });
 
