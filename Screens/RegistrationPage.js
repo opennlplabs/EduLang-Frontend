@@ -11,6 +11,7 @@ import {
   TouchableOpacity,
   Dimensions,
   ScrollView,
+  ActivityIndicator,
 } from "react-native";
 import * as firebase from "firebase";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -36,21 +37,55 @@ const K_OPTIONS = [
     item: "Ukranian",
     id: "UK",
   },
+  {
+    item: "Hindi",
+    id: "HI",
+  },
 ];
 
 const Stack = createNativeStackNavigator();
 const { width: WIDTH } = Dimensions.get("window");
 
-const SignUpScreen = ({ navigation }) => {
+const SignUpScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [phoneNumber, setPhoneNumber] = useState("");
   const [grade, setGradeLevel] = useState("");
   const [username, setUsername] = useState("");
-
+  const [loading, setloading] = useState(false);
   const [chooseData, setChooseData] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [nativelanguage, setNativeLanguage] = useState({});
   const [selectedTeams, setSelectedTeams] = useState([]);
+
+  const authfromFirebase = () => {
+    const { email, password } = route.params;
+    setloading(true);
+    firebase
+      .auth()
+      .createUserWithEmailAndPassword(email, password)
+      .then((re) => {
+        handleRegister();
+      })
+      .catch((re) => {
+        setloading(false);
+
+        switch (re.code) {
+          case "auth/email-already-in-use":
+            alert(`Email address ${email} already in use.`);
+            break;
+          case "auth/invalid-email":
+            alert(`Email address ${email} is invalid.`);
+            break;
+          case "auth/weak-password":
+            alert(
+              "Password is not strong enough. Add additional characters including special characters and numbers."
+            );
+            break;
+          default:
+            alert("No errors!");
+        }
+      });
+  };
 
   const handleRegister = async () => {
     try {
@@ -65,9 +100,12 @@ const SignUpScreen = ({ navigation }) => {
           nativeLanguage: nativelanguage,
         })
         .then(() => {
-          navigation.replace("Home");
+          setloading(false);
+          // navigation.replace("Home");
         });
     } catch (e) {
+      setloading(false);
+
       console.log("registration page: ", e);
     }
   };
@@ -130,9 +168,13 @@ const SignUpScreen = ({ navigation }) => {
       </ScrollView>
 
       <View style={{ flex: 1, justifyContent: "flex-end", marginBottom: 30 }}>
-        <TouchableOpacity style={styles.loginBtn} onPress={handleRegister}>
-          <Text>{t("reg.register")}</Text>
-        </TouchableOpacity>
+        {loading ? (
+          <ActivityIndicator size={"small"} color="white" />
+        ) : (
+          <TouchableOpacity style={styles.loginBtn} onPress={authfromFirebase}>
+            <Text>{t("reg.register")}</Text>
+          </TouchableOpacity>
+        )}
       </View>
     </SafeAreaView>
   );

@@ -1,5 +1,5 @@
 import React, { Suspense, useEffect } from "react";
-import { Text } from "react-native";
+import { Text, LogBox } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import RegistrationPage from "./Screens/RegistrationPage.js";
@@ -12,6 +12,8 @@ import Settings from "./Screens/Settings";
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./firebase.js";
 import Splash from "./Screens/Splash.js";
+
+LogBox.ignoreAllLogs();
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
@@ -45,14 +47,12 @@ export default function App() {
       <NavigationContainer>
         <Stack.Navigator initialRouteName="Splash">
           <Stack.Screen name="Splash" component={Splash} />
-
           <Stack.Screen
             name="Welcome Screen"
             component={WelcomeScreenNew}
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Registration Page" component={RegistrationPage} />
-
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Book Info" component={BookInfo} />
           <Stack.Screen name="Book Reader" component={PDFExample} />

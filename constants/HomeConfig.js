@@ -2,10 +2,9 @@ import { Asset } from "expo-asset";
 
 export const data = [
   {
-    title: "Decisions",
+    title: "Decisions Pashto",
     language: "Pashto",
-    description: "SDLFKJSDKFJLSDKJFLSKDJFLSKDJFLSKDJFLSKDJFL",
-    //source: cover1()
+    description: "A village community makes a decision to change their lives",
     source: Asset.fromModule(
       require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
     ).uri,
@@ -14,9 +13,43 @@ export const data = [
     ).uri,
   },
   {
-    title: "Goat Dog Cow",
+    title: "Decisions Ukrainian",
+    language: "Ukrainian",
+    description: "A village community makes a decision to change their lives",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/ukrainian/Decisions Book Ukrainian Translation.pdf")
+    ).uri,
+  },
+  {
+    title: "Decisions Somali",
+    language: "Somali",
+    description: "A village community makes a decision to change their lives",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/somali/Decisions Book Somali Translation.pdf")
+    ).uri,
+  },
+  {
+    title: "Decisions Xhosa",
+    language: "Xhosa",
+    description: "A village community makes a decision to change their lives",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/xhosa/Decisions Book Xhosa Translation.pdf")
+    ).uri,
+  },
+  {
+    title: "Goat Dog Cow Pashto",
     language: "Pashto",
-    description: "Goat Dog Cow Book",
+    description:
+      "Three friends go on a journey in a taxi. When it comes time to pay, problems arise.",
     source: Asset.fromModule(
       require("../assets/images/bookCovers/GoatCoverPashto.png")
     ).uri,
@@ -24,7 +57,42 @@ export const data = [
       require("../assets/bookpdf/pashto/GoatDogCowBookPashto.pdf")
     ).uri,
   },
-
+  {
+    title: "Goat Dog Cow Hindi",
+    language: "Hindi",
+    description:
+      "Three friends go on a journey in a taxi. When it comes time to pay, problems arise.",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/goatDogandCow_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/hindi/GoatDogCowBookHindi.pdf")
+    ).uri,
+  },
+  {
+    title: "Goat Dog Cow Ukrainian",
+    language: "Ukrainian",
+    description:
+      "Three friends go on a journey in a taxi. When it comes time to pay, problems arise.",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/goatDogandCow_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/ukrainian/GoatDogCowBookUkrainian.pdf")
+    ).uri,
+  },
+  {
+    title: "Goat Dog Cow Somali",
+    language: "Somali",
+    description:
+      "Three friends go on a journey in a taxi. When it comes time to pay, problems arise.",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/goatDogandCow_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/somali/GoatDogCowBookSomali.pdf")
+    ).uri,
+  },
   {
     title: "Friends",
     language: "Pashto",
@@ -37,9 +105,9 @@ export const data = [
     ).uri,
   },
   {
-    title: "Friends",
+    title: "Friends Somali",
     language: "Somali",
-    description: "Friends Book",
+    description: "Simo makes new friends",
     source: Asset.fromModule(
       require("../assets/images/bookCovers/friends_cover.png")
     ).uri,
@@ -48,14 +116,25 @@ export const data = [
     ).uri,
   },
   {
-    title: "Friends",
+    title: "Friends Xhosa",
     language: "Xhosa",
-    description: "Friends Book",
+    description: "Simo makes new friends",
     source: Asset.fromModule(
       require("../assets/images/bookCovers/friends_cover.png")
     ).uri,
     bookPdfUrl: Asset.fromModule(
       require("../assets/bookpdf/xhosa/Friends_Xhosa_Final_Translation.pdf")
+    ).uri,
+  },
+  {
+    title: "Friends Hindi",
+    language: "Hindi",
+    description: "Simo makes new friends",
+    source: Asset.fromModule(
+      require("../assets/images/bookCovers/friends_cover.png")
+    ).uri,
+    bookPdfUrl: Asset.fromModule(
+      require("../assets/bookpdf/hindi/Friends_Hindi_Final_Translation.pdf")
     ).uri,
   },
 ];
@@ -81,6 +160,11 @@ export const languageConfig = [
     id: "UK",
     item: "Ukrainian",
     label: "Ukrainian",
+  },
+  {
+    id: "HI",
+    item: "Hindi",
+    label: "Hindi",
   },
 ];
 

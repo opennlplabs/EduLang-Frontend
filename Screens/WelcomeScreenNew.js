@@ -26,43 +26,19 @@ const WelcomeScreenNew = ({ navigation }) => {
   const [errorMessage, setErrorMessage] = useState("");
 
   const handleSignUp = () => {
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((re) => {
-        console.log(re);
-        navigation.navigate("Registration Page");
-      })
-      .catch((re) => {
-        switch (re.code) {
-          case "auth/email-already-in-use":
-            setErrorMessage(`Email address ${email} already in use.`);
-            break;
-          case "auth/invalid-email":
-            setErrorMessage(`Email address ${email} is invalid.`);
-            break;
-          case "auth/weak-password":
-            setErrorMessage(
-              "Password is not strong enough. Add additional characters including special characters and numbers."
-            );
-            break;
-          default:
-            setErrorMessage("No errors!");
-        }
-      });
+    navigation.navigate("Registration Page", { email, password });
   };
 
   const handleLogin = () => {
     // make if statement here for changing the language
     //important for changing into another language
-
     firebase
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((re) => {
         console.log(re);
         i18n.changeLanguage("en");
-        // navigation.replace("Home");
+        navigation.replace("Home");
       })
       .catch((re) => {
         switch (re.code) {

@@ -18,7 +18,7 @@ import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeedbackModal from "./components/FeedBackModal";
 const Home = ({ navigation }) => {
   const { t } = useTranslation();
-
+  const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
   const [nativeLanguage, setnativeLanguage] = useState({});
   const userEmail = "test@gmail.com";
@@ -66,6 +66,7 @@ const Home = ({ navigation }) => {
   };
 
   useEffect(() => {
+    setloading(true);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
         firebase
@@ -77,9 +78,11 @@ const Home = ({ navigation }) => {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data().nativeLanguage);
               console.log(snapshot.data());
+              setloading(false);
             }
           });
       } else {
+        setloading(false);
         navigation.replace("Welcome Screen");
       }
     });
@@ -142,7 +145,7 @@ const Home = ({ navigation }) => {
         backgroundColor: "white",
       }}
     >
-      {!dismissLottie ? (
+      {loading ? (
         <LottieView
           source={require("../assets/images/lottie1.json")}
           autoPlay

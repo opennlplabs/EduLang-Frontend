@@ -55,7 +55,7 @@ const Settings = () => {
       .auth()
       .signOut()
       .then(() => {
-        // navigation.replace("Home");
+        navigation.replace("Welcome Screen");
       });
   };
   return (
