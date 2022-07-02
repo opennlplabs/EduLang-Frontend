@@ -9,7 +9,7 @@ import {
   TextInput,
   Dimensions,
 } from "react-native";
-import LoginBackground from "../assets/images/EduLangOfficial.png";
+import LoginBackground from "../assets/images/LoginBackgroundEdu.png";
 import logo from "../assets/images/RealEduLangLogo.png";
 import { COLORS } from "../constants/theme";
 import i18n from "../locale";

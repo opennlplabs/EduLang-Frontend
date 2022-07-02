@@ -1,7 +1,7 @@
 {
   "general": {
-    "login": "login",
-    "sign_up": "sign up",
+    "login": "Login",
+    "sign_up": "Sign Up",
     "password": "Password",
     "email": "Email",
     "save": "Save",

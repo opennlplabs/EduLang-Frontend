@@ -7,11 +7,13 @@ import {
   Image,
   ScrollView,
   FlatList,
+  TextInput,
 } from "react-native";
 import { COLORS, FONTS, SIZES, icons, images } from "../constants";
 import { data } from "../constants/HomeConfig";
 import BookList from "./components/BookList.js";
 import LottieView from "lottie-react-native";
+import { AntDesign } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
@@ -25,6 +27,9 @@ const Home = ({ navigation }) => {
   const [dismissLottie, setDismissLottie] = useState(false);
   const [completedBooks, setcompletedBooks] = useState([]);
   const [feedbackModal, setfeedbackModal] = useState(false);
+  const [searchText, setsearchText] = useState("");
+  const [favList, setfavList] = useState([]);
+
   let userlnaguage = "Somali";
 
   useEffect(() => {
@@ -35,7 +40,26 @@ const Home = ({ navigation }) => {
 
   useEffect(() => {
     getCompletedBooks();
-  }, [completedBooks]);
+  }, []);
+
+  useEffect(() => {
+    firebase
+      .firestore()
+      .collection("favBooks")
+      .where("uid", "==", firebase.auth().currentUser.uid)
+      .onSnapshot((snapshot) => {
+        if (snapshot) {
+          let arr = [];
+          console.log(snapshot);
+          snapshot.forEach((book, index) => {
+            // console.log(book.data());
+            arr.push(book.data());
+          });
+          // console.log("after database", arr);
+          setfavList(arr);
+        }
+      });
+  }, []);
 
   const getCompletedBooks = async () => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -76,7 +100,7 @@ const Home = ({ navigation }) => {
           .onSnapshot((snapshot) => {
             if (snapshot) {
               setuser(snapshot.data());
-              setnativeLanguage(snapshot.data().nativeLanguage);
+              setnativeLanguage(snapshot.data()?.nativeLanguage);
               console.log(snapshot.data());
               setloading(false);
             }
@@ -91,32 +115,60 @@ const Home = ({ navigation }) => {
   const filterdata = data.filter(
     (item) => item.language == nativeLanguage.item
   );
+
+  const searchData = filterdata.filter((book) => {
+    let text1 = searchText.toLowerCase();
+    return searchText ? book.title.toLowerCase().includes(text1) : true;
+  });
+
   const renderHeader = () => {
     return (
-      <View
-        style={{
-          flexDirection: "row",
-          alignItems: "center",
-          marginTop: 10,
-          paddingHorizontal: 20,
-        }}
-      >
-        {/* Greetings */}
-        <Text style={{ ...FONTS.h2, color: COLORS.black, flex: 1 }}>
-          {`${t("home.welcome")} ${user.username} `}
-        </Text>
-        <TouchableOpacity onPress={() => setfeedbackModal(true)}>
-          <Image
-            source={require("../assets/images/feedbackIcon.png")}
-            style={{ height: 25, width: 25, marginLeft: 16 }}
+      <View>
+        <View
+          style={{
+            flexDirection: "row",
+            alignItems: "center",
+            marginTop: 10,
+            paddingHorizontal: 20,
+          }}
+        >
+          {/* Greetings */}
+          <Text style={{ ...FONTS.h2, color: COLORS.black, flex: 1 }}>
+            {`${t("home.welcome")} ${user.username} `}
+          </Text>
+          <TouchableOpacity onPress={() => setfeedbackModal(true)}>
+            <Image
+              source={require("../assets/images/feedbackIcon.png")}
+              style={{ height: 25, width: 25, marginLeft: 16 }}
+            />
+          </TouchableOpacity>
+          <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
+            <Image
+              source={require("../assets/images/settingslogo2.png")}
+              style={{ height: 25, width: 25, marginLeft: 16 }}
+            />
+          </TouchableOpacity>
+        </View>
+        <View
+          style={{
+            backgroundColor: "#eee",
+            padding: 15,
+            flexDirection: "row",
+            alignItems: "center",
+            alignSelf: "center",
+            margin: 5,
+            width: "90%",
+            borderRadius: 6,
+            justifyContent: "space-between",
+          }}
+        >
+          <TextInput
+            style={{ backgroundColor: "#eee", width: "90%" }}
+            placeholder="Search book"
+            onChangeText={(text) => setsearchText(text)}
           />
-        </TouchableOpacity>
-        <TouchableOpacity onPress={() => navigation.navigate("Settings")}>
-          <Image
-            source={require("../assets/images/settingslogo2.png")}
-            style={{ height: 25, width: 25, marginLeft: 16 }}
-          />
-        </TouchableOpacity>
+          <AntDesign name="search1" size={24} color="black" />
+        </View>
       </View>
     );
   };
@@ -125,7 +177,7 @@ const Home = ({ navigation }) => {
     return (
       <View style={{ marginTop: 5 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-        <BookList item={filterdata} navigation={navigation} />
+        <BookList item={searchData} navigation={navigation} />
       </View>
     );
   };
@@ -134,6 +186,15 @@ const Home = ({ navigation }) => {
       <View style={{ marginTop: 5 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
         <BookList item={completedBooks} navigation={navigation} />
+      </View>
+    );
+  };
+
+  const renderScrollBar3 = (title) => {
+    return (
+      <View style={{ marginTop: 5 }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
+        <BookList item={favList} navigation={navigation} />
       </View>
     );
   };
@@ -154,11 +215,13 @@ const Home = ({ navigation }) => {
       ) : (
         <>
           {renderHeader()}
+
           <ScrollView
             showsVerticalScrollIndicator={false}
             style={{ marginHorizontal: 20 }}
           >
             {renderScrollBar(`${t("home.library")}`)}
+
             {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
           </ScrollView>
@@ -168,6 +231,7 @@ const Home = ({ navigation }) => {
             style={{ marginHorizontal: 20 }}
           >
             {renderScrollBar2(`Completed Books`)}
+            {renderScrollBar3(`Favorite Books`)}
             {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
           </ScrollView>

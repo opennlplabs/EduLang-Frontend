@@ -17,11 +17,11 @@ const BookList = ({ navigation, item }) => {
       <TouchableOpacity
         style={styles.item}
         onPress={(e) => {
-          navigation.navigate("Book Info", {item: item});
+          navigation.navigate("Book Info", { item: item });
         }}
       >
         <Image source={{ uri: item.source }} style={styles.image} />
-        <Text >{item.title}</Text>
+        <Text>{item.title}</Text>
       </TouchableOpacity>
     );
   };
@@ -36,13 +36,13 @@ const styles = StyleSheet.create({
     flex: 1,
     //backgroundColor: "red",
     alignItems: "center",
-    justifyContent: "center"
+    justifyContent: "center",
   },
   image: {
     //...StyleSheet.absoluteFillObject,
     resizeMode: "contain",
     width: 180,
-    height: 250,
+    height: 170,
   },
 });
 

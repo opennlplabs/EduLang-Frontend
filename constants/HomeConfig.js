@@ -2,6 +2,7 @@ import { Asset } from "expo-asset";
 
 export const data = [
   {
+    bookId: 0,
     title: "Decisions Pashto",
     language: "Pashto",
     description: "A village community makes a decision to change their lives",
@@ -9,10 +10,11 @@ export const data = [
       require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
     ).uri,
     bookPdfUrl: Asset.fromModule(
-      require("../assets/bookpdf/pashto/Decisions Book Pashto Translation.pdf")
+      require("../assets/bookpdf/pashto/DecisionsBookPashtoTranslation.pdf")
     ).uri,
   },
   {
+    bookId: 1,
     title: "Decisions Ukrainian",
     language: "Ukrainian",
     description: "A village community makes a decision to change their lives",
@@ -24,6 +26,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 2,
     title: "Decisions Somali",
     language: "Somali",
     description: "A village community makes a decision to change their lives",
@@ -35,6 +38,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 3,
     title: "Decisions Xhosa",
     language: "Xhosa",
     description: "A village community makes a decision to change their lives",
@@ -46,6 +50,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 4,
     title: "Goat Dog Cow Pashto",
     language: "Pashto",
     description:
@@ -58,6 +63,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 5,
     title: "Goat Dog Cow Hindi",
     language: "Hindi",
     description:
@@ -70,6 +76,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 6,
     title: "Goat Dog Cow Ukrainian",
     language: "Ukrainian",
     description:
@@ -82,6 +89,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 7,
     title: "Goat Dog Cow Somali",
     language: "Somali",
     description:
@@ -94,6 +102,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 8,
     title: "Friends",
     language: "Pashto",
     description: "Friends Book",
@@ -105,6 +114,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 9,
     title: "Friends Somali",
     language: "Somali",
     description: "Simo makes new friends",
@@ -116,6 +126,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 10,
     title: "Friends Xhosa",
     language: "Xhosa",
     description: "Simo makes new friends",
@@ -127,6 +138,7 @@ export const data = [
     ).uri,
   },
   {
+    bookId: 11,
     title: "Friends Hindi",
     language: "Hindi",
     description: "Simo makes new friends",

@@ -94,7 +94,6 @@ const SignUpScreen = ({ navigation, route }) => {
         .collection("userInfo")
         .doc(firebase.auth().currentUser.uid)
         .set({
-          phoneNumber: phoneNumber,
           grade: grade,
           username: username,
           nativeLanguage: nativelanguage,
@@ -138,13 +137,6 @@ const SignUpScreen = ({ navigation, route }) => {
           autoCapitalize="none"
           placeholderTextColor="white"
           onChangeText={(val) => setGradeLevel(val)}
-        />
-        <TextInput
-          style={styles.input}
-          placeholder={t("reg.phone_number")}
-          autoCapitalize="none"
-          placeholderTextColor="white"
-          onChangeText={(val) => setPhoneNumber(val)}
         />
         <View style={{ marginTop: 10 }}>
           <SelectBox
