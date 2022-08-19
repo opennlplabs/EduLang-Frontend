@@ -15,7 +15,6 @@ import { AntDesign } from "@expo/vector-icons";
 
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import * as firebase from "firebase";
 const BookInfo = ({ navigation, route }) => {
   const { t } = useTranslation();

@@ -10,7 +10,7 @@ import {
   TextInput,
 } from "react-native";
 import { COLORS, FONTS, SIZES, icons, images } from "../constants";
-import { data } from "../constants/HomeConfig";
+import { getData } from "../constants/HomeConfig";
 import BookList from "./components/BookList.js";
 import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
@@ -29,6 +29,7 @@ const Home = ({ navigation }) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
+  const [data, setData] = useState([])
 
   let userlnaguage = "Somali";
 
@@ -37,6 +38,12 @@ const Home = ({ navigation }) => {
       setDismissLottie(true);
     }, 2000);
   }, []);
+
+  useEffect(() => {
+    getData().then((value) => {
+      setData(value)
+    })
+  }, [navigation])
 
   useEffect(() => {
     getCompletedBooks();
@@ -50,7 +57,6 @@ const Home = ({ navigation }) => {
       .onSnapshot((snapshot) => {
         if (snapshot) {
           let arr = [];
-          console.log(snapshot);
           snapshot.forEach((book, index) => {
             // console.log(book.data());
             arr.push(book.data());
@@ -72,7 +78,6 @@ const Home = ({ navigation }) => {
             if (snapshot) {
               let arr = [];
               snapshot.forEach((book, index) => {
-                console.log(book.data());
                 arr.push(book.data());
               });
               setcompletedBooks(arr);
@@ -101,7 +106,6 @@ const Home = ({ navigation }) => {
             if (snapshot) {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data()?.nativeLanguage);
-              console.log(snapshot.data());
               setloading(false);
             }
           });
@@ -176,7 +180,14 @@ const Home = ({ navigation }) => {
   const renderScrollBar = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
+        <View style={{ flex: 1, height: 35, position: 'relative', flexDirection: 'row', justifyContent: 'space-between'}}>
+          <Text style={{ fontSize: 20, fontWeight: "bold", width: '71%'}}>{title}</Text>
+          <TouchableOpacity style={{position: 'relative', flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width: 50, padding: 7, backgroundColor: '#dbdbdb', borderRadius: 10}} 
+          onPress={() => navigation.navigate({name: "Add Book: Info", params: {language: nativeLanguage}})}>
+            <AntDesign name="plus" size={24} color="black" />
+            <Text style={{fontSize: 12, fontWeight: "bold", marginTop: 2, paddingLeft: 3}}>Add Book</Text>
+          </TouchableOpacity>
+        </View>
         <BookList item={searchData} navigation={navigation} />
       </View>
     );

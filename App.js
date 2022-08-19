@@ -8,10 +8,12 @@ import { useFonts } from "expo-font";
 import WelcomeScreenNew from "./Screens/WelcomeScreenNew";
 import BookInfo from "./Screens/BookInfo.js";
 import PDFExample from "./Screens/BookReader";
+import LiveTranslation from "./Screens/LiveTranslation.js";
 import Settings from "./Screens/Settings";
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./firebase.js";
 import Splash from "./Screens/Splash.js";
+import BookAddInfo from "./Screens/BookAddInfo.js"
 
 LogBox.ignoreAllLogs();
 
@@ -53,6 +55,8 @@ export default function App() {
             options={{ headerShown: false }}
           />
           <Stack.Screen name="Registration Page" component={RegistrationPage} />
+          <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
+          <Stack.Screen name="Live Translation" component={LiveTranslation} />
           <Stack.Screen name="Home" component={HomeScreen} />
           <Stack.Screen name="Book Info" component={BookInfo} />
           <Stack.Screen name="Book Reader" component={PDFExample} />
