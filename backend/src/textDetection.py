@@ -52,7 +52,7 @@ def translateText (overall_text, target_lang, delay=1, ):
     {{
         "text": "{removeChar(overall_text)}",
         "sourceLanguage": "en",
-        "targetLanguage": "{target_lang}"
+        "targetLanguage": "{target_lang.lower()}"
     }}
     """
     sleep(delay) # If we send too much requests at once, then the server won't respond to the overflow of requests
