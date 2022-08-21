@@ -13,9 +13,9 @@ import {
 } from "react-native";
 import { Camera } from 'expo-camera';
 import { AntDesign } from "@expo/vector-icons";
-import * as FileSystem from 'expo-file-system'
 import axios from "axios";
 import { addData } from "../constants/HomeConfig";
+import { StackActions } from "@react-navigation/native";
 
 
 // **************************** SERVER INFORMATION ****************************
@@ -56,6 +56,8 @@ const LiveTranslation = ({ navigation, route }) => {
   }
 
   const TranslatePages = async () => {
+    const originalImage = images[0].base64
+    var bookArray = {}
     for (var i = 0; i < images.length; i++) {
       const element = images[i]
       setTranslateTitle("Sending Page #" + (i+1).toString() + "...")
@@ -71,64 +73,21 @@ const LiveTranslation = ({ navigation, route }) => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       const base64Out = response.data["response"]
+      bookArray["page"+(i+1).toString()] = base64Out
       var copy = [...images]
       copy[i].base64 = base64Out 
       setImages(copy)  
     }
-    
-    setTranslateTitle("Converting to PDF...")
-    // Convert base 64 images into a single PDF
-    var arr = []
-    for (var i = 0; i < copy.length; i++) { 
-      arr.push(copy[i].base64) 
-    }
-    
-    //* Get Data
-    const title = route.params?.title
-    const description = route.params?.description
 
-    //* Create the pdf
-    const outputLocationPath = `${FileSystem.documentDirectory}${title}${route.params?.language["item"]}.pdf`
-    const form = new FormData() 
-    form.append("images", JSON.stringify(arr))
+    await addData(
+      route.params?.title, 
+      route.params?.description,
+      route.params?.language["item"],
+      bookArray, 
+      originalImage
+    )
 
-    const response = await axios({
-      method: "post",
-      url: `${server}/createPDF`,
-      data: form,
-      headers: { "Content-Type": "multipart/form-data" },
-    })
-
-    const success = response.data["success"]
-    if (success) {
-      setTranslateTitle("Downloading PDF...")
-      //* Get the PDF
-      const downloadResumable = FileSystem.createDownloadResumable(
-        `${server}/output`,
-        outputLocationPath,
-        {},
-      );
-
-      await downloadResumable.downloadAsync();
-      
-      console.log(outputLocationPath)
-      //* Finally, add to data storage
-      addData(
-        title, 
-        description,
-        route.params?.language["item"],
-        outputLocationPath,
-        images[0].base64
-      )
-
-      navigation.reset({
-        index: 0,
-        routes: [{ name: 'Home' }],
-      });
-
-    }
-
-    setTranslateTitle("Translate")
+    navigation.navigate("Home")
   }
 
   return (

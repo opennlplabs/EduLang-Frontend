@@ -18,7 +18,9 @@ import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeedbackModal from "./components/FeedBackModal";
-const Home = ({ navigation }) => {
+import { useIsFocused } from '@react-navigation/native';
+
+const Home = ({navigation}) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
@@ -30,6 +32,7 @@ const Home = ({ navigation }) => {
   const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
   const [data, setData] = useState([])
+  const isFocused = useIsFocused()
 
   let userlnaguage = "Somali";
 
@@ -42,8 +45,18 @@ const Home = ({ navigation }) => {
   useEffect(() => {
     getData().then((value) => {
       setData(value)
+
+      filterdata = data.filter(
+        (item) => item.language == nativeLanguage.item
+      );
+
+      searchData = filterdata.filter((book) => {
+        let text1 = searchText.toLowerCase();
+        return searchText ? book.title.toLowerCase().includes(text1) : true;
+      });
+
     })
-  }, [navigation])
+  }, [navigation, isFocused])
 
   useEffect(() => {
     getCompletedBooks();
@@ -116,11 +129,11 @@ const Home = ({ navigation }) => {
     });
   }, []);
 
-  const filterdata = data.filter(
+  var filterdata = data.filter(
     (item) => item.language == nativeLanguage.item
   );
 
-  const searchData = filterdata.filter((book) => {
+  var searchData = filterdata.filter((book) => {
     let text1 = searchText.toLowerCase();
     return searchText ? book.title.toLowerCase().includes(text1) : true;
   });

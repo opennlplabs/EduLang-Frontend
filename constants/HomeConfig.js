@@ -1,5 +1,6 @@
 import { Asset } from "expo-asset";
 import { Storage } from 'expo-storage'
+import * as FileSystem from 'expo-file-system'
 
 export const getData = async () => {
   const defaultData = [
@@ -11,9 +12,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/pashto/DecisionsBookPashtoTranslation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/pashto/DecisionsBookPashtoTranslation.json"),
     },
     {
       bookId: 1,
@@ -23,9 +22,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/ukrainian/Decisions Book Ukrainian Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/ukrainian/Decisions Book Ukrainian Translation.json")
     },
     {
       bookId: 2,
@@ -35,9 +32,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/somali/Decisions Book Somali Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/somali/Decisions Book Somali Translation.json"),
     },
     {
       bookId: 3,
@@ -47,9 +42,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/disagreementAmongOccupations_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/xhosa/Decisions Book Xhosa Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/xhosa/Decisions Book Xhosa Translation.json"),
     },
     {
       bookId: 4,
@@ -60,9 +53,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/GoatCoverPashto.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/pashto/GoatDogCowBookPashto.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/pashto/GoatDogCowBookPashto.json")
     },
     {
       bookId: 5,
@@ -73,9 +64,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/goatDogandCow_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/hindi/GoatDogCowBookHindi.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/hindi/GoatDogCowBookHindi.json")
     },
     {
       bookId: 6,
@@ -86,9 +75,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/goatDogandCow_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/ukrainian/GoatDogCowBookUkrainian.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/ukrainian/GoatDogCowBookUkrainian.json")
     },
     {
       bookId: 7,
@@ -99,9 +86,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/goatDogandCow_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/somali/GoatDogCowBookSomali.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/somali/GoatDogCowBookSomali.json")
     },
     {
       bookId: 8,
@@ -111,9 +96,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/FriendsCoverPashto.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/pashto/Friends_Pashto_Final_Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/pashto/Friends_Pashto_Final_Translation.json")
     },
     {
       bookId: 9,
@@ -123,9 +106,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/friends_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/somali/Friends_Somali_Final_Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/somali/Friends_Somali_Final_Translation.json")
     },
     {
       bookId: 10,
@@ -135,9 +116,7 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/friends_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/xhosa/Friends_Xhosa_Final_Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/xhosa/Friends_Xhosa_Final_Translation.json")
     },
     {
       bookId: 11,
@@ -147,28 +126,25 @@ export const getData = async () => {
       source: Asset.fromModule(
         require("../assets/images/bookCovers/friends_cover.png")
       ).uri,
-      bookPdfUrl: Asset.fromModule(
-        require("../assets/bookpdf/hindi/Friends_Hindi_Final_Translation.pdf")
-      ).uri,
+      book: require("../assets/bookpdf/hindi/Friends_Hindi_Final_Translation.json")
     },
   ];
   
   // Storage 
+  const clear = false
   const storageOut = await Storage.getItem({key: "data"})
-  if (storageOut == undefined) {
-    console.log("Storage out undefined")
+  if (storageOut == undefined || clear === true) {
     await Storage.setItem({
       key: "data",
       value: JSON.stringify(defaultData)
     }) 
-    console.log("set data online")
     return defaultData
   } else {
     return Array.from(JSON.parse(storageOut))
   }
 }
 
-export const addData = async (title, description, language, pdfSource, imageBase64) => {
+export const addData = async (title, description, language, book, imageBase64) => {
   var data = await Storage.getItem({key: "data"})
   data = Array.from(JSON.parse(data))
   const length = data.length
@@ -179,9 +155,7 @@ export const addData = async (title, description, language, pdfSource, imageBase
     language: language,
     description: description,
     source: `data:image/jpeg;base64,${imageBase64}`,
-    bookPdfUrl: Asset.fromModule(
-      pdfSource
-    ).uri
+    book: book 
   }
   data.push(obj)
   await Storage.setItem({

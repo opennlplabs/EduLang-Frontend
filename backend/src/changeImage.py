@@ -130,7 +130,7 @@ def changeImage (page):
         img = np.array(img_pil)
 
     # Resize the Window
-    PIL_image = Image.fromarray(np.uint8(img)).convert('RGB')
+    PIL_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     img_buffer = BytesIO()
     PIL_image.save(img_buffer, format='JPEG')
     byte_data = img_buffer.getvalue()

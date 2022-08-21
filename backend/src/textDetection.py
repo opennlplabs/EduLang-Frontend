@@ -124,7 +124,7 @@ def processImage (base64Image, target_language):
     cwd = os.getcwd()
     path = os.path.join(cwd, "src", "PNGImgs")
     index = len([name for name in os.listdir(path) if os.path.isfile(name)])
-    full_path = os.path.join(path, "page"+str(index+1)+".jpg")
+    full_path = os.path.join(path, "page"+str(index+1)+".jpeg")
     cv2.imwrite(full_path, img)
 
     # This is the actual processtext array that stores an array of paragraphs 
@@ -138,8 +138,4 @@ def processImage (base64Image, target_language):
     
     craft_text_detector.empty_cuda_cache()
     
-    # cache pages
-    with open(os.path.join(os.getcwd(), "src", "PagesCache", "Page.pkl"), "wb") as f: # "wb" because we want to write in binary mode
-        pickle.dump(page, f)
-        
     return page
