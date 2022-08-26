@@ -129,15 +129,15 @@ export const getData = async () => {
       book: require("../assets/bookpdf/hindi/Friends_Hindi_Final_Translation.json")
     },
   ];
-  
+
   // Storage 
   const clear = false
-  const storageOut = await Storage.getItem({key: "data"})
+  const storageOut = await Storage.getItem({ key: "data" })
   if (storageOut == undefined || clear === true) {
     await Storage.setItem({
       key: "data",
       value: JSON.stringify(defaultData)
-    }) 
+    })
     return defaultData
   } else {
     return Array.from(JSON.parse(storageOut))
@@ -145,7 +145,7 @@ export const getData = async () => {
 }
 
 export const addData = async (title, description, language, book, imageBase64) => {
-  var data = await Storage.getItem({key: "data"})
+  var data = await Storage.getItem({ key: "data" })
   data = Array.from(JSON.parse(data))
   const length = data.length
 
@@ -155,7 +155,7 @@ export const addData = async (title, description, language, book, imageBase64) =
     language: language,
     description: description,
     source: `data:image/jpeg;base64,${imageBase64}`,
-    book: book 
+    book: book
   }
   data.push(obj)
   await Storage.setItem({

@@ -4,6 +4,7 @@ import {
     View,
     Text,
     TouchableOpacity,
+    Switch,
     Image,
     ScrollView,
     FlatList,
@@ -19,10 +20,12 @@ import axios from "axios";
 const BookAddInfo = ({ navigation, route }) => {
     const [title, onChangeTitle] = React.useState("");
     const [description, onChangeDescription] = React.useState("")
+    const [isCustomTranslated, setIsCustomTranslated] = useState(false);
 
-    function Submit () {
-        navigation.navigate({name: "Live Translation", params: 
-            {language: route.params?.language, title: title.replace(/\s+/g,'_'), description: description}
+    function Submit() {
+        navigation.navigate({
+            name: "Live Translation", params:
+                { language: route.params?.language, title: title.replace(/\s+/g, '_'), description: description, customTranslated: isCustomTranslated }
         })
     }
 
@@ -40,8 +43,12 @@ const BookAddInfo = ({ navigation, route }) => {
                 onChangeText={onChangeDescription}
                 value={description}
             />
+            <Text style={styles.question}>Do you want to translated manually?</Text>
+            <View style={styles.SwitchContainer}>
+                <Switch style={styles.Switch} value={isCustomTranslated} onValueChange={() => setIsCustomTranslated(value => !value)} />
+            </View>
 
-            <View style={{flex: 1, alignItems: 'center',}}>
+            <View style={{ flex: 1, alignItems: 'center', }}>
                 <TouchableOpacity style={styles.Button} onPress={Submit}>
                     <Text style={{ textAlign: 'center' }}>Submit</Text>
                 </TouchableOpacity>
@@ -76,6 +83,14 @@ const styles = StyleSheet.create({
         width: 100,
         height: 40,
         marginTop: 20,
+    },
+    SwitchContainer: {
+        marginTop: 30,
+        marginBottom: 20,
+        width: '100%',
+        flex: 1,
+        alignItems: 'center',
+        justifyContent: 'center'
     },
 });
 

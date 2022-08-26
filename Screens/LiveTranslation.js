@@ -19,7 +19,7 @@ import { StackActions } from "@react-navigation/native";
 
 
 // **************************** SERVER INFORMATION ****************************
-const server = "http://192.168.68.56:5000"
+export const server = "http://192.168.68.56:5000"
 // **************************** SERVER INFORMATION ****************************
 
 
@@ -44,11 +44,11 @@ const LiveTranslation = ({ navigation, route }) => {
     var copy = [...images]
     copy.splice(index, 1)
     setImages(copy)
-  }  
+  }
 
   const __takePicture = async () => {
     if (!camera) return
-    const photo = await camera.takePictureAsync({base64: true})
+    const photo = await camera.takePictureAsync({ base64: true })
     var copy = [...images]
     copy.push(photo)
     setImages(copy)
@@ -56,16 +56,31 @@ const LiveTranslation = ({ navigation, route }) => {
   }
 
   const TranslatePages = async () => {
+    const customTranslate = route.params?.customTranslated
     const originalImage = images[0].base64
     var bookArray = {}
+
+    if (customTranslate && images.length > 0) {
+      //* Custom Translated
+      navigation.navigate({
+        name: "Custom Translation", params: {
+          images: images,
+          title: route.params?.title,
+          description: route.params?.description,
+          language: route.params?.language["item"]
+        }
+      })
+      return
+    }
+
     for (var i = 0; i < images.length; i++) {
       const element = images[i]
-      setTranslateTitle("Sending Page #" + (i+1).toString() + "...")
+      setTranslateTitle("Sending Page #" + (i + 1).toString() + "...")
       const form = new FormData()
-      
+
       form.append("base64Image", element.base64)
       form.append("languageId", route.params?.language["id"])
-      setTranslateTitle("Translating Page #" + (i+1).toString() + "...")
+      setTranslateTitle("Translating Page #" + (i + 1).toString() + "...")
       const response = await axios({
         method: "post",
         url: `${server}/translate`,
@@ -73,17 +88,17 @@ const LiveTranslation = ({ navigation, route }) => {
         headers: { "Content-Type": "multipart/form-data" },
       })
       const base64Out = response.data["response"]
-      bookArray["page"+(i+1).toString()] = base64Out
+      bookArray["page" + (i + 1).toString()] = base64Out
       var copy = [...images]
-      copy[i].base64 = base64Out 
-      setImages(copy)  
+      copy[i].base64 = base64Out
+      setImages(copy)
     }
 
     await addData(
-      route.params?.title, 
+      route.params?.title,
       route.params?.description,
       route.params?.language["item"],
-      bookArray, 
+      bookArray,
       originalImage
     )
 
@@ -136,18 +151,18 @@ const LiveTranslation = ({ navigation, route }) => {
         </Camera> :
         <View style={styles.ContainerView}>
           <Text style={styles.Header}>Pages:</Text>
-          <SafeAreaView style={{height: "70%"}}>
+          <SafeAreaView style={{ height: "70%" }}>
             {images.length === 0 && <Text style={styles.warning}>No pages added.</Text>}
             <ScrollView horizontal showsVerticalScrollIndicator={false}>
-              {images.length !== 0 &&  
+              {images.length !== 0 &&
                 images.map((element, index) => {
                   return (
-                    <ImageBackground key={index} style={styles.Image} imageStyle={{ borderRadius: 20}}
-                    source={{
+                    <ImageBackground key={index} style={styles.Image} imageStyle={{ borderRadius: 20 }}
+                      source={{
                         uri: `data:image/jpeg;base64,${element.base64}`,
-                    }}>
+                      }}>
                       <Text style={styles.PageText}>
-                        Page #{index+1}
+                        Page #{index + 1}
                       </Text>
                       <TouchableOpacity style={styles.CloseButton} onPress={() => __deletePicture(index)}>
                         <AntDesign name="closecircleo" size={24} color="white" />
@@ -166,9 +181,9 @@ const LiveTranslation = ({ navigation, route }) => {
         </View>
       }
       <View style={styles.BottomView}>
-          <TouchableOpacity style={[styles.Button, styles.TranslateButton]} onPress={TranslatePages}>
-            <Text style={{ textAlign: 'center' }}>{TranslateTitle}</Text>
-          </TouchableOpacity>
+        <TouchableOpacity style={[styles.Button, styles.TranslateButton]} onPress={TranslatePages}>
+          <Text style={{ textAlign: 'center' }}>{TranslateTitle}</Text>
+        </TouchableOpacity>
       </View>
     </View>
   )
@@ -231,7 +246,7 @@ const styles = StyleSheet.create({
     marginTop: 10,
     color: 'white',
     textShadowColor: 'black',
-    textShadowOffset: {width: -3, height: 5},
+    textShadowOffset: { width: -3, height: 5 },
     textShadowRadius: 3
   },
   BottomView: {
