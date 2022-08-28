@@ -52,13 +52,33 @@ const WelcomeScreenNew = ({ navigation }) => {
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
-        source={LoginBackground}
+        //source={LoginBackground}
         style={styles.backgroundContainer}
       >
-        <Image source={logo} style={styles.logo} />
+        <View>
+          <Image
+            resizeMode="cover"
+            style={{ height: 150, width: 400 }}
+            source={require("../assets/wave1.png")}
+          />
+        </View>
+
+        <View style={styles.subHeader}>
+          <View style={{ paddingHorizontal: 15, width: "50%" }}>
+            <Text style={[styles.logoText, { color: "green" }]}>
+              Edu<Text style={{ color: "blue" }}>Lang</Text>
+            </Text>
+            <Text style={styles.bodyText}>{t("general.appSubstring")}</Text>
+          </View>
+          <View>
+            <Image source={logo} style={styles.logo} />
+          </View>
+        </View>
+
+        {/* <Image source={logo} style={styles.logo} />
 
         <Text style={styles.logoText}>EduLang</Text>
-        <Text style={styles.bodyText}>{t("general.appSubstring")}</Text>
+        <Text style={styles.bodyText}>{t("general.appSubstring")}</Text> */}
 
         <View style={styles.userInteractionContainer}>
           <TextInput
@@ -114,18 +134,19 @@ const styles = StyleSheet.create({
     //justifyContent: 'center',
   },
   logo: {
-    width: 100,
-    height: 100,
+    width: 150,
+    height: 150,
     resizeMode: "contain",
   },
   logoText: {
     color: COLORS.darkCoral,
     fontSize: 40,
-    fontWeight: "500",
-    fontFamily: "Roboto-Black",
+    // fontWeight: "500",
+    fontFamily: "Inter-V",
   },
   bodyText: {
     fontSize: 18,
+    width: 230,
     color: "#2d8078", //change to lighter coral later
   },
   input: {
@@ -140,6 +161,12 @@ const styles = StyleSheet.create({
     paddingHorizontal: 20,
     flex: 1,
     width: WIDTH,
+  },
+  subHeader: {
+    flexDirection: "row",
+    alignItems: "center",
+    width: "100%",
+    justifyContent: "space-around",
   },
 });
 

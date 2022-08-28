@@ -14,6 +14,7 @@ import numpy as np              # average color calculations
 import pickle
 import base64                   # Our image is in base64, this is used for decoding
 from io import BytesIO          # Our image is in base64, this is used for decoding
+import torch
 
 # For color on terminal (used to send out warnings)
 from termcolor import colored
@@ -144,7 +145,7 @@ def processImage(base64Image, target_language):
     cv2.imwrite(full_path, img)
 
     # This is the actual processtext array that stores an array of paragraphs
-    craft = craft_text_detector.Craft(cuda=True)
+    craft = craft_text_detector.Craft(cuda=False)
 
     # Craft Text Detector
     result = craft.detect_text(full_path)["boxes"]
@@ -172,7 +173,7 @@ def getbbox(base64Image):
     cv2.imwrite(full_path, img)
 
     # This is the actual processtext array that stores an array of paragraphs
-    craft = craft_text_detector.Craft(cuda=True)
+    craft = craft_text_detector.Craft(cuda=False)
 
     # Craft Text Detector
     result = craft.detect_text(full_path)["boxes"]
