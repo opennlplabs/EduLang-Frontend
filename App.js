@@ -13,8 +13,8 @@ import Settings from "./Screens/Settings";
 import * as firebase from "firebase/app";
 import { firebaseConfig } from "./firebase.js";
 import Splash from "./Screens/Splash.js";
-import BookAddInfo from "./Screens/BookAddInfo.js"
-import CustomTranslation from "./Screens/CustomTranslation.js"
+import BookAddInfo from "./Screens/BookAddInfo.js";
+import CustomTranslation from "./Screens/CustomTranslation.js";
 
 LogBox.ignoreAllLogs();
 
@@ -58,8 +58,15 @@ export default function App() {
           <Stack.Screen name="Registration Page" component={RegistrationPage} />
           <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
           <Stack.Screen name="Live Translation" component={LiveTranslation} />
-          <Stack.Screen name="Custom Translation" component={CustomTranslation} />
-          <Stack.Screen name="Home" component={HomeScreen} />
+          <Stack.Screen
+            name="Custom Translation"
+            component={CustomTranslation}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
           <Stack.Screen name="Book Info" component={BookInfo} />
           <Stack.Screen name="Book Reader" component={PDFExample} />
           <Stack.Screen name="Settings" component={Settings} />

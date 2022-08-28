@@ -26,7 +26,14 @@ const BookList = ({ navigation, item }) => {
     );
   };
 
-  return <FlatList data={item} renderItem={renderItem} horizontal />;
+  return (
+    <FlatList
+      showsHorizontalScrollIndicator={false}
+      data={item}
+      renderItem={renderItem}
+      horizontal
+    />
+  );
 };
 
 const styles = StyleSheet.create({

@@ -8,6 +8,7 @@ import {
   ScrollView,
   FlatList,
   TextInput,
+  StatusBar,
 } from "react-native";
 import { COLORS, FONTS, SIZES, icons, images } from "../constants";
 import { getData } from "../constants/HomeConfig";
@@ -18,9 +19,11 @@ import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
 import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeedbackModal from "./components/FeedBackModal";
-import { useIsFocused } from '@react-navigation/native';
+import { useIsFocused } from "@react-navigation/native";
+import Svg from "react-native-svg";
+import SvgComponent from "../assets/SvgComponent/Pattern";
 
-const Home = ({navigation}) => {
+const Home = ({ navigation }) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
@@ -31,8 +34,8 @@ const Home = ({navigation}) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
-  const [data, setData] = useState([])
-  const isFocused = useIsFocused()
+  const [data, setData] = useState([]);
+  const isFocused = useIsFocused();
 
   let userlnaguage = "Somali";
 
@@ -44,19 +47,16 @@ const Home = ({navigation}) => {
 
   useEffect(() => {
     getData().then((value) => {
-      setData(value)
+      setData(value);
 
-      filterdata = data.filter(
-        (item) => item.language == nativeLanguage.item
-      );
+      filterdata = data.filter((item) => item.language == nativeLanguage.item);
 
       searchData = filterdata.filter((book) => {
         let text1 = searchText.toLowerCase();
         return searchText ? book.title.toLowerCase().includes(text1) : true;
       });
-
-    })
-  }, [navigation, isFocused])
+    });
+  }, [navigation, isFocused]);
 
   useEffect(() => {
     getCompletedBooks();
@@ -129,9 +129,7 @@ const Home = ({navigation}) => {
     });
   }, []);
 
-  var filterdata = data.filter(
-    (item) => item.language == nativeLanguage.item
-  );
+  var filterdata = data.filter((item) => item.language == nativeLanguage.item);
 
   var searchData = filterdata.filter((book) => {
     let text1 = searchText.toLowerCase();
@@ -141,8 +139,40 @@ const Home = ({navigation}) => {
   const renderHeader = () => {
     return (
       <View>
+        {/* <SvgComponent /> */}
+        <View>
+          <Image
+            // style={{ height: 300 }}
+            source={require("../assets/gradient.png")}
+          />
+        </View>
         <View
           style={{
+            backgroundColor: "#4CA4D3",
+            padding: 15,
+            flexDirection: "row",
+            alignItems: "center",
+            alignSelf: "center",
+            margin: 5,
+            width: "90%",
+            top: 100,
+            position: "absolute",
+            borderRadius: 6,
+            justifyContent: "space-between",
+          }}
+        >
+          <TextInput
+            style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
+            placeholder="Search book"
+            placeholderTextColor="white"
+            onChangeText={(text) => setsearchText(text)}
+          />
+          <AntDesign name="search1" size={24} color="white" />
+        </View>
+        <View
+          style={{
+            position: "absolute",
+            top: 30,
             flexDirection: "row",
             alignItems: "center",
             marginTop: 10,
@@ -166,7 +196,7 @@ const Home = ({navigation}) => {
             />
           </TouchableOpacity>
         </View>
-        <View
+        {/* <View
           style={{
             backgroundColor: "#eee",
             padding: 15,
@@ -185,7 +215,7 @@ const Home = ({navigation}) => {
             onChangeText={(text) => setsearchText(text)}
           />
           <AntDesign name="search1" size={24} color="black" />
-        </View>
+        </View> */}
       </View>
     );
   };
@@ -193,12 +223,48 @@ const Home = ({navigation}) => {
   const renderScrollBar = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
-        <View style={{ flex: 1, height: 35, position: 'relative', flexDirection: 'row', justifyContent: 'space-between'}}>
-          <Text style={{ fontSize: 20, fontWeight: "bold", width: '71%'}}>{title}</Text>
-          <TouchableOpacity style={{position: 'relative', flex: 1, flexDirection: 'row', justifyContent: 'flex-end', alignItems: 'center', width: 50, padding: 7, backgroundColor: '#dbdbdb', borderRadius: 10}} 
-          onPress={() => navigation.navigate({name: "Add Book: Info", params: {language: nativeLanguage}})}>
+        <View
+          style={{
+            flex: 1,
+            height: 35,
+            position: "relative",
+            flexDirection: "row",
+            justifyContent: "space-between",
+          }}
+        >
+          <Text style={{ fontSize: 20, fontWeight: "bold", width: "71%" }}>
+            {title}
+          </Text>
+          <TouchableOpacity
+            style={{
+              position: "relative",
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "flex-end",
+              alignItems: "center",
+              width: 50,
+              padding: 7,
+              backgroundColor: "#dbdbdb",
+              borderRadius: 10,
+            }}
+            onPress={() =>
+              navigation.navigate({
+                name: "Add Book: Info",
+                params: { language: nativeLanguage },
+              })
+            }
+          >
             <AntDesign name="plus" size={24} color="black" />
-            <Text style={{fontSize: 12, fontWeight: "bold", marginTop: 2, paddingLeft: 3}}>Add Book</Text>
+            <Text
+              style={{
+                fontSize: 12,
+                fontWeight: "bold",
+                marginTop: 2,
+                paddingLeft: 3,
+              }}
+            >
+              Add Book
+            </Text>
           </TouchableOpacity>
         </View>
         <BookList item={searchData} navigation={navigation} />
@@ -222,51 +288,63 @@ const Home = ({navigation}) => {
       </View>
     );
   };
+  const renderScrollBar4 = (title) => {
+    return (
+      <View style={{ marginTop: 5 }}>
+        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
+        <BookList item={searchData} navigation={navigation} />
+      </View>
+    );
+  };
 
   return (
-    <SafeAreaView
-      style={{
-        flex: 1,
-        backgroundColor: "white",
-      }}
-    >
-      {loading ? (
-        <LottieView
-          source={require("../assets/images/lottie1.json")}
-          autoPlay
-          style={{ justifyContent: "center", alignItems: "center" }}
+    <>
+      <StatusBar barStyle={"dark-content"} backgroundColor={"green"} />
+      <SafeAreaView
+        style={{
+          flex: 1,
+          backgroundColor: "white",
+        }}
+      >
+        {loading ? (
+          <LottieView
+            source={require("../assets/images/lottie1.json")}
+            autoPlay
+            style={{ justifyContent: "center", alignItems: "center" }}
+          />
+        ) : (
+          <>
+            {renderHeader()}
+
+            <ScrollView
+              // showsVerticalScrollIndicator={false}
+              showsHorizontalScrollIndicator={false}
+              style={{ marginHorizontal: 20, position: "absolute", top: 220 }}
+            >
+              {renderScrollBar4(`${t("Newly Added")}`)}
+
+              {/* {renderScrollBar("Reccomended Books")}
+           {renderScrollBar("Latest Books")} */}
+            </ScrollView>
+
+            <ScrollView
+              showsVerticalScrollIndicator={false}
+              style={{ marginHorizontal: 20 }}
+            >
+              {renderScrollBar2(`Completed Books`)}
+              {renderScrollBar3(`Favorite Books`)}
+              {/* {renderScrollBar("Reccomended Books")}
+           {renderScrollBar("Latest Books")} */}
+            </ScrollView>
+          </>
+        )}
+
+        <FeedbackModal
+          visible={feedbackModal}
+          hideModal={() => setfeedbackModal(false)}
         />
-      ) : (
-        <>
-          {renderHeader()}
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{ marginHorizontal: 20 }}
-          >
-            {renderScrollBar(`${t("home.library")}`)}
-
-            {/* {renderScrollBar("Reccomended Books")}
-           {renderScrollBar("Latest Books")} */}
-          </ScrollView>
-
-          <ScrollView
-            showsVerticalScrollIndicator={false}
-            style={{ marginHorizontal: 20 }}
-          >
-            {renderScrollBar2(`Completed Books`)}
-            {renderScrollBar3(`Favorite Books`)}
-            {/* {renderScrollBar("Reccomended Books")}
-           {renderScrollBar("Latest Books")} */}
-          </ScrollView>
-        </>
-      )}
-
-      <FeedbackModal
-        visible={feedbackModal}
-        hideModal={() => setfeedbackModal(false)}
-      />
-    </SafeAreaView>
+      </SafeAreaView>
+    </>
   );
 };
 
