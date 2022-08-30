@@ -146,7 +146,7 @@ const Home = ({ navigation, route }) => {
         {/* <SvgComponent /> */}
         <View>
           <Image
-            // style={{ height: 300 }}
+             style={{ height: 425 }}
             source={require("../assets/gradient.png")}
           />
         </View>
