@@ -51,6 +51,7 @@
     "react-native-localization": "^2.3.1",
     "react-native-multi-selectbox": "^1.5.0",
     "react-native-pdf": "^6.6.2",
+    "react-native-progress": "^5.0.0",
     "react-native-safe-area-context": "3.3.2",
     "react-native-screens": "~3.10.1",
     "react-native-select-dropdown": "^1.8.0",

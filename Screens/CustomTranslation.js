@@ -101,7 +101,6 @@ export default function CustomTranslation({ navigation, route }) {
                 setResponses(Array(box.length).fill(""))
                 setFinish(true)
             }
-
         }
     }, [index])
 

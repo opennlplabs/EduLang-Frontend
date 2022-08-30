@@ -17,13 +17,13 @@ import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
-import AsyncStorage from "@react-native-async-storage/async-storage";
 import FeedbackModal from "./components/FeedBackModal";
 import { useIsFocused } from "@react-navigation/native";
 import Svg from "react-native-svg";
 import SvgComponent from "../assets/SvgComponent/Pattern";
+import { Storage } from "expo-storage";
 
-const Home = ({ navigation }) => {
+const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
@@ -34,10 +34,10 @@ const Home = ({ navigation }) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
+  const [adminData, setAdminData] = useState([])
   const [data, setData] = useState([]);
+  const [isAdmin, setIsAdmin] = useState(false)
   const isFocused = useIsFocused();
-
-  let userlnaguage = "Somali";
 
   useEffect(() => {
     setTimeout(() => {
@@ -46,66 +46,69 @@ const Home = ({ navigation }) => {
   }, []);
 
   useEffect(() => {
-    getData().then((value) => {
-      setData(value);
+    if (isFocused) {
+      getData().then((value) => {
+        setData(value);
 
-      filterdata = data.filter((item) => item.language == nativeLanguage.item);
+        filterdata = data.filter((item) => item.language == nativeLanguage.item);
 
-      searchData = filterdata.filter((book) => {
-        let text1 = searchText.toLowerCase();
-        return searchText ? book.title.toLowerCase().includes(text1) : true;
+        searchData = filterdata.filter((book) => {
+          let text1 = searchText.toLowerCase();
+          return searchText ? book.title.toLowerCase().includes(text1) : true;
+        });
       });
-    });
+    }
   }, [navigation, isFocused]);
 
-  useEffect(() => {
-    getCompletedBooks();
-  }, []);
+  useEffect(async () => {
+    // firebase
+    //   .firestore()
+    //   .collection("favBooks")
+    //   .where("uid", "==", firebase.auth().currentUser.uid)
+    //   .onSnapshot((snapshot) => {
+    //     if (snapshot) {
+    //       let arr = [];
+    //       snapshot.forEach((book, index) => {
+    //         // console.log(book.data());
+    //         arr.push(book.data());
+    //       });
+    //       // console.log("after database", arr);
+    //       setfavList(arr);
+    //     }
+    //   });
+    const favBooks = Array.from(JSON.parse(
+      await Storage.getItem({ key: "favBooks" })
+    ))
+    const completedBooks = Array.from(JSON.parse(
+      await Storage.getItem({ key: "completedBooks" })
+    ))
+    const titles = JSON.parse(
+      await Storage.getItem({ key: "titles" })
+    )
+    const data = Array.from(JSON.parse(
+      await Storage.getItem({ key: "data" })
+    ))
 
-  useEffect(() => {
-    firebase
-      .firestore()
-      .collection("favBooks")
-      .where("uid", "==", firebase.auth().currentUser.uid)
-      .onSnapshot((snapshot) => {
-        if (snapshot) {
-          let arr = [];
-          snapshot.forEach((book, index) => {
-            // console.log(book.data());
-            arr.push(book.data());
-          });
-          // console.log("after database", arr);
-          setfavList(arr);
+    if (favBooks) {
+      var arr = []
+      favBooks.forEach((value, index) => {
+        if (value in titles) {
+          arr.push(data[titles[value]])
         }
-      });
-  }, []);
+      })
+      setfavList(arr)
+    }
+    if (completedBooks) {
+      var arr = []
+      completedBooks.forEach((value, index) => {
+        if (value in titles) {
+          arr.push(data[titles[value]])
+        }
+      })
+      setcompletedBooks(arr)
+    }
 
-  const getCompletedBooks = async () => {
-    firebase.auth().onAuthStateChanged((user) => {
-      if (user) {
-        firebase
-          .firestore()
-          .collection("completedBooks")
-          .where("uid", "==", firebase.auth().currentUser.uid)
-          .onSnapshot((snapshot) => {
-            if (snapshot) {
-              let arr = [];
-              snapshot.forEach((book, index) => {
-                arr.push(book.data());
-              });
-              setcompletedBooks(arr);
-            }
-          });
-      }
-    });
-    // try {
-    //   const CmBooks = await AsyncStorage.getItem("userCompletedBooks");
-    //   setcompletedBooks(JSON.parse(CmBooks));
-    //   // console.log("Completed books==>", CmBooks);
-    // } catch (error) {
-    //   console.log(error);
-    // }
-  };
+  }, [data]);
 
   useEffect(() => {
     setloading(true);
@@ -115,11 +118,12 @@ const Home = ({ navigation }) => {
           .firestore()
           .collection("userInfo")
           .doc(firebase.auth().currentUser.uid)
-          .onSnapshot((snapshot) => {
+          .onSnapshot(async (snapshot) => {
             if (snapshot) {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data()?.nativeLanguage);
               setloading(false);
+              setIsAdmin(snapshot.data()?.isAdmin)
             }
           });
       } else {
@@ -232,7 +236,7 @@ const Home = ({ navigation }) => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ fontSize: 20, fontWeight: "bold", width: "71%" }}>
+          <Text style={{ marginTop: 5, fontSize: 20, fontWeight: "bold", width: "71%" }}>
             {title}
           </Text>
           <TouchableOpacity
@@ -288,13 +292,57 @@ const Home = ({ navigation }) => {
       </View>
     );
   };
-  const renderScrollBar4 = (title) => {
-    return (
-      <View style={{ marginTop: 5 }}>
-        <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-        <BookList item={searchData} navigation={navigation} />
-      </View>
-    );
+
+  useEffect(async () => {
+    if (isFocused) {
+      console.log("Get admin data...")
+      // get admin data
+      const snapshot = await firebase.firestore().collection("BooksReview").get()
+
+      var ids = []
+      var datas = []
+      var arr = []
+
+      snapshot.forEach((doc) => {
+        ids.push(doc.id)
+        datas.push(doc.data())
+      })
+
+      for (var x = 0; x < ids.length; x++) {
+        var dict = { ...datas[x], book: {} }
+
+        const lenPages = dict.lenPages
+
+        // get collections data
+        // for (var i = 0; i < lenPages; i++) {
+        //   const pageSnapshot = await firebase.firestore()
+        //     .collection("BooksReview")
+        //     .doc(ids[x])
+        //     .collection("page" + (i + 1).toString())
+        //     .doc((i + 1).toString())
+        //     .get()
+        //   dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
+        // }
+        dict["isAdmin"] = true
+        dict["id"] = ids[x]
+        dict["lenPages"] = lenPages
+        arr.push(dict)
+      }
+      setAdminData(arr)
+    }
+  }, [isAdmin, isFocused])
+
+  const renderAdmin = (title) => {
+    if (isAdmin) {
+      return (
+        <View style={{ marginTop: 5 }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
+          <BookList item={adminData} navigation={navigation} />
+        </View>
+      );
+    } else {
+      return (<></>)
+    }
   };
 
   return (
@@ -321,7 +369,7 @@ const Home = ({ navigation }) => {
               showsHorizontalScrollIndicator={false}
               style={{ marginHorizontal: 20, position: "absolute", top: 220 }}
             >
-              {renderScrollBar4(`${t("Newly Added")}`)}
+              {renderScrollBar(`${t("Newly Added")}`)}
 
               {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
@@ -335,6 +383,8 @@ const Home = ({ navigation }) => {
               {renderScrollBar3(`Favorite Books`)}
               {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
+
+              {renderAdmin(`Books Review`)}
             </ScrollView>
           </>
         )}

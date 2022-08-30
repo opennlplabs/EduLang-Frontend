@@ -16,17 +16,24 @@ import { Camera } from 'expo-camera';
 import { AntDesign } from "@expo/vector-icons";
 import * as FileSystem from 'expo-file-system'
 import axios from "axios";
+import { Storage } from "expo-storage";
 
 const BookAddInfo = ({ navigation, route }) => {
     const [title, onChangeTitle] = React.useState("");
     const [description, onChangeDescription] = React.useState("")
     const [isCustomTranslated, setIsCustomTranslated] = useState(false);
 
-    function Submit() {
-        navigation.navigate({
-            name: "Live Translation", params:
-                { language: route.params?.language, title: title.replace(/\s+/g, '_'), description: description, customTranslated: isCustomTranslated }
-        })
+    async function Submit() {
+        const titles = JSON.parse(await Storage.getItem({ key: "titles" }))
+        if (title.replace(/\s+/g, '_') in titles || title in titles) {
+            alert("Duplicate Title! Choose a different title.")
+        }
+        else {
+            navigation.navigate({
+                name: "Live Translation", params:
+                    { language: route.params?.language, title: title.replace(/\s+/g, '_'), description: description, customTranslated: isCustomTranslated }
+            })
+        }
     }
 
     return (

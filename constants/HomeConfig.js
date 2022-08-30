@@ -1,8 +1,88 @@
 import { Asset } from "expo-asset";
 import { Storage } from 'expo-storage'
 import * as FileSystem from 'expo-file-system'
+import * as firebase from "firebase";
 
 export const getData = async () => {
+  var clear = false
+  if (clear === true) {
+    await Storage.setItem({
+      key: "data",
+      value: JSON.stringify([])
+    })
+    await Storage.setItem({
+      key: "titles",
+      value: JSON.stringify({})
+    })
+    await Storage.setItem({
+      key: "favBooks",
+      value: JSON.stringify([])
+    })
+    await Storage.setItem({
+      key: "completedBooks",
+      value: JSON.stringify([])
+    })
+    return []
+  }
+
+  var storageData = await Storage.getItem({ key: "data" })
+  if (storageData == undefined) storageData = []
+  else storageData = Array.from(JSON.parse(storageData))
+
+  var titles = await Storage.getItem({ key: "titles" })
+  if (titles == undefined) titles = {}
+  else titles = JSON.parse(titles)
+
+  const snapshot = await firebase.firestore().collection("Books").get()
+  var ids = []
+  var datas = []
+
+  snapshot.forEach((doc) => {
+    if (!(doc.data().title in titles)) {
+      ids.push(doc.id)
+      datas.push(doc.data())
+    }
+  })
+
+  console.log(ids.length)
+
+  for (var x = 0; x < ids.length; x++) {
+    var title = datas[x].title
+    if (title in titles) {
+      ids.splice(x)
+      datas.splice(x)
+    }
+  }
+
+  for (var x = 0; x < ids.length; x++) {
+    var dict = { ...datas[x], book: {} }
+    const lenPages = dict.lenPages
+
+    // get collections data
+    for (var i = 0; i < lenPages; i++) {
+      const pageSnapshot = await firebase.firestore()
+        .collection("Books")
+        .doc(ids[x])
+        .collection("page" + (i + 1).toString())
+        .doc((i + 1).toString())
+        .get()
+      dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
+    }
+    titles[datas[x].title] = storageData.length
+    storageData.push(dict)
+  }
+
+  // Storage 
+  console.log("Titles", titles)
+  await Storage.setItem({
+    key: "data",
+    value: JSON.stringify(storageData)
+  })
+  await Storage.setItem({
+    key: "titles",
+    value: JSON.stringify(titles)
+  })
+
   const defaultData = [
     {
       bookId: 0,
@@ -130,23 +210,16 @@ export const getData = async () => {
     },
   ];
 
-  // Storage 
-  const clear = false
-  const storageOut = await Storage.getItem({ key: "data" })
-  if (storageOut == undefined || clear === true) {
-    await Storage.setItem({
-      key: "data",
-      value: JSON.stringify(defaultData)
-    })
-    return defaultData
-  } else {
-    return Array.from(JSON.parse(storageOut))
-  }
+  return storageData
 }
 
 export const addData = async (title, description, language, book, imageBase64) => {
   var data = await Storage.getItem({ key: "data" })
   data = Array.from(JSON.parse(data))
+
+  var titles = await Storage.getItem({ key: "titles" })
+  titles = JSON.parse(titles)
+
   const length = data.length
 
   const obj = {
@@ -157,10 +230,17 @@ export const addData = async (title, description, language, book, imageBase64) =
     source: `data:image/jpeg;base64,${imageBase64}`,
     book: book
   }
+  titles[title] = data.length
   data.push(obj)
+
   await Storage.setItem({
     key: "data",
     value: JSON.stringify(data)
+  })
+
+  await Storage.setItem({
+    key: "titles",
+    value: JSON.stringify(titles)
   })
   console.log("Success")
 }
