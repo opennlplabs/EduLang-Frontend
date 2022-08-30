@@ -8,6 +8,7 @@ import {
   ImageBackground,
   TextInput,
   Dimensions,
+  TouchableOpacity,
 } from "react-native";
 import LoginBackground from "../assets/images/LoginBackgroundEdu.png";
 import logo from "../assets/images/RealEduLangLogo.png";
@@ -65,8 +66,8 @@ const WelcomeScreenNew = ({ navigation }) => {
 
         <View style={styles.subHeader}>
           <View style={{ paddingHorizontal: 15, width: "50%" }}>
-            <Text style={[styles.logoText, { color: "green" }]}>
-              Edu<Text style={{ color: "blue" }}>Lang</Text>
+            <Text style={[styles.logoText, { color: "#93CB54" }]}>
+              Edu<Text style={{ color: "#4CA4D3" }}>Lang</Text>
             </Text>
             <Text style={styles.bodyText}>{t("general.appSubstring")}</Text>
           </View>
@@ -112,12 +113,11 @@ const WelcomeScreenNew = ({ navigation }) => {
             textStyle={{ color: "black", fontSize: 15 }}
             onPress={handleLogin}
           />
-          <Clickable
-            text={t("general.sign_up")}
-            containerStyle={{ marginTop: 20 }}
-            textStyle={{ color: "black", fontSize: 15 }}
-            onPress={handleSignUp}
-          />
+          <TouchableOpacity
+            style={[styles.buttonStyle]}
+            onPress={handleSignUp}>
+          <Text style = {{fontSize:15}}>Sign Up</Text>
+          </TouchableOpacity>
 
           <Text>{errorMessage}</Text>
         </View>
@@ -147,7 +147,7 @@ const styles = StyleSheet.create({
   bodyText: {
     fontSize: 18,
     width: 230,
-    color: "#2d8078", //change to lighter coral later
+    color: "black", //change to lighter coral later
   },
   input: {
     backgroundColor: "#808080",
@@ -167,6 +167,15 @@ const styles = StyleSheet.create({
     alignItems: "center",
     width: "100%",
     justifyContent: "space-around",
+  },
+  buttonStyle: {
+    borderRadius: 4,
+    padding: 10,
+    margin: 10,
+    alignItems: "center",
+    justifyContent: "center",
+    backgroundColor: "#a9d576",
+    // marginHorizontal: 20,
   },
 });
 
