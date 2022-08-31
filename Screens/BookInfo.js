@@ -149,7 +149,7 @@ const BookInfo = ({ navigation, route }) => {
       })
       console.log("Done uploading")
       // To avoid writing too much at the same time :)
-      await delay(1000)
+      await delay(1100)
     }
 
     setModalVisable(false)
@@ -200,7 +200,7 @@ const BookInfo = ({ navigation, route }) => {
           i = item.length
         })
         // To avoid writing too much at the same time :)
-        await delay(1000)
+        await delay(1100)
       }
 
       setModalVisable(false)

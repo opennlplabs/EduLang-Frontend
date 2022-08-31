@@ -34,9 +34,9 @@ const Home = ({ navigation, route }) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
-  const [adminData, setAdminData] = useState([])
+  const [adminData, setAdminData] = useState([]);
   const [data, setData] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false)
+  const [isAdmin, setIsAdmin] = useState(false);
   const isFocused = useIsFocused();
 
   useEffect(() => {
@@ -50,7 +50,9 @@ const Home = ({ navigation, route }) => {
       getData().then((value) => {
         setData(value);
 
-        filterdata = data.filter((item) => item.language == nativeLanguage.item);
+        filterdata = data.filter(
+          (item) => item.language == nativeLanguage.item
+        );
 
         searchData = filterdata.filter((book) => {
           let text1 = searchText.toLowerCase();
@@ -74,38 +76,33 @@ const Home = ({ navigation, route }) => {
     //       setfavList(arr);
     //     }
     //   });
-    const favBooks = Array.from(JSON.parse(
-      await Storage.getItem({ key: "favBooks" })
-    ))
-    const completedBooks = Array.from(JSON.parse(
-      await Storage.getItem({ key: "completedBooks" })
-    ))
-    const titles = JSON.parse(
-      await Storage.getItem({ key: "titles" })
-    )
-    const data = Array.from(JSON.parse(
-      await Storage.getItem({ key: "data" })
-    ))
+    const favBooks = Array.from(
+      JSON.parse(await Storage.getItem({ key: "favBooks" }))
+    );
+    const completedBooks = Array.from(
+      JSON.parse(await Storage.getItem({ key: "completedBooks" }))
+    );
+    const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
+    const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
 
     if (favBooks) {
-      var arr = []
+      var arr = [];
       favBooks.forEach((value, index) => {
         if (value in titles) {
-          arr.push(data[titles[value]])
+          arr.push(data[titles[value]]);
         }
-      })
-      setfavList(arr)
+      });
+      setfavList(arr);
     }
     if (completedBooks) {
-      var arr = []
+      var arr = [];
       completedBooks.forEach((value, index) => {
         if (value in titles) {
-          arr.push(data[titles[value]])
+          arr.push(data[titles[value]]);
         }
-      })
-      setcompletedBooks(arr)
+      });
+      setcompletedBooks(arr);
     }
-
   }, [data]);
 
   useEffect(() => {
@@ -121,7 +118,7 @@ const Home = ({ navigation, route }) => {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data()?.nativeLanguage);
               setloading(false);
-              setIsAdmin(snapshot.data()?.isAdmin)
+              setIsAdmin(snapshot.data()?.isAdmin);
             }
           });
       } else {
@@ -144,7 +141,7 @@ const Home = ({ navigation, route }) => {
         {/* <SvgComponent /> */}
         <View>
           <Image
-             style={{ height: 425 }}
+            style={{ height: 425 }}
             source={require("../assets/gradient.png")}
           />
         </View>
@@ -234,7 +231,14 @@ const Home = ({ navigation, route }) => {
             justifyContent: "space-between",
           }}
         >
-          <Text style={{ marginTop: 5, fontSize: 20, fontWeight: "bold", width: "71%" }}>
+          <Text
+            style={{
+              marginTop: 5,
+              fontSize: 20,
+              fontWeight: "bold",
+              width: "71%",
+            }}
+          >
             {title}
           </Text>
           <TouchableOpacity
@@ -282,6 +286,18 @@ const Home = ({ navigation, route }) => {
     );
   };
 
+  // const renderScrollBar2 = () => {
+  //   return (
+  //     <View style={{ marginTop: 10 }}>
+  //       <Image
+  //         source={require("../assets/images/settingslogo2.png")}
+  //         style={{ height: 25, width: 25, marginLeft: 16 }}
+  //       />
+  //       <BookList item={completedBooks} navigation={navigation} />
+  //     </View>
+  //   );
+  // };
+
   const renderScrollBar3 = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
@@ -294,21 +310,24 @@ const Home = ({ navigation, route }) => {
   useEffect(async () => {
     if (isFocused && isAdmin) {
       // get admin data
-      const snapshot = await firebase.firestore().collection("BooksReview").get()
+      const snapshot = await firebase
+        .firestore()
+        .collection("BooksReview")
+        .get();
 
-      var ids = []
-      var datas = []
-      var arr = []
+      var ids = [];
+      var datas = [];
+      var arr = [];
 
       snapshot.forEach((doc) => {
-        ids.push(doc.id)
-        datas.push(doc.data())
-      })
+        ids.push(doc.id);
+        datas.push(doc.data());
+      });
 
       for (var x = 0; x < ids.length; x++) {
-        var dict = { ...datas[x], book: {} }
+        var dict = { ...datas[x], book: {} };
 
-        const lenPages = dict.lenPages
+        const lenPages = dict.lenPages;
 
         // get collections data
         // for (var i = 0; i < lenPages; i++) {
@@ -320,14 +339,14 @@ const Home = ({ navigation, route }) => {
         //     .get()
         //   dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
         // }
-        dict["isAdmin"] = true
-        dict["id"] = ids[x]
-        dict["lenPages"] = lenPages
-        arr.push(dict)
+        dict["isAdmin"] = true;
+        dict["id"] = ids[x];
+        dict["lenPages"] = lenPages;
+        arr.push(dict);
       }
-      setAdminData(arr)
+      setAdminData(arr);
     }
-  }, [isAdmin, isFocused])
+  }, [isAdmin, isFocused]);
 
   const renderAdmin = (title) => {
     if (isAdmin) {
@@ -338,7 +357,7 @@ const Home = ({ navigation, route }) => {
         </View>
       );
     } else {
-      return (<></>)
+      return <></>;
     }
   };
 
@@ -366,7 +385,7 @@ const Home = ({ navigation, route }) => {
               showsHorizontalScrollIndicator={false}
               style={{ marginHorizontal: 20, position: "absolute", top: 220 }}
             >
-              {renderScrollBar(`${t("Newly Added")}`)}
+              {renderScrollBar(`${t("Featured Books")}`)}
 
               {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
