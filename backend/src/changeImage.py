@@ -35,10 +35,12 @@ def contrast(rgb1, rgb2):
     darkest = min(lum1, lum2)
     return (brightest + 0.05) / (darkest + 0.05)
 
+
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
+
 
 def changeImage(page):
     page = cast(Page, page)
@@ -138,18 +140,17 @@ def changeImage(page):
         # Add text
         img_pil = Image.fromarray(img)
         draw = ImageDraw.Draw(img_pil)
-        #****************** IMPORTANT TO CHANGE LANGUAGE TO YOUR DESIRED LANGUAGE *************************#
         draw.text((bb_best.x, bb_best.y), entire_text,
-                  fill=color, font=font, language="te")
+                  fill=color, font=font)
         img = np.array(img_pil)
 
     # Compress Quality
-    img = cv2.resize(img, (0, 0), fx=0.5, fy=0.5)
-
-    # Convert to Base 64
-    PIL_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
-    img_buffer = BytesIO()
-    PIL_image.save(img_buffer, format='JPEG')
-    byte_data = img_buffer.getvalue()
-    base64_str = base64.b64encode(byte_data)
+    base64_str = ""
+    while base64_str == "" or len(base64_str) > 600000:
+        img = cv2.resize(img, (0, 0), fx=0.7, fy=0.7)
+        PIL_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
+        img_buffer = BytesIO()
+        PIL_image.save(img_buffer, format='JPEG')
+        byte_data = img_buffer.getvalue()
+        base64_str = base64.b64encode(byte_data)
     return base64_str

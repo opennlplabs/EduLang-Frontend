@@ -65,5 +65,22 @@ def changeImageApp():
     return {"response": base64Out.decode("utf-8")}
 
 
+@app.route("/PDFtoImage", methods=["GET", "POST"])
+def PDFtoImage():
+    print("Received PDF to image request")
+    base64PDF = request.form['PDFBase64'][28:]
+
+    images = []
+    pages = pdf2image.convert_from_bytes(base64.b64decode(base64PDF))
+    for page in pages:
+        buffered = BytesIO()
+        page.save(buffered, format="JPEG")
+        img_str = base64.b64encode(buffered.getvalue()).decode("utf-8")
+        print("len img", len(img_str))
+        images.append({"base64": img_str})
+
+    return {"response": json.dumps(images)}
+
+
 if __name__ == "__main__":
-    app.run("10.0.0.132", debug=True)
+    app.run("0.0.0.0", debug=True)

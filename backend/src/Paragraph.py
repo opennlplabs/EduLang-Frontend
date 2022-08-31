@@ -53,9 +53,9 @@ class Paragraph:
         self.originalText = origText
         self.paragraphBox = bbox
 
-        # -------------- CHANGE THIS TO YOUR TESSERACT OCR FILE -------------- #
+        # ************** CHANGE THIS TO YOUR TESSERACT OCR FILE ************** #
         pytesseract.pytesseract.tesseract_cmd = "C:\\msys64\\mingw32\\bin\\tesseract.exe"
-        # -------------------------------------------------------------------- #
+        # ******************************************************************** #
 
     def removeChar(self, text):
         special_char_dict = {

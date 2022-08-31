@@ -16,6 +16,7 @@ import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { addData } from "../constants/HomeConfig";
 import { StackActions } from "@react-navigation/native";
+import * as DocumentPicker from 'expo-document-picker';
 
 // **************************** SERVER INFORMATION ****************************
 export const server = "http://192.168.68.56:5000";
@@ -46,7 +47,7 @@ const LiveTranslation = ({ navigation, route }) => {
 
   const __takePicture = async () => {
     if (!camera) return;
-    const photo = await camera.takePictureAsync({ base64: true, quality: 0.15});
+    const photo = await camera.takePictureAsync({ base64: true, quality: 0.15 });
     console.log("Length of base 64:", photo.base64.length)
     var copy = [...images];
     copy.push(photo);
@@ -54,7 +55,43 @@ const LiveTranslation = ({ navigation, route }) => {
     setCameraPreview(false);
   };
 
+  const getBase64FromUrl = async (url) => {
+    const data = await fetch(url);
+    const blob = await data.blob();
+    return new Promise((resolve) => {
+      const reader = new FileReader();
+      reader.readAsDataURL(blob);
+      reader.onloadend = () => {
+        const base64data = reader.result;
+        resolve(base64data);
+      }
+    });
+  }
+
+  const GetPDF = async () => {
+    const result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" })
+    if (result.type === "cancel") return
+    const base64 = await getBase64FromUrl(result.uri)
+    console.log(base64.length)
+
+    setTranslateTitle("Converting PDF to Images...")
+
+    const form = new FormData()
+    form.append("PDFBase64", base64)
+    const response = await axios({
+      method: "post",
+      url: `${server}/PDFtoImage`,
+      data: form,
+      headers: { "Content-Type": "multipart/form-data" },
+    });
+    const out = JSON.parse(response.data["response"])
+    setImages(out)
+    setTranslateTitle("Translate")
+  }
+
   const TranslatePages = async () => {
+    if (images.length === 0 || TranslateTitle !== "Translate") { return }
+
     const customTranslate = route.params?.customTranslated;
     const originalImage = images[0].base64;
     var bookArray = {};
@@ -190,8 +227,11 @@ const LiveTranslation = ({ navigation, route }) => {
             </ScrollView>
           </SafeAreaView>
           <View style={styles.ButtonContainer}>
-            <TouchableOpacity style={styles.Button} onPress={__startCamera}>
+            <TouchableOpacity style={[styles.Button, { marginRight: 5 }]} onPress={__startCamera}>
               <Text style={{ textAlign: "center" }}>Add Page</Text>
+            </TouchableOpacity>
+            <TouchableOpacity style={[styles.Button, { marginLeft: 5 }]} onPress={GetPDF}>
+              <Text style={{ textAlign: "center" }}>Add PDF</Text>
             </TouchableOpacity>
           </View>
         </View>
@@ -233,6 +273,7 @@ const styles = StyleSheet.create({
   },
   ButtonContainer: {
     flex: 1,
+    flexDirection: 'row',
     alignItems: "center",
     justifyContent: "center",
     height: 30,
@@ -264,9 +305,14 @@ const styles = StyleSheet.create({
     marginLeft: 10,
     marginTop: 10,
     color: "white",
-    textShadowColor: "black",
-    textShadowOffset: { width: -3, height: 5 },
-    textShadowRadius: 3,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.75,
+    shadowRadius: 4,
+    elevation: 5
   },
   BottomView: {
     flex: 1,
@@ -277,6 +323,14 @@ const styles = StyleSheet.create({
     position: "absolute",
     top: 15,
     right: 15,
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.75,
+    shadowRadius: 4,
+    elevation: 5
   },
 });
 
