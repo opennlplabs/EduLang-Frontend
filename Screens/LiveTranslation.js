@@ -18,7 +18,7 @@ import { addData } from "../constants/HomeConfig";
 import { StackActions } from "@react-navigation/native";
 
 // **************************** SERVER INFORMATION ****************************
-export const server = "http://10.0.0.132:5000/";
+export const server = "http://192.168.68.56:5000";
 // **************************** SERVER INFORMATION ****************************
 
 const LiveTranslation = ({ navigation, route }) => {
@@ -46,7 +46,8 @@ const LiveTranslation = ({ navigation, route }) => {
 
   const __takePicture = async () => {
     if (!camera) return;
-    const photo = await camera.takePictureAsync({ base64: true });
+    const photo = await camera.takePictureAsync({ base64: true, quality: 0.15});
+    console.log("Length of base 64:", photo.base64.length)
     var copy = [...images];
     copy.push(photo);
     setImages(copy);
@@ -88,6 +89,7 @@ const LiveTranslation = ({ navigation, route }) => {
       });
       const base64Out = response.data["response"];
       bookArray["page" + (i + 1).toString()] = base64Out;
+      console.log("Len Base 64 out", base64Out.length)
       var copy = [...images];
       copy[i].base64 = base64Out;
       setImages(copy);

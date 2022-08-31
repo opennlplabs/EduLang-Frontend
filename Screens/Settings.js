@@ -24,7 +24,6 @@ const Settings = () => {
             if (snapshot) {
               setGradeLevel(snapshot.data().grade);
               setnativeLanguage(snapshot.data().nativeLanguage);
-              console.log(snapshot.data());
             }
           });
       }
@@ -42,7 +41,6 @@ const Settings = () => {
         nativeLanguage: nativelanguage,
       })
       .then(() => {
-        console.log("saved");
         navigation.goBack();
       })
       .catch((err) => {

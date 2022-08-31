@@ -9,7 +9,6 @@ const ScrollBar = (props) => {
         return (
             <View style={{ height: 200, width: 100, marginLeft: 20, borderWidth: 0.5, borderColor: '#ddddd' }}>
                 <View style={{ flex: 2 }}>
-                    {/* <TouchableOpacity onPress={() => console.log("Book Pressed")}> */}
                     <View>
                     <Image source={props.imageUri} style={{ flex: 1, width: null, height: null, resizeMode: 'cover' }} />
                     </View>

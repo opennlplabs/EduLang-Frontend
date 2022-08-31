@@ -44,8 +44,6 @@ export const getData = async () => {
     }
   })
 
-  console.log(ids.length)
-
   for (var x = 0; x < ids.length; x++) {
     var title = datas[x].title
     if (title in titles) {
@@ -73,7 +71,6 @@ export const getData = async () => {
   }
 
   // Storage 
-  console.log("Titles", titles)
   await Storage.setItem({
     key: "data",
     value: JSON.stringify(storageData)
@@ -242,7 +239,6 @@ export const addData = async (title, description, language, book, imageBase64) =
     key: "titles",
     value: JSON.stringify(titles)
   })
-  console.log("Success")
 }
 
 export const languageConfig = [

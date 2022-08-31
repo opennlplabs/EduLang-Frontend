@@ -69,10 +69,8 @@ const Home = ({ navigation, route }) => {
     //     if (snapshot) {
     //       let arr = [];
     //       snapshot.forEach((book, index) => {
-    //         // console.log(book.data());
     //         arr.push(book.data());
     //       });
-    //       // console.log("after database", arr);
     //       setfavList(arr);
     //     }
     //   });
@@ -294,8 +292,7 @@ const Home = ({ navigation, route }) => {
   };
 
   useEffect(async () => {
-    if (isFocused) {
-      console.log("Get admin data...")
+    if (isFocused && isAdmin) {
       // get admin data
       const snapshot = await firebase.firestore().collection("BooksReview").get()
 

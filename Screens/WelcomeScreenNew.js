@@ -37,7 +37,6 @@ const WelcomeScreenNew = ({ navigation }) => {
       .auth()
       .signInWithEmailAndPassword(email, password)
       .then((re) => {
-        console.log(re);
         i18n.changeLanguage("en");
         navigation.replace("Home");
       })

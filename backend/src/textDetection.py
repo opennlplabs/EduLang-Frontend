@@ -206,6 +206,7 @@ def getbbox(base64Image):
         img = cv2.putText(
             img, f"Box #{i+1}", (x, y-50), cv2.FONT_HERSHEY_COMPLEX, fontScale=5, color=(255, 0, 0), thickness=5)
 
+    img = cv2.resize(img, (0,0), fx=0.5, fy=0.5) 
     PIL_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     img_buffer = BytesIO()
     PIL_image.save(img_buffer, format='JPEG')

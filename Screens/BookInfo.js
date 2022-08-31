@@ -72,7 +72,6 @@ const BookInfo = ({ navigation, route }) => {
   };
 
   const addtoFav = async (item) => {
-    // console.log(item);
     var favBooks = JSON.parse(
       await Storage.getItem({ key: "favBooks" })
     )
@@ -96,7 +95,6 @@ const BookInfo = ({ navigation, route }) => {
     for (var i = 0; i < favBooks.length; i++) {
       if (favBooks[i] == item.title) {
         favBooks.splice(i, 1)
-        console.log("found index:", i)
         break
       }
     }
@@ -108,6 +106,24 @@ const BookInfo = ({ navigation, route }) => {
     setfavList(favBooks)
   };
 
+  const removeFromCompleted = async (item) => {
+    var completedBooks = JSON.parse(
+      await Storage.getItem({ key: "completedBooks" })
+    )
+    for (var i = 0; i < completedBooks.length; i++) {
+      if (completedBooks[i] == item.title) {
+        completedBooks.splice(i, 1)
+        break
+      }
+    }
+
+    await Storage.setItem({
+      key: "completedBooks",
+      value: JSON.stringify(completedBooks)
+    })
+    setcompletedBooks(completedBooks)
+  };
+
   const uploadBook = async () => {
     const collectionSelect = "BooksReview"
     setModalTitle("Uploading to Books Review...")
@@ -117,16 +133,21 @@ const BookInfo = ({ navigation, route }) => {
     let uid = firebase.auth()?.currentUser?.uid;
     const document = firebase.firestore().collection(collectionSelect).doc(item.title + " " + uid.toString())
 
-    document.set({ title: item.title, language: item.language, description: item.description, source: item.source, lenPages: Object.keys(item.book).length })
+    console.log(Object.keys(item))
+    await document.set({ title: item.title, language: item.language, description: item.description, lenPages: Object.keys(item.book).length, source: item.source })
+    console.log("Set document")
     setProgress(1)
 
     for (var i = 0; i < Object.keys(item.book).length; i++) {
+      console.log("Uploading page", i+1, "...")
       setProgress(i + 1)
       const keySet = "page" + (i + 1).toString()
+      console.log("Length of base 64:", item.book[keySet].length)
       await document.collection(keySet).doc((i + 1).toString()).set({ value: item.book[keySet] }).catch((e) => {
         alert(e)
         i = item.length
       })
+      console.log("Done uploading")
       // To avoid writing too much at the same time :)
       await delay(1000)
     }
@@ -142,7 +163,6 @@ const BookInfo = ({ navigation, route }) => {
       alert("You must read the book first before you submit!")
     }
     else {
-      console.log("Add to Books")
       const id = item["id"]
       const lenPages = item["lenPages"]
 
@@ -217,9 +237,28 @@ const BookInfo = ({ navigation, route }) => {
     navigation.navigate("Book Reader", { item: item })
   }
 
-  // console.log("fav list ", favList);
+  const deleteBook = async (item) => {
+    await removeFromFav(item)
+    await removeFromCompleted(item)
 
-  // console.log("item on bt i", item);
+    var data = JSON.parse(
+      await Storage.getItem({ key: "data" })
+    )
+    for (var i = 0; i < data.length; i++) {
+      if (data[i].title == item.title) {
+        data.splice(i, 1)
+        break
+      }
+    }
+
+    await Storage.setItem({
+      key: "data",
+      value: JSON.stringify(data)
+    })
+
+    navigation.navigate("Home")
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
@@ -251,6 +290,9 @@ const BookInfo = ({ navigation, route }) => {
             )}
             <TouchableOpacity onPress={() => uploadBook()}>
               <AntDesign style={{ marginLeft: 10 }} name="clouduploado" size={28} color="black" />
+            </TouchableOpacity>
+            <TouchableOpacity onPress={() => deleteBook(item)}>
+              <AntDesign style={{ marginLeft: 10, marginTop: 3 }} name="closecircleo" size={23} color="black" />
             </TouchableOpacity>
           </>}
         </View>

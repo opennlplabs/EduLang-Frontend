@@ -104,8 +104,6 @@ const SignUpScreen = ({ navigation, route }) => {
         });
     } catch (e) {
       setloading(false);
-
-      console.log("registration page: ", e);
     }
   };
 

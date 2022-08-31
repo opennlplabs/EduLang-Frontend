@@ -35,12 +35,10 @@ def contrast(rgb1, rgb2):
     darkest = min(lum1, lum2)
     return (brightest + 0.05) / (darkest + 0.05)
 
-
 def chunks(lst, n):
     """Yield successive n-sized chunks from lst."""
     for i in range(0, len(lst), n):
         yield lst[i:i + n]
-
 
 def changeImage(page):
     page = cast(Page, page)
@@ -145,7 +143,10 @@ def changeImage(page):
                   fill=color, font=font, language="te")
         img = np.array(img_pil)
 
-    # Resize the Window
+    # Compress Quality
+    img = cv2.resize(img, (0, 0), fx=0.5, fy=0.5)
+
+    # Convert to Base 64
     PIL_image = Image.fromarray(cv2.cvtColor(img, cv2.COLOR_BGR2RGB))
     img_buffer = BytesIO()
     PIL_image.save(img_buffer, format='JPEG')
