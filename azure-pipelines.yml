@@ -1,4 +1,7 @@
 # Node.js with React
+- task: CmdLine@2
+  inputs:
+    script: 'pip install -r requirements.txt'
 # Build a Node.js project that uses React.
 # Add steps that analyze code, save build artifacts, deploy, and more:
 # https://docs.microsoft.com/azure/devops/pipelines/languages/javascript
