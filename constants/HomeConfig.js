@@ -270,6 +270,40 @@ export const languageConfig = [
   },
 ];
 
+export const translatedLanguageConfig = [
+  {
+    id: 'EN',
+    item: "English",
+    label: "English"
+  },
+  {
+    id: "SO",
+    item: "Somali",
+    label: "Somali",
+  },
+
+  {
+    id: "XH",
+    item: "Xhosa",
+    label: "Xhosa",
+  },
+  {
+    id: "PS",
+    item: "Pashto",
+    label: "Pashto",
+  },
+  {
+    id: "UK",
+    item: "Ukrainian",
+    label: "Ukrainian",
+  },
+  {
+    id: "HI",
+    item: "Hindi",
+    label: "Hindi",
+  },
+];
+
 export const gradeConfig = [
   {
     label: "1",

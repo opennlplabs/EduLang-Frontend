@@ -28,6 +28,7 @@ const Home = ({ navigation, route }) => {
   const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
   const [nativeLanguage, setnativeLanguage] = useState({});
+  const [translatedLanguage, setTranslatedLanguage] = useState({});
   const userEmail = "test@gmail.com";
   const [dismissLottie, setDismissLottie] = useState(false);
   const [completedBooks, setcompletedBooks] = useState([]);
@@ -105,7 +106,7 @@ const Home = ({ navigation, route }) => {
     }
   }, [data]);
 
-  useEffect(() => {
+  useEffect(async () => {
     setloading(true);
     firebase.auth().onAuthStateChanged((user) => {
       if (user) {
@@ -117,8 +118,18 @@ const Home = ({ navigation, route }) => {
             if (snapshot) {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data()?.nativeLanguage);
+              setTranslatedLanguage(snapshot.data()?.translatedLanguageConfig);
               setloading(false);
               setIsAdmin(snapshot.data()?.isAdmin);
+
+              await Storage.setItem({
+                key: "nativeLanguage",
+                value: snapshot.data().nativeLanguage.id
+              })
+              await Storage.setItem({
+                key: "translatedLanguage",
+                value: snapshot.data().translatedLanguageConfig.id
+              })
             }
           });
       } else {

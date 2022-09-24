@@ -19,7 +19,7 @@ import { StackActions } from "@react-navigation/native";
 import * as DocumentPicker from 'expo-document-picker';
 
 // **************************** SERVER INFORMATION ****************************
-export const server = "http://192.168.68.56:5000";
+export const server = "https://edulangbackend.azurewebsites.net";
 // **************************** SERVER INFORMATION ****************************
 
 const LiveTranslation = ({ navigation, route }) => {
@@ -110,13 +110,17 @@ const LiveTranslation = ({ navigation, route }) => {
       return;
     }
 
+    const nativeLanguage = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
+    const translatedLanguage = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
+
     for (var i = 0; i < images.length; i++) {
       const element = images[i];
       setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
       const form = new FormData();
 
       form.append("base64Image", element.base64);
-      form.append("languageId", route.params?.language["id"]);
+      form.append("nativeLanguage", nativeLanguage)   
+      form.append("translatedLanguage", translatedLanguage)
       setTranslateTitle("Translating Page #" + (i + 1).toString() + "...");
       const response = await axios({
         method: "post",

@@ -20,9 +20,13 @@ export default function CustomTranslation({ navigation, route }) {
     const [TranslateTitle, setTranslateTitle] = useState("")
 
     async function incrementIndex() {
-        //TODO: Actually acquire information and send request back to server, to create the new information
+        const nativeLanguage = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
+        const translatedLanguage = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
+        
         setTranslateTitle("Processing Information...")
         const form = new FormData()
+        form.append("nativeLanguage", nativeLanguage)
+        form.append("translatedLanguage", translatedLanguage)
         form.append("base64Image", images[index].base64)
         form.append("boxes", JSON.stringify(boxes))
         form.append("index", index)

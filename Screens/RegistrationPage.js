@@ -19,6 +19,7 @@ import { ModalPicker } from "./components/ModalPicker";
 import { NavigationContainer } from "@react-navigation/native";
 import SelectBox from "react-native-multi-selectbox";
 import { useTranslation } from "react-i18next";
+import { languageConfig, translatedLanguageConfig } from "../constants/HomeConfig";
 
 const K_OPTIONS = [
   {
@@ -55,9 +56,18 @@ const SignUpScreen = ({ navigation, route }) => {
   const [chooseData, setChooseData] = useState("");
   const [isModalVisible, setIsModalVisible] = useState(false);
   const [nativelanguage, setNativeLanguage] = useState({});
+  const [translatedLanguage, setTranslatedLanguage] = useState({})
   const [selectedTeams, setSelectedTeams] = useState([]);
 
-  const authfromFirebase = () => {
+  const authfromFirebase = async () => {
+    if (nativeLanguage.id === translateLanguage.id) {
+      alert("Native Language and Translated language must not the same")
+      return
+    }
+
+    await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativeLanguage)})
+    await Storage.setItem({ key: "translatedLanguage", value: JSON.stringify(translatedLanguage)})
+    
     const { email, password } = route.params;
     setloading(true);
     firebase
@@ -97,6 +107,7 @@ const SignUpScreen = ({ navigation, route }) => {
           grade: grade,
           username: username,
           nativeLanguage: nativelanguage,
+          translatedLanguageConfig: translateLanguage
         })
         .then(() => {
           setloading(false);
@@ -115,8 +126,12 @@ const SignUpScreen = ({ navigation, route }) => {
     setChooseData(option);
   };
 
-  function onChange() {
-    return (val) => setNativeLanguage(val);
+  function onChange(nativeLanguage) {
+    if (nativeLanguage === true) {
+      return (val) => setNativeLanguage(val);
+    } else {
+      return (val) => setTranslatedLanguage(val);
+    }
   }
 
   return (
@@ -139,9 +154,9 @@ const SignUpScreen = ({ navigation, route }) => {
         <View style={{ marginTop: 10 }}>
           <SelectBox
             label={t("settings.native_language")}
-            options={K_OPTIONS}
+            options={languageConfig}
             value={nativelanguage}
-            onChange={onChange()}
+            onChange={onChange(true)}
             hideInputFilter={false}
             containerStyle={{
               backgroundColor: "#808080",
@@ -152,6 +167,25 @@ const SignUpScreen = ({ navigation, route }) => {
             labelStyle={{ color: "#6aa598", fontWeight: "bold" }}
             selectedItemStyle={{ color: "white", fontSize: 15 }}
             inputPlaceholder={t("reg.native_language")}
+            arrowIconColor="white"
+          />
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <SelectBox
+            label={t("settings.translated_language")}
+            options={translatedLanguageConfig}
+            value={translatedLanguage}
+            onChange={onChange(false)}
+            hideInputFilter={false}
+            containerStyle={{
+              backgroundColor: "#808080",
+              alignItems: "center",
+              padding: 8,
+              borderRadius: 4,
+            }}
+            labelStyle={{ color: "#6aa598", fontWeight: "bold" }}
+            selectedItemStyle={{ color: "white", fontSize: 15 }}
+            inputPlaceholder={t("reg.translated_language")}
             arrowIconColor="white"
           />
         </View>

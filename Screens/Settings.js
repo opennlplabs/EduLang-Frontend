@@ -1,7 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import RadioButtonRN from "radio-buttons-react-native";
-import { languageConfig, gradeConfig } from "./../constants/HomeConfig";
+import { languageConfig, gradeConfig, translatedLanguageConfig} from "./../constants/HomeConfig";
 import Clickable from "./components/Clickable";
 import i18n from "../locale";
 import { useTranslation } from "react-i18next";
@@ -12,6 +12,7 @@ const Settings = () => {
   const { t } = useTranslation();
   const [gradeLevel, setGradeLevel] = useState(0);
   const [nativelanguage, setnativeLanguage] = useState({});
+  const [translatedLanguageConfig, setTranslatedLanguageConfig] = useState({})
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -24,28 +25,37 @@ const Settings = () => {
             if (snapshot) {
               setGradeLevel(snapshot.data().grade);
               setnativeLanguage(snapshot.data().nativeLanguage);
+              setTranslatedLanguageConfig(snapshot.data().translatedLanguageConfig)
             }
           });
       }
     });
   }, []);
 
-  const UpdateLang = () => {
-    let uid = firebase.auth()?.currentUser?.uid;
-    firebase
-      .firestore()
-      .collection("userInfo")
-      .doc(uid)
-      .update({
-        grade: gradeLevel,
-        nativeLanguage: nativelanguage,
-      })
-      .then(() => {
-        navigation.goBack();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
+  const UpdateLang = async () => {
+    if (translatedLanguageConfig.id !== nativelanguage.id) {
+      await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativeLanguage)})
+      await Storage.setItem({ key: "translatedLanguage", value: JSON.stringify(translatedLanguage)})
+
+      let uid = firebase.auth()?.currentUser?.uid;
+      firebase
+        .firestore()
+        .collection("userInfo")
+        .doc(uid)
+        .update({
+          grade: gradeLevel,
+          nativeLanguage: nativelanguage,
+          translatedLanguageConfig: translatedLanguageConfig
+        })
+        .then(() => {
+          navigation.goBack();
+        })
+        .catch((err) => {
+          console.log(err);
+        });
+    } else {
+      alert("The translated language and your native language cannot be the same!");
+    }
   };
 
   const logout = () => {
@@ -67,6 +77,14 @@ const Settings = () => {
           selectedBtn={(e) => {
             //i18n.changeLanguage(e.label)
             setnativeLanguage(e);
+          }}
+        />
+
+        <RadioButtonRN
+          data={translatedLanguageConfig}
+          selectedBtn={(e) => {
+            //i18n.changeLanguage(e.label)
+            setTranslatedLanguageConfig(e);
           }}
         />
 
