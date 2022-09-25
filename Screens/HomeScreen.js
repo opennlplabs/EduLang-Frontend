@@ -22,6 +22,8 @@ import { useIsFocused } from "@react-navigation/native";
 import Svg from "react-native-svg";
 import SvgComponent from "../assets/SvgComponent/Pattern";
 import { Storage } from "expo-storage";
+import axios from "axios";
+import { server } from "./LiveTranslation";
 
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
@@ -146,6 +148,15 @@ const Home = ({ navigation, route }) => {
     return searchText ? book.title.toLowerCase().includes(text1) : true;
   });
 
+
+  const test_request = async () => {
+    const response = await axios({
+      method: "post" ,
+      url: `${server}/test`,
+    })
+    console.log("Test response:", JSON.parse(response.data["response"]))
+  }
+
   const renderHeader = () => {
     return (
       <View>
@@ -156,6 +167,10 @@ const Home = ({ navigation, route }) => {
             source={require("../assets/gradient.png")}
           />
         </View>
+
+        <TouchableOpacity style={{backgroundColor: 'blue', width: 100}} onPress={test_request}>
+          <Text style={{color: 'white'}}>Test Request</Text>
+        </TouchableOpacity>
         <View
           style={{
             backgroundColor: "#4CA4D3",
@@ -171,6 +186,7 @@ const Home = ({ navigation, route }) => {
             justifyContent: "space-between",
           }}
         >
+
           <TextInput
             style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
             placeholder="Search book"
@@ -283,6 +299,7 @@ const Home = ({ navigation, route }) => {
               Add Book
             </Text>
           </TouchableOpacity>
+          
         </View>
         <BookList item={searchData} navigation={navigation} />
       </View>
@@ -381,6 +398,7 @@ const Home = ({ navigation, route }) => {
           backgroundColor: "white",
         }}
       >
+
         {loading ? (
           <LottieView
             source={require("../assets/images/lottie1.json")}
@@ -398,9 +416,11 @@ const Home = ({ navigation, route }) => {
             >
               {renderScrollBar(`${t("Featured Books")}`)}
 
+
               {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
             </ScrollView>
+
 
             <ScrollView
               showsVerticalScrollIndicator={false}
