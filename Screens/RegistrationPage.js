@@ -20,6 +20,7 @@ import { NavigationContainer } from "@react-navigation/native";
 import SelectBox from "react-native-multi-selectbox";
 import { useTranslation } from "react-i18next";
 import { languageConfig, translatedLanguageConfig } from "../constants/HomeConfig";
+import { Storage } from "expo-storage";
 
 const K_OPTIONS = [
   {
@@ -60,12 +61,12 @@ const SignUpScreen = ({ navigation, route }) => {
   const [selectedTeams, setSelectedTeams] = useState([]);
 
   const authfromFirebase = async () => {
-    if (nativeLanguage.id === translateLanguage.id) {
+    if (nativelanguage.id === translatedLanguage.id) {
       alert("Native Language and Translated language must not the same")
       return
     }
 
-    await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativeLanguage)})
+    await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativelanguage)})
     await Storage.setItem({ key: "translatedLanguage", value: JSON.stringify(translatedLanguage)})
     
     const { email, password } = route.params;
@@ -107,7 +108,7 @@ const SignUpScreen = ({ navigation, route }) => {
           grade: grade,
           username: username,
           nativeLanguage: nativelanguage,
-          translatedLanguageConfig: translateLanguage
+          translatedLanguageConfig: translatedLanguage
         })
         .then(() => {
           setloading(false);

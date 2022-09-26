@@ -110,7 +110,9 @@ const Home = ({ navigation, route }) => {
 
   useEffect(async () => {
     setloading(true);
-    firebase.auth().onAuthStateChanged((user) => {
+    
+    firebase.auth().onAuthStateChanged(async (user) => {
+      var needUpdatedTranslateLanguage = false
       if (user) {
         firebase
           .firestore()
@@ -126,14 +128,43 @@ const Home = ({ navigation, route }) => {
 
               await Storage.setItem({
                 key: "nativeLanguage",
-                value: snapshot.data().nativeLanguage.id
+                value: snapshot.data().nativeLanguage
               })
-              await Storage.setItem({
-                key: "translatedLanguage",
-                value: snapshot.data().translatedLanguageConfig.id
-              })
+              try {           
+                await Storage.setItem({
+                  key: "translatedLanguage",
+                  value: snapshot.data().translatedLanguageConfig
+                })
+              } catch (err) {
+                console.log("Error caught")
+                firebase
+                .firestore()
+                .collection("userInfo")
+                .doc(firebase.auth().currentUser.uid)
+                .set({
+                  translatedLanguageConfig:{
+                    id: 'EN',
+                    item: "English",
+                    label: "English"
+                  },
+                }, {merge: true})
+
+                await Storage.setItem({
+                  key: "translatedLanguage",
+                  value: {
+                    id: 'EN',
+                    item: "English",
+                    label: "English"
+                  }
+                })
+              }
             }
           });
+
+        if (needUpdatedTranslateLanguage) {
+          console.log("Translated Language updated")
+          
+        }
       } else {
         setloading(false);
         navigation.replace("Welcome Screen");

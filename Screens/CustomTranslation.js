@@ -3,6 +3,7 @@ import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, TextInput, S
 import { server } from './LiveTranslation';
 import axios from "axios";
 import { addData } from '../constants/HomeConfig';
+import { Storage } from 'expo-storage';
 
 export default function CustomTranslation({ navigation, route }) {
     var images = route.params?.images
@@ -20,13 +21,14 @@ export default function CustomTranslation({ navigation, route }) {
     const [TranslateTitle, setTranslateTitle] = useState("")
 
     async function incrementIndex() {
+        console.log(await Storage.getItem({ key: "nativeLanguage" }))
         const nativeLanguage = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
         const translatedLanguage = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
         
         setTranslateTitle("Processing Information...")
         const form = new FormData()
-        form.append("nativeLanguage", nativeLanguage)
-        form.append("translatedLanguage", translatedLanguage)
+        form.append("nativeLanguage", nativeLanguage.id)
+        form.append("translatedLanguage", translatedLanguage.id)
         form.append("base64Image", images[index].base64)
         form.append("boxes", JSON.stringify(boxes))
         form.append("index", index)

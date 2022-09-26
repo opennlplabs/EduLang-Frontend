@@ -7,12 +7,14 @@ import i18n from "../locale";
 import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
+import { Storage } from "expo-storage";
+
 const Settings = () => {
   const navigation = useNavigation();
   const { t } = useTranslation();
   const [gradeLevel, setGradeLevel] = useState(0);
   const [nativelanguage, setnativeLanguage] = useState({});
-  const [translatedLanguageConfig, setTranslatedLanguageConfig] = useState({})
+  const [translatedlanguage, setTranslatedLanguage] = useState({})
 
   useEffect(() => {
     firebase.auth().onAuthStateChanged((user) => {
@@ -23,9 +25,10 @@ const Settings = () => {
           .doc(firebase.auth().currentUser.uid)
           .onSnapshot((snapshot) => {
             if (snapshot) {
+              console.log("Settings snapshot: ", snapshot.data())
               setGradeLevel(snapshot.data().grade);
               setnativeLanguage(snapshot.data().nativeLanguage);
-              setTranslatedLanguageConfig(snapshot.data().translatedLanguageConfig)
+              setTranslatedLanguage(snapshot.data().translatedLanguageConfig)
             }
           });
       }
@@ -33,9 +36,12 @@ const Settings = () => {
   }, []);
 
   const UpdateLang = async () => {
-    if (translatedLanguageConfig.id !== nativelanguage.id) {
-      await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativeLanguage)})
-      await Storage.setItem({ key: "translatedLanguage", value: JSON.stringify(translatedLanguage)})
+    if (translatedlanguage.id !== nativelanguage.id) {
+      console.log("_-----------------------UPDATE_++")
+      console.log(nativelanguage, translatedlanguage)
+      console.log("_-----------------------UPDATE_++")
+      await Storage.setItem({ key: "nativeLanguage", value: JSON.stringify(nativelanguage)})
+      await Storage.setItem({ key: "translatedLanguage", value: JSON.stringify(translatedlanguage)})
 
       let uid = firebase.auth()?.currentUser?.uid;
       firebase
@@ -45,7 +51,7 @@ const Settings = () => {
         .update({
           grade: gradeLevel,
           nativeLanguage: nativelanguage,
-          translatedLanguageConfig: translatedLanguageConfig
+          translatedLanguageConfig: translatedlanguage
         })
         .then(() => {
           navigation.goBack();
@@ -80,11 +86,15 @@ const Settings = () => {
           }}
         />
 
+        <Text style={styles.paddingBottomText}>
+          {t("settings.translated_language")}
+        </Text>
+
         <RadioButtonRN
           data={translatedLanguageConfig}
           selectedBtn={(e) => {
             //i18n.changeLanguage(e.label)
-            setTranslatedLanguageConfig(e);
+            setTranslatedLanguage(e);
           }}
         />
 

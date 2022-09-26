@@ -27,6 +27,8 @@ app = Flask(__name__)
 @app.route('/translate', methods=["GET", "POST"])
 def translateBase64():
     print("Received Translation Message")
+    print(request.form['translatedLanguage'])
+    print(request.form['nativeLanguage'])
     base64Image = request.form['base64Image']
     languageId = request.form['languageId']
     page = processImage(base64Image, languageId)
@@ -47,6 +49,8 @@ def getBoundingBoxImage():
 def changeImageApp():
     print("Received change image request")
     base64Image = request.form['base64Image']
+    print(request.form['translatedLanguage'])
+    print(request.form['nativeLanguage'])
     boxes = json.loads(request.form['boxes'])
     index = json.loads(request.form['index'])
     responses = json.loads(request.form['responses'])
