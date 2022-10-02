@@ -10,7 +10,7 @@
   },
   "reg": {
     "username": "Username",
-    "grade_level": "Grade Level",
+    "grade_level": "Grade",
     "phone_number": "Phone Number",
     "native_language": "Native Language",
     "translated_language": "Translated Language",

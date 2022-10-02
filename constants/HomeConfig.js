@@ -211,9 +211,11 @@ export const getData = async () => {
 }
 
 export const addData = async (title, description, language, book, imageBase64) => {
+  console.log("Fetching data...")
   var data = await Storage.getItem({ key: "data" })
   data = Array.from(JSON.parse(data))
 
+  console.log("Fetching titles")
   var titles = await Storage.getItem({ key: "titles" })
   titles = JSON.parse(titles)
 
@@ -230,11 +232,15 @@ export const addData = async (title, description, language, book, imageBase64) =
   titles[title] = data.length
   data.push(obj)
 
+  console.log("setting data....")
+  console.log(data)
+  console.log(JSON.stringify(data))
   await Storage.setItem({
     key: "data",
     value: JSON.stringify(data)
   })
 
+  console.log("setting titles...")
   await Storage.setItem({
     key: "titles",
     value: JSON.stringify(titles)
@@ -247,7 +253,6 @@ export const languageConfig = [
     item: "Somali",
     label: "Somali",
   },
-
   {
     id: "XH",
     item: "Xhosa",
@@ -268,6 +273,97 @@ export const languageConfig = [
     item: "Hindi",
     label: "Hindi",
   },
+  {
+    id: "TE",
+    item: "Telugu",
+    label: "Telugu",
+  },
+  {
+    id: "TW",
+    item: "Twi",
+    label: "Twi",
+  },
+  {
+    id: "AS",
+    item: "Assamese",
+    label: "Assamese",
+  },
+  {
+    id: "BN",
+    item: "Bengali",
+    label: "Bengali",
+  },
+  {
+    id: "GU",
+    item: "Gujarati",
+    label: "Gujarati",
+  },
+  {
+    id: "KN",
+    item: "Kannada",
+    label: "Kannada",
+  },
+  {
+    id: "ML",
+    item: "Malayalam",
+    label: "Malayalam",
+  },
+  {
+    id: "MR",
+    item: "Marathi",
+    label: "Marathi",
+  },
+  {
+    id: "NE",
+    item: "Nepali",
+    label: "Nepali",
+  },
+  {
+    id: "OR",
+    item: "Oriya",
+    label: "Oriya",
+  },
+  {
+    id: "PA",
+    item: "Punjabi",
+    label: "Punjabi",
+  },
+  {
+    id: "SD",
+    item: "Sindhi",
+    label: "Sindhi",
+  },
+  {
+    id: "PA",
+    item: "Punjabi",
+    label: "Punjabi",
+  },
+  {
+    id: "SI",
+    item: "Sinhala",
+    label: "Sinhala",
+  },
+  {
+    id: "TA",
+    item: "Tamil",
+    label: "Tamil",
+  },
+  {
+    id: "UR",
+    item: "Urdu",
+    label: "Urdu",
+  },
+  {
+    id: "MY",
+    item: "Burmese",
+    label: "Burmese",
+  },
+  {
+    id: "CEB",
+    item: "Cebuano",
+    label: "Cebuano",
+  },
+
 ];
 
 export const translatedLanguageConfig = [

@@ -85,7 +85,6 @@ const Settings = () => {
             setnativeLanguage(e);
           }}
         />
-
         <Text style={styles.paddingBottomText}>
           {t("settings.translated_language")}
         </Text>
@@ -126,7 +125,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   paddingBottomText: {
-    padding: 15,
+    marginTop: 20,
+    fontSize: 15
   },
 });
 
