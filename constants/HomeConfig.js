@@ -283,6 +283,87 @@ export const languageConfig = [
     item: "Twi",
     label: "Twi",
   },
+  {
+    id: "AS",
+    item: "Assamese",
+    label: "Assamese",
+  },
+  {
+    id: "BN",
+    item: "Bengali",
+    label: "Bengali",
+  },
+  {
+    id: "GU",
+    item: "Gujarati",
+    label: "Gujarati",
+  },
+  {
+    id: "KN",
+    item: "Kannada",
+    label: "Kannada",
+  },
+  {
+    id: "ML",
+    item: "Malayalam",
+    label: "Malayalam",
+  },
+  {
+    id: "MR",
+    item: "Marathi",
+    label: "Marathi",
+  },
+  {
+    id: "NE",
+    item: "Nepali",
+    label: "Nepali",
+  },
+  {
+    id: "OR",
+    item: "Oriya",
+    label: "Oriya",
+  },
+  {
+    id: "PA",
+    item: "Punjabi",
+    label: "Punjabi",
+  },
+  {
+    id: "SD",
+    item: "Sindhi",
+    label: "Sindhi",
+  },
+  {
+    id: "PA",
+    item: "Punjabi",
+    label: "Punjabi",
+  },
+  {
+    id: "SI",
+    item: "Sinhala",
+    label: "Sinhala",
+  },
+  {
+    id: "TA",
+    item: "Tamil",
+    label: "Tamil",
+  },
+  {
+    id: "UR",
+    item: "Urdu",
+    label: "Urdu",
+  },
+  {
+    id: "MY",
+    item: "Burmese",
+    label: "Burmese",
+  },
+  {
+    id: "CEB",
+    item: "Cebuano",
+    label: "Cebuano",
+  },
+
 ];
 
 export const gradeConfig = [

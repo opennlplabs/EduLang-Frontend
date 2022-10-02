@@ -118,7 +118,7 @@ const SignUpScreen = ({ navigation, route }) => {
               padding: 8,
               borderRadius: 4,
             }}
-            labelStyle={{ color: "#6aa598", fontWeight: "bold" }}
+            labelStyle={{ color: "#4CA4D3", fontWeight: "bold" }}
             selectedItemStyle={{ color: "white", fontSize: 15 }}
             inputPlaceholder={t("reg.native_language")}
             arrowIconColor="white"
@@ -154,7 +154,7 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
     //marginBottom: 200,
-    backgroundColor: "#6aa598",
+    backgroundColor: "#93CB54",
     marginHorizontal: 20,
   },
   dropdownMenu: {
@@ -167,7 +167,7 @@ const styles = StyleSheet.create({
   },
   container: {
     flex: 1,
-    backgroundColor: "#B4CECB",
+    backgroundColor: "#FFFFFF",
   },
   textf: {
     marginVertical: 20,

@@ -69,7 +69,6 @@ const Settings = () => {
             setnativeLanguage(e);
           }}
         />
-
         <Text style={styles.paddingBottomText}>
           {t("settings.grade_level")}
         </Text>
@@ -98,7 +97,8 @@ const styles = StyleSheet.create({
     justifyContent: "space-evenly",
   },
   paddingBottomText: {
-    padding: 15,
+    marginTop: 20,
+    fontSize: 15
   },
 });
 
