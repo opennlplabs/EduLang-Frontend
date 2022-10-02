@@ -17,10 +17,9 @@ import axios from "axios";
 import { addData } from "../constants/HomeConfig";
 import { StackActions } from "@react-navigation/native";
 import * as DocumentPicker from 'expo-document-picker';
-import { Storage } from "expo-storage";
 
 // **************************** SERVER INFORMATION ****************************
-export const server = "http://192.168.68.60:5000";
+export const server = "https://edulangbackend.azurewebsites.net/";
 // **************************** SERVER INFORMATION ****************************
 
 const LiveTranslation = ({ navigation, route }) => {
@@ -111,19 +110,13 @@ const LiveTranslation = ({ navigation, route }) => {
       return;
     }
 
-    console.log(await Storage.getItem({ key: "nativeLanguage" }))
-    const nativeLanguage = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
-    const translatedLanguage = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
-
     for (var i = 0; i < images.length; i++) {
       const element = images[i];
       setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
       const form = new FormData();
 
       form.append("base64Image", element.base64);
-      form.append("languageId", nativeLanguage.id)   
-      form.append("nativeLanguage", nativeLanguage.id)   
-      form.append("translatedLanguage", translatedLanguage.id)
+      form.append("languageId", route.params?.language["id"]);
       setTranslateTitle("Translating Page #" + (i + 1).toString() + "...");
       const response = await axios({
         method: "post",
@@ -138,7 +131,8 @@ const LiveTranslation = ({ navigation, route }) => {
       copy[i].base64 = base64Out;
       setImages(copy);
     }
-
+    
+    console.log("Adding data to the local storage...")
     await addData(
       route.params?.title,
       route.params?.description,
