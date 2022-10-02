@@ -19,36 +19,13 @@ import { ModalPicker } from "./components/ModalPicker";
 import { NavigationContainer } from "@react-navigation/native";
 import SelectBox from "react-native-multi-selectbox";
 import { useTranslation } from "react-i18next";
-
-const K_OPTIONS = [
-  {
-    item: "Pashto",
-    id: "PS",
-  },
-  {
-    item: "Xhosa",
-    id: "XH",
-  },
-  {
-    item: "Somali",
-    id: "SO",
-  },
-  {
-    item: "Ukranian",
-    id: "UK",
-  },
-  {
-    item: "Hindi",
-    id: "HI",
-  },
-];
+import { languageConfig } from "../constants/HomeConfig";
 
 const Stack = createNativeStackNavigator();
 const { width: WIDTH } = Dimensions.get("window");
 
 const SignUpScreen = ({ navigation, route }) => {
   const { t } = useTranslation();
-  const [phoneNumber, setPhoneNumber] = useState("");
   const [grade, setGradeLevel] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setloading] = useState(false);
@@ -107,14 +84,6 @@ const SignUpScreen = ({ navigation, route }) => {
     }
   };
 
-  const changeModalVisibility = (bool) => {
-    setIsModalVisible(bool);
-  };
-
-  const setData = (option) => {
-    setChooseData(option);
-  };
-
   function onChange() {
     return (val) => setNativeLanguage(val);
   }
@@ -139,7 +108,7 @@ const SignUpScreen = ({ navigation, route }) => {
         <View style={{ marginTop: 10 }}>
           <SelectBox
             label={t("settings.native_language")}
-            options={K_OPTIONS}
+            options={languageConfig}
             value={nativelanguage}
             onChange={onChange()}
             hideInputFilter={false}

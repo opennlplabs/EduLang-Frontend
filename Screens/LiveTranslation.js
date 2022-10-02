@@ -19,7 +19,7 @@ import { StackActions } from "@react-navigation/native";
 import * as DocumentPicker from 'expo-document-picker';
 
 // **************************** SERVER INFORMATION ****************************
-export const server = "http://192.168.68.56:5000";
+export const server = "https://edulangbackend.azurewebsites.net/";
 // **************************** SERVER INFORMATION ****************************
 
 const LiveTranslation = ({ navigation, route }) => {
@@ -131,7 +131,8 @@ const LiveTranslation = ({ navigation, route }) => {
       copy[i].base64 = base64Out;
       setImages(copy);
     }
-
+    
+    console.log("Adding data to the local storage...")
     await addData(
       route.params?.title,
       route.params?.description,
