@@ -22,12 +22,15 @@ import { useIsFocused } from "@react-navigation/native";
 import Svg from "react-native-svg";
 import SvgComponent from "../assets/SvgComponent/Pattern";
 import { Storage } from "expo-storage";
+import axios from "axios";
+import { server } from "./LiveTranslation";
 
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
   const [user, setuser] = useState({});
   const [nativeLanguage, setnativeLanguage] = useState({});
+  const [translatedLanguage, setTranslatedLanguage] = useState({});
   const userEmail = "test@gmail.com";
   const [dismissLottie, setDismissLottie] = useState(false);
   const [completedBooks, setcompletedBooks] = useState([]);
@@ -105,9 +108,11 @@ const Home = ({ navigation, route }) => {
     }
   }, [data]);
 
-  useEffect(() => {
+  useEffect(async () => {
     setloading(true);
-    firebase.auth().onAuthStateChanged((user) => {
+    
+    firebase.auth().onAuthStateChanged(async (user) => {
+      var needUpdatedTranslateLanguage = false
       if (user) {
         firebase
           .firestore()
@@ -117,10 +122,49 @@ const Home = ({ navigation, route }) => {
             if (snapshot) {
               setuser(snapshot.data());
               setnativeLanguage(snapshot.data()?.nativeLanguage);
+              setTranslatedLanguage(snapshot.data()?.translatedLanguageConfig);
               setloading(false);
               setIsAdmin(snapshot.data()?.isAdmin);
+
+              await Storage.setItem({
+                key: "nativeLanguage",
+                value: snapshot.data().nativeLanguage
+              })
+              try {           
+                await Storage.setItem({
+                  key: "translatedLanguage",
+                  value: snapshot.data().translatedLanguageConfig
+                })
+              } catch (err) {
+                console.log("Error caught")
+                firebase
+                .firestore()
+                .collection("userInfo")
+                .doc(firebase.auth().currentUser.uid)
+                .set({
+                  translatedLanguageConfig:{
+                    id: 'EN',
+                    item: "English",
+                    label: "English"
+                  },
+                }, {merge: true})
+
+                await Storage.setItem({
+                  key: "translatedLanguage",
+                  value: {
+                    id: 'EN',
+                    item: "English",
+                    label: "English"
+                  }
+                })
+              }
             }
           });
+
+        if (needUpdatedTranslateLanguage) {
+          console.log("Translated Language updated")
+          
+        }
       } else {
         setloading(false);
         navigation.replace("Welcome Screen");
@@ -135,6 +179,15 @@ const Home = ({ navigation, route }) => {
     return searchText ? book.title.toLowerCase().includes(text1) : true;
   });
 
+
+  const test_request = async () => {
+    const response = await axios({
+      method: "post" ,
+      url: `${server}/test`,
+    })
+    console.log("Test response:", JSON.parse(response.data["response"]))
+  }
+
   const renderHeader = () => {
     return (
       <View>
@@ -145,6 +198,10 @@ const Home = ({ navigation, route }) => {
             source={require("../assets/gradient.png")}
           />
         </View>
+
+        <TouchableOpacity style={{backgroundColor: 'blue', width: 100}} onPress={test_request}>
+          <Text style={{color: 'white'}}>Test Request</Text>
+        </TouchableOpacity>
         <View
           style={{
             backgroundColor: "#4CA4D3",
@@ -160,6 +217,7 @@ const Home = ({ navigation, route }) => {
             justifyContent: "space-between",
           }}
         >
+
           <TextInput
             style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
             placeholder="Search book"
@@ -272,6 +330,7 @@ const Home = ({ navigation, route }) => {
               Add Book
             </Text>
           </TouchableOpacity>
+          
         </View>
         <BookList item={searchData} navigation={navigation} />
       </View>
@@ -370,6 +429,7 @@ const Home = ({ navigation, route }) => {
           backgroundColor: "white",
         }}
       >
+
         {loading ? (
           <LottieView
             source={require("../assets/images/lottie1.json")}
@@ -387,9 +447,11 @@ const Home = ({ navigation, route }) => {
             >
               {renderScrollBar(`${t("Featured Books")}`)}
 
+
               {/* {renderScrollBar("Reccomended Books")}
            {renderScrollBar("Latest Books")} */}
             </ScrollView>
+
 
             <ScrollView
               showsVerticalScrollIndicator={false}
