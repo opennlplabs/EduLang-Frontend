@@ -84,18 +84,18 @@ const Settings = () => {
             //i18n.changeLanguage(e.label)
             setnativeLanguage(e);
           }}
-        />
+        />,
         <Text style={styles.paddingBottomText}>
           {t("settings.translated_language")}
         </Text>
 
-        <RadioButtonRN
+        {/* <RadioButtonRN
           data={translatedLanguageConfig}
           selectedBtn={(e) => {
             //i18n.changeLanguage(e.label)
             setTranslatedLanguage(e);
           }}
-        />
+        /> */}
 
         <Text style={styles.paddingBottomText}>
           {t("settings.grade_level")}
