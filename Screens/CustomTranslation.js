@@ -33,12 +33,14 @@ export default function CustomTranslation({ navigation, route }) {
         form.append("boxes", JSON.stringify(boxes))
         form.append("index", index)
         form.append("responses", JSON.stringify(responses))
+        console.log("Change image....")
         const resp = await axios({
             method: "post",
             url: `${server}/ChangeImage`,
             data: form,
             headers: { "content-type": "multipart/form-data" },
         })
+        console.log("With response....", resp)
         var copy = [...newImages]
         copy[index] = resp.data["response"]
         setNewImages(copy)

@@ -233,8 +233,6 @@ export const addData = async (title, description, language, book, imageBase64) =
   data.push(obj)
 
   console.log("setting data....")
-  console.log(data)
-  console.log(JSON.stringify(data))
   await Storage.setItem({
     key: "data",
     value: JSON.stringify(data)
