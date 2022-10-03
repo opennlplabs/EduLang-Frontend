@@ -104,7 +104,7 @@ const LiveTranslation = ({ navigation, route }) => {
           images: images,
           title: route.params?.title,
           description: route.params?.description,
-          language: route.params?.language["item"],
+          language: route.params?.language,
         },
       });
       return;
