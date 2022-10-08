@@ -241,6 +241,8 @@ const BookInfo = ({ navigation, route }) => {
     await removeFromFav(item)
     await removeFromCompleted(item)
 
+    console.log("removed from fav and completed")
+
     var data = JSON.parse(
       await Storage.getItem({ key: "data" })
     )

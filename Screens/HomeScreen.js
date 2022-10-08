@@ -199,9 +199,6 @@ const Home = ({ navigation, route }) => {
           />
         </View>
 
-        <TouchableOpacity style={{backgroundColor: 'blue', width: 100}} onPress={test_request}>
-          <Text style={{color: 'white'}}>Test Request</Text>
-        </TouchableOpacity>
         <View
           style={{
             backgroundColor: "#4CA4D3",
@@ -283,6 +280,7 @@ const Home = ({ navigation, route }) => {
         <View
           style={{
             flex: 1,
+            width: '100%',
             height: 35,
             position: "relative",
             flexDirection: "row",

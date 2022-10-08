@@ -98,8 +98,7 @@ const Settings = () => {
             //i18n.changeLanguage(e.label)
             setnativeLanguage(e);
           }}
-        /> */}
-
+        />
         <View style={{ marginTop: 0 }}>
           <SelectBox
             label=""
@@ -127,8 +126,8 @@ const Settings = () => {
           data={gradeConfig}
           selectedBtn={(e) => setGradeLevel(e.label)}
         />
-      </ScrollView>
-
+      </ScrollView> 
+       
       <View style={styles.loginButtons}>
         <Clickable text={t("general.save")} onPress={UpdateLang} />
         <Clickable text={"Logout"} onPress={logout} />

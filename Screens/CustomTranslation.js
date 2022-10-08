@@ -21,24 +21,22 @@ export default function CustomTranslation({ navigation, route }) {
     const [TranslateTitle, setTranslateTitle] = useState("")
 
     async function incrementIndex() {
-        console.log(await Storage.getItem({ key: "nativeLanguage" }))
-        const nativeLanguage = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
-        const translatedLanguage = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
         
         setTranslateTitle("Processing Information...")
         const form = new FormData()
-        form.append("nativeLanguage", nativeLanguage.id)
-        form.append("translatedLanguage", translatedLanguage.id)
+        form.append("languageId", JSON.stringify(route.params?.language["id"]))
         form.append("base64Image", images[index].base64)
         form.append("boxes", JSON.stringify(boxes))
         form.append("index", index)
         form.append("responses", JSON.stringify(responses))
+        console.log("Change image....")
         const resp = await axios({
             method: "post",
             url: `${server}/ChangeImage`,
             data: form,
             headers: { "content-type": "multipart/form-data" },
         })
+        console.log("With response....", resp)
         var copy = [...newImages]
         copy[index] = resp.data["response"]
         setNewImages(copy)
@@ -54,7 +52,7 @@ export default function CustomTranslation({ navigation, route }) {
             await addData(
                 title,
                 description,
-                language,
+                language["item"],
                 imgs_inp,
                 originalImage
             )
