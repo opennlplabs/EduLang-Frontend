@@ -25,8 +25,9 @@ import { getUserInfoFirebase } from "./StorageUtils/UserStorage";
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
-  const [username, setUsername] = useState({});
+  const [username, setUsername] = useState("");
   const [nativeLanguage, setnativeLanguage] = useState({});
+  const [searchText, setSearchText] = useState("")
   const [searchData, setSearchData] = useState({})
   const [completedBooks, setcompletedBooks] = useState([]);
   const [feedbackModal, setfeedbackModal] = useState(false);
@@ -36,47 +37,58 @@ const Home = ({ navigation, route }) => {
   const [isAdmin, setIsAdmin] = useState(false);
   const isFocused = useIsFocused();
 
-  // Lottie
-  useEffect(() => {
-    setTimeout(() => {
-      setDismissLottie(true);
-    }, 2000);
-  }, []);
-
+  // user information
+  function getUserDataloc () {
+    return new Promise((resolve, reject) => {
+      firebase.auth().onAuthStateChanged(async (user) => {
+        if (user) {
+          const [grade, nativeLanguage, translatedLanguage, username, isAdmin] = await getUserInfoFirebase()
+          console.log(username)
+          setUsername(username)
+          setnativeLanguage(nativeLanguage)
+          setIsAdmin(isAdmin)
+          setloading(false)
+        } else {
+          setloading(false);
+          navigation.replace("Welcome Screen");
+        }
+        resolve(nativeLanguage)
+      });
+    })
+  }
 
   // Get books & favlist & completed books
-  useEffect(() => {
+  useEffect(async () => {
     if (isFocused) {
-      getBookData(nativeLanguage.item).then((value) => {
-        setData(value);
-        setSearchData(filterdata.filter((book) => {
-          let text1 = searchText.toLowerCase();
-          return searchText ? book.title.toLowerCase().includes(text1) : true;
-        }));
-      }).then(async () => {
-          setfavList(await getFavBooks(true))
-          setcompletedBooks(await getCompletedBooks(true))
-      })
+      setloading(true);
+      // Get user information
+      console.log("Getting user information")
+      const nativeLang = await getUserDataloc() 
+
+      // Get book data
+      console.log("Getting book data")
+      const value = await getBookData(nativeLang.item)
+      setData(value);
+      
+      // Update search data
+      console.log("Updating Search Dtaa")
+      updateSearchData(searchText) 
+      
+      // Get fav list and completed books
+      console.log("Get completed fav")
+      setfavList(await getFavBooks(true))
+      setcompletedBooks(await getCompletedBooks(true))
+
+      // Get admin books to accept/decline
+      if (isAdmin) {
+        console.log("Get admin data")
+        setAdminData(await getAdminBooks());
+      }
+
+      console.log("Completed")
+      setloading(false);
     }
   }, [navigation, isFocused]);
-
-  // Get user info
-  useEffect(async () => {
-    setloading(true);
-    firebase.auth().onAuthStateChanged(async (user) => {
-      if (user) {
-        const [grade, nativeLanguage, translatedLanguage, username, isAdmin] = await getUserInfoFirebase()
-        setUsername(username)
-        setnativeLanguage(nativeLanguage)
-        setTranslatedLanguage(translatedLanguage)
-        setIsAdmin(isAdmin)
-        setloading(false)
-      } else {
-        setloading(false);
-        navigation.replace("Welcome Screen");
-      }
-    });
-  }, []);
 
   // Update search data
   function updateSearchData (text) {
@@ -85,14 +97,6 @@ const Home = ({ navigation, route }) => {
       return text ? book.title.toLowerCase().includes(text1) : true;
     }))
   }
-
-  // Get admin data
-  useEffect(async () => {
-    if (isFocused && isAdmin) {
-      // get admin data
-      setAdminData(await getAdminBooks());
-    }
-  }, [isAdmin, isFocused]);
 
   const renderAdmin = (title) => {
     if (isAdmin) {
@@ -146,7 +150,10 @@ const Home = ({ navigation, route }) => {
             style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
             placeholder="Search book"
             placeholderTextColor="white"
-            onChangeText={(text) => {updateSearchData(text)}}
+            onChangeText={(text) => {
+              setSearchText(text)
+              updateSearchData(text)
+            }}
           />
           <AntDesign name="search1" size={24} color="white" />
         </View>

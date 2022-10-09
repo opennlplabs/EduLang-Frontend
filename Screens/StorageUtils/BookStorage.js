@@ -1,3 +1,6 @@
+import * as firebase from "firebase";
+import { Storage } from 'expo-storage'
+
 export async function clearAllStorageData() {
     await Storage.setItem({
         key: "data",
@@ -41,6 +44,14 @@ export const getBookData = async (language) => {
             }
         }
     })
+
+    for (var x = 0; x < ids.length; x++) {
+        var title = datas[x].title
+        if (title in titles) {
+            ids.splice(x)
+            datas.splice(x)
+        }
+    }
 
     // Get Pages
     for (var x = 0; x < ids.length; x++) {

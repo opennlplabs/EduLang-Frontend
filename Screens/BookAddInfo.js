@@ -1,21 +1,13 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
     SafeAreaView,
     View,
     Text,
     TouchableOpacity,
     Switch,
-    Image,
-    ScrollView,
-    FlatList,
     TextInput,
     StyleSheet,
-    ImageBackground
 } from "react-native";
-import { Camera } from 'expo-camera';
-import { AntDesign } from "@expo/vector-icons";
-import * as FileSystem from 'expo-file-system'
-import axios from "axios";
 import { Storage } from "expo-storage";
 
 const BookAddInfo = ({ navigation, route }) => {

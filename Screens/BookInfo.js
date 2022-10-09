@@ -26,7 +26,7 @@ const BookInfo = ({ navigation, route }) => {
   // Get favorite list
   useEffect(async () => {
     if (isFocused) {
-      setfavList(await getFavBooks(full_data=False))
+      setfavList(await getFavBooks(full_data=false))
     }
   }, [isFocused])
 

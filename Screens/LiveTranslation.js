@@ -11,8 +11,8 @@ import {
 import { Camera } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
-import { addData } from "../constants/HomeConfig";
 import * as DocumentPicker from 'expo-document-picker';
+import { addBookLocally } from "./StorageUtils/BookStorage";
 
 // **************************** SERVER INFORMATION ****************************
 export const server = "https://edulangbackend.azurewebsites.net/";
@@ -129,7 +129,7 @@ const LiveTranslation = ({ navigation, route }) => {
     }
     
     console.log("Adding data to the local storage...")
-    await addData(
+    await addBookLocally(
       route.params?.title,
       route.params?.description,
       route.params?.language["item"],

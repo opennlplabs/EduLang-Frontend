@@ -16,7 +16,6 @@ const PDFExample = ({ route }) => {
   const [rightButtonDisabled, setRightButtonDisabled] = useState(false);
   const [height, setHeight] = useState(100);
   const lenPages = Object.keys(item.book).length;
-  const [touchX, setTouchX] = useState(0);
 
   useEffect(() => {
     if (lenPages == 1) {
@@ -76,12 +75,6 @@ const PDFExample = ({ route }) => {
     <>
       <View
         style={styles.container}
-        onTouchStart={(e) => setTouchX(e.nativeEvent.pageX)}
-        onTouchEnd={(e) => {
-          const diff = touchX - e.nativeEvent.pageX;
-          if (diff > 50) changePage(true);
-          else if (diff < -50) changePage(false);
-        }}
       >
         <ImageViewer
           style={{

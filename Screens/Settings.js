@@ -1,15 +1,14 @@
 import React, { useState, useEffect } from "react";
 import { View, Text, StyleSheet, SafeAreaView, ScrollView } from "react-native";
 import RadioButtonRN from "radio-buttons-react-native";
-import {
-  languageConfig,
-  gradeConfig,
-} from "./../constants/HomeConfig";
+import { gradeConfig } from "../constants/LanguageConfig";
+import { languageConfig } from "../constants/LanguageConfig";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { useNavigation } from "@react-navigation/native";
 import SelectBox from "react-native-multi-selectbox";
-import * as UserStorage from "./StorageUtils/UserStorage";
+import * as firebase from "firebase";
+import { getUserInfoFirebase, logoutUser, logoutUserFirebase, setUserInfo } from "./StorageUtils/UserStorage";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -21,7 +20,7 @@ const Settings = () => {
   useEffect(async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        const [grade, nativeLanguage, translatedLanguageConfig, username, isAdmin] = await UserStorage.getUserInfo()
+        const [grade, nativeLanguage, translatedLanguageConfig, username, isAdmin] = await getUserInfoFirebase() 
         setGradeLevel(grade)
         setnativeLanguage(nativeLanguage)
         setTranslatedLanguage(translatedLanguageConfig)
@@ -34,11 +33,11 @@ const Settings = () => {
       alert("The translated language and the native language cannot be the same!")
     }
     else {
-      await UserStorage.setUserInfo(
+      await setUserInfo(
         nativelanguage,
         translatedlanguage,
         gradeLevel,
-        username=undefined
+        undefined
       )
 
       navigation.goBack()
@@ -51,12 +50,6 @@ const Settings = () => {
         <Text style={styles.paddingBottomText}>
           {t("settings.native_language")}
         </Text>
-        <RadioButtonRN
-          data={languageConfig}
-          selectedBtn={(e) => {
-            setnativeLanguage(e);
-          }}
-        />
         <View style={{ marginTop: 0 }}>
           <SelectBox
             label=""
@@ -87,7 +80,7 @@ const Settings = () => {
        
       <View style={styles.loginButtons}>
         <Clickable text={t("general.save")} onPress={SaveInfo} />
-        <Clickable text={"Logout"} onPress={UserStorage.logoutUser()} />
+        <Clickable text={"Logout"} onPress={() => {logoutUserFirebase().then(() => {navigation.replace("Welcome Screen");})}} />
       </View>
     </SafeAreaView>
   );

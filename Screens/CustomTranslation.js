@@ -2,7 +2,7 @@ import React, { useEffect, useState } from 'react'
 import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, TextInput, ScrollView } from 'react-native'
 import { server } from './LiveTranslation';
 import axios from "axios";
-import { addData } from '../constants/HomeConfig';
+import { addBookLocally } from './StorageUtils/BookStorage';
 
 export default function CustomTranslation({ navigation, route }) {
     var images = route.params?.images
@@ -47,7 +47,7 @@ export default function CustomTranslation({ navigation, route }) {
                 imgs_inp["page" + (i + 1).toString()] = copy[i]
             }
 
-            await addData(
+            await addBookLocally(
                 title,
                 description,
                 language["item"],

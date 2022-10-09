@@ -11,7 +11,7 @@ import {
 } from "react-native";
 import SelectBox from "react-native-multi-selectbox";
 import { useTranslation } from "react-i18next";
-import { languageConfig } from "../constants/HomeConfig";
+import { languageConfig } from "../constants/LanguageConfig";
 import { createUser, setUserInfo } from "./StorageUtils/UserStorage";
 
 const SignUpScreen = ({ route }) => {
@@ -36,6 +36,7 @@ const SignUpScreen = ({ route }) => {
   const handleRegister = async () => {
     // undefined is translated language, but it will not actually be set to undefined (it just won't be set/changed)
     setUserInfo(nativeLanguage, undefined, grade, username).then(() => {
+      // Continue
       setloading(false)
     }).catch((e) => {
       alert("Error: "+e)

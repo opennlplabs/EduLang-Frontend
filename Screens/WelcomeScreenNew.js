@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import {
   View,
   Text,
@@ -16,6 +16,8 @@ import i18n from "../locale";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { loginEmailPassword } from "./StorageUtils/UserStorage";
+import { Storage } from "expo-storage";
+import { useIsFocused } from "@react-navigation/native";
 
 const { width: WIDTH } = Dimensions.get("window");
 
@@ -24,7 +26,28 @@ const WelcomeScreenNew = ({ navigation }) => {
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [errorMessage, setErrorMessage] = useState("");
+  const isFocused = useIsFocused()
 
+  useEffect(async () => {
+    // Set local variables
+    await Storage.setItem({
+        key: "data",
+        value: "[]" 
+    })
+    await Storage.setItem({
+        key: "titles",
+        value: "[]" 
+    })
+    await Storage.setItem({
+        key: "favBooks",
+        value: "[]" 
+    })
+    await Storage.setItem({
+        key: "completedBooks",
+        value: "[]" 
+    })
+  }, [isFocused])
+  
   const handleSignUp = () => {
     navigation.navigate("Registration Page", { email, password });
   };
@@ -124,7 +147,7 @@ const styles = StyleSheet.create({
     color: COLORS.darkCoral,
     fontSize: 40,
     // fontWeight: "500",
-    fontFamily: "Inter-V",
+    // fontFamily: "Inter-V",
   },
   bodyText: {
     fontSize: 18,

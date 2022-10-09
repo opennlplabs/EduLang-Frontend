@@ -1,5 +1,4 @@
 import * as firebase from "firebase";
-import { Storage } from 'expo-storage'
 
 export function createUser(email, password) {
     return new Promise((resolve, reject) => {
@@ -48,13 +47,8 @@ export function loginEmailPassword(email, password) {
     })
 };
 
-export function logoutUser() {
-    firebase
-        .auth()
-        .signOut()
-        .then(() => {
-            navigation.replace("Welcome Screen");
-        });
+export async function logoutUserFirebase() {
+    return firebase.auth().signOut()
 }
 
 export function getUserInfoFirebase() {
@@ -70,7 +64,7 @@ export function getUserInfoFirebase() {
                     var grade = snapshot.data().grade 
                     var nativeLanguage = snapshot.data()?.nativeLanguage
                     var translatedLanguageConfig = snapshot.data()?.translatedLanguageConfig
-                    var username = snapshot.data()?.translatedLanguageConfig
+                    var username = snapshot.data()?.username
                     var isAdmin = snapshot.data()?.isAdmin 
 
                     // Check if variable are undefined and set to default values
@@ -95,7 +89,7 @@ export function getUserInfoFirebase() {
                         await setUserInfo(undefined, val, undefined, undefined)
                         translatedLanguageConfig = val
                     } 
-                    resolve(grade, nativeLanguage, translatedLanguageConfig, username, isAdmin) 
+                    resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin]) 
                 }
                 else {
                     reject("Unable to get snapshot data")
@@ -112,6 +106,8 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
 
+    
+
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
         if (uid == undefined || uid == null) reject("UID is null!")
@@ -120,8 +116,8 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
             .firestore()
             .collection("userInfo")
             .doc(uid)
-            .update(info, {
-                merge: True
+            .set(info, {
+                merge: true
             })
             .then(() => { resolve("success") })
             .catch((err) => { reject(err) });
