@@ -3,7 +3,6 @@ import { Text, View, StyleSheet, TouchableOpacity, ImageBackground, TextInput, S
 import { server } from './LiveTranslation';
 import axios from "axios";
 import { addData } from '../constants/HomeConfig';
-import { Storage } from 'expo-storage';
 
 export default function CustomTranslation({ navigation, route }) {
     var images = route.params?.images
@@ -14,14 +13,13 @@ export default function CustomTranslation({ navigation, route }) {
 
     const [boxes, setBoxes] = useState([])
     const [finish, setFinish] = useState(false)
-    const [newImages, setNewImages] = useState([""])
+    const [newImages, setNewImages] = useState([])
     const [responses, setResponses] = useState([])
     const [index, setIndex] = useState(0)
-    const [debug, setDebug] = useState("No Debug available")
     const [TranslateTitle, setTranslateTitle] = useState("")
 
-    async function incrementIndex() {
-        
+    // After the translations of all the pages are done, then change the image with the translated text and add to book
+    async function processInformation() {
         setTranslateTitle("Processing Information...")
         const form = new FormData()
         form.append("languageId", JSON.stringify(route.params?.language["id"]))
@@ -71,17 +69,14 @@ export default function CustomTranslation({ navigation, route }) {
     }
 
     useEffect(async () => {
+        // The finish variable tracks if the new image has bounding boxes for manual translation input. 
         if (!finish) {
             // Start Translating first image
             const base64Image = images[index].base64
             const form = new FormData()
 
             var copy = [...newImages]
-            if (copy[0] === "") {
-                copy = [base64Image]
-            } else {
-                copy.push(base64Image)
-            }
+            copy.push(base64Image)
             setNewImages(copy)
 
             form.append("base64Image", base64Image)
@@ -137,7 +132,7 @@ export default function CustomTranslation({ navigation, route }) {
             })}
 
             <View style={{ flex: 1, alignItems: 'center' }}>
-                <TouchableOpacity style={styles.Button} onPress={incrementIndex}>
+                <TouchableOpacity style={styles.Button} onPress={processInformation}>
                     <Text style={styles.ButtonText}>{TranslateTitle}</Text>
                 </TouchableOpacity>
             </View>

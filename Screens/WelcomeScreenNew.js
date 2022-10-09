@@ -10,13 +10,12 @@ import {
   Dimensions,
   TouchableOpacity,
 } from "react-native";
-import LoginBackground from "../assets/images/LoginBackgroundEdu.png";
 import logo from "../assets/images/RealEduLangLogo.png";
 import { COLORS } from "../constants/theme";
 import i18n from "../locale";
-import * as firebase from "firebase";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
+import { loginEmailPassword } from "./StorageUtils/UserStorage";
 
 const { width: WIDTH } = Dimensions.get("window");
 
@@ -31,28 +30,17 @@ const WelcomeScreenNew = ({ navigation }) => {
   };
 
   const handleLogin = () => {
-    // make if statement here for changing the language
-    //important for changing into another language
-    firebase
-      .auth()
-      .signInWithEmailAndPassword(email, password)
-      .then((re) => {
-        i18n.changeLanguage("en");
-        navigation.replace("Home");
-      })
-      .catch((re) => {
-        switch (re.code) {
-          case "auth/wrong-password":
-            setErrorMessage("You have entered an incorrect password.");
-            break;
-        }
-      });
+    loginEmailPassword(email, password).then(() => {
+      i18n.changeLanguage("en");
+      navigation.replace("Home");
+    }).catch((error) => {
+      setErrorMessage(error);
+    })
   };
 
   return (
     <SafeAreaView style={{ flex: 1 }}>
       <ImageBackground
-        //source={LoginBackground}
         style={styles.backgroundContainer}
       >
         <View>
@@ -74,11 +62,6 @@ const WelcomeScreenNew = ({ navigation }) => {
             <Image source={logo} style={styles.logo} />
           </View>
         </View>
-
-        {/* <Image source={logo} style={styles.logo} />
-
-        <Text style={styles.logoText}>EduLang</Text>
-        <Text style={styles.bodyText}>{t("general.appSubstring")}</Text> */}
 
         <View style={styles.userInteractionContainer}>
           <TextInput

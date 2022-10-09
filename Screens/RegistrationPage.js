@@ -1,87 +1,46 @@
 import React, { useState } from "react";
 import {
   StyleSheet,
-  Button,
   Text,
   View,
   SafeAreaView,
-  Alert,
   TextInput,
-  Modal,
   TouchableOpacity,
-  Dimensions,
   ScrollView,
   ActivityIndicator,
 } from "react-native";
-import * as firebase from "firebase";
-import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { ModalPicker } from "./components/ModalPicker";
-import { NavigationContainer } from "@react-navigation/native";
 import SelectBox from "react-native-multi-selectbox";
 import { useTranslation } from "react-i18next";
 import { languageConfig } from "../constants/HomeConfig";
+import { createUser, setUserInfo } from "./StorageUtils/UserStorage";
 
-const Stack = createNativeStackNavigator();
-const { width: WIDTH } = Dimensions.get("window");
-
-const SignUpScreen = ({ navigation, route }) => {
+const SignUpScreen = ({ route }) => {
   const { t } = useTranslation();
   const [grade, setGradeLevel] = useState("");
   const [username, setUsername] = useState("");
   const [loading, setloading] = useState(false);
-  const [chooseData, setChooseData] = useState("");
-  const [isModalVisible, setIsModalVisible] = useState(false);
   const [nativelanguage, setNativeLanguage] = useState({});
-  const [selectedTeams, setSelectedTeams] = useState([]);
 
-  const authfromFirebase = () => {
+  const authfromFirebase = async () => {
     const { email, password } = route.params;
     setloading(true);
-    firebase
-      .auth()
-      .createUserWithEmailAndPassword(email, password)
-      .then((re) => {
-        handleRegister();
-      })
-      .catch((re) => {
-        setloading(false);
-
-        switch (re.code) {
-          case "auth/email-already-in-use":
-            alert(`Email address ${email} already in use.`);
-            break;
-          case "auth/invalid-email":
-            alert(`Email address ${email} is invalid.`);
-            break;
-          case "auth/weak-password":
-            alert(
-              "Password is not strong enough. Add additional characters including special characters and numbers."
-            );
-            break;
-          default:
-            alert("No errors!");
-        }
-      });
+    
+    await createUser(email, password).then(() => {
+      handleRegister();
+    }).catch((err_msg) => {
+      setloading(false);
+      alert(err_msg)
+    })
   };
 
   const handleRegister = async () => {
-    try {
-      await firebase
-        .firestore()
-        .collection("userInfo")
-        .doc(firebase.auth().currentUser.uid)
-        .set({
-          grade: grade,
-          username: username,
-          nativeLanguage: nativelanguage,
-        })
-        .then(() => {
-          setloading(false);
-          // navigation.replace("Home");
-        });
-    } catch (e) {
-      setloading(false);
-    }
+    // undefined is translated language, but it will not actually be set to undefined (it just won't be set/changed)
+    setUserInfo(nativeLanguage, undefined, grade, username).then(() => {
+      setloading(false)
+    }).catch((e) => {
+      alert("Error: "+e)
+      setloading(false)
+    })
   };
 
   function onChange() {

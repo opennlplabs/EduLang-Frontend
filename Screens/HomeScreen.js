@@ -6,12 +6,10 @@ import {
   TouchableOpacity,
   Image,
   ScrollView,
-  FlatList,
   TextInput,
   StatusBar,
 } from "react-native";
-import { COLORS, FONTS, SIZES, icons, images } from "../constants";
-import { getData } from "../constants/HomeConfig";
+import { COLORS, FONTS } from "../constants";
 import BookList from "./components/BookList.js";
 import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
@@ -19,152 +17,60 @@ import { useTranslation } from "react-i18next";
 import * as firebase from "firebase";
 import FeedbackModal from "./components/FeedBackModal";
 import { useIsFocused } from "@react-navigation/native";
-import Svg from "react-native-svg";
-import SvgComponent from "../assets/SvgComponent/Pattern";
-import { Storage } from "expo-storage";
 import axios from "axios";
 import { server } from "./LiveTranslation";
+import { getAdminBooks, getBookData, getCompletedBooks, getFavBooks } from "./StorageUtils/BookStorage";
+import { getUserInfoFirebase } from "./StorageUtils/UserStorage";
 
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [loading, setloading] = useState(false);
-  const [user, setuser] = useState({});
+  const [username, setUsername] = useState({});
   const [nativeLanguage, setnativeLanguage] = useState({});
-  const [translatedLanguage, setTranslatedLanguage] = useState({});
-  const userEmail = "test@gmail.com";
-  const [dismissLottie, setDismissLottie] = useState(false);
+  const [searchData, setSearchData] = useState({})
   const [completedBooks, setcompletedBooks] = useState([]);
   const [feedbackModal, setfeedbackModal] = useState(false);
-  const [searchText, setsearchText] = useState("");
   const [favList, setfavList] = useState([]);
   const [adminData, setAdminData] = useState([]);
   const [data, setData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const isFocused = useIsFocused();
 
+  // Lottie
   useEffect(() => {
     setTimeout(() => {
       setDismissLottie(true);
     }, 2000);
   }, []);
 
+
+  // Get books & favlist & completed books
   useEffect(() => {
     if (isFocused) {
-      getData().then((value) => {
+      getBookData(nativeLanguage.item).then((value) => {
         setData(value);
-
-        filterdata = data.filter(
-          (item) => item.language == nativeLanguage.item
-        );
-
-        searchData = filterdata.filter((book) => {
+        setSearchData(filterdata.filter((book) => {
           let text1 = searchText.toLowerCase();
           return searchText ? book.title.toLowerCase().includes(text1) : true;
-        });
-      });
+        }));
+      }).then(async () => {
+          setfavList(await getFavBooks(true))
+          setcompletedBooks(await getCompletedBooks(true))
+      })
     }
   }, [navigation, isFocused]);
 
-  useEffect(async () => {
-    // firebase
-    //   .firestore()
-    //   .collection("favBooks")
-    //   .where("uid", "==", firebase.auth().currentUser.uid)
-    //   .onSnapshot((snapshot) => {
-    //     if (snapshot) {
-    //       let arr = [];
-    //       snapshot.forEach((book, index) => {
-    //         arr.push(book.data());
-    //       });
-    //       setfavList(arr);
-    //     }
-    //   });
-    const favBooks = Array.from(
-      JSON.parse(await Storage.getItem({ key: "favBooks" }))
-    );
-    const completedBooks = Array.from(
-      JSON.parse(await Storage.getItem({ key: "completedBooks" }))
-    );
-    const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
-    const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
-
-    if (favBooks) {
-      var arr = [];
-      favBooks.forEach((value, index) => {
-        if (value in titles) {
-          arr.push(data[titles[value]]);
-        }
-      });
-      setfavList(arr);
-    }
-    if (completedBooks) {
-      var arr = [];
-      completedBooks.forEach((value, index) => {
-        if (value in titles) {
-          arr.push(data[titles[value]]);
-        }
-      });
-      setcompletedBooks(arr);
-    }
-  }, [data]);
-
+  // Get user info
   useEffect(async () => {
     setloading(true);
-    
     firebase.auth().onAuthStateChanged(async (user) => {
-      var needUpdatedTranslateLanguage = false
       if (user) {
-        firebase
-          .firestore()
-          .collection("userInfo")
-          .doc(firebase.auth().currentUser.uid)
-          .onSnapshot(async (snapshot) => {
-            if (snapshot) {
-              setuser(snapshot.data());
-              setnativeLanguage(snapshot.data()?.nativeLanguage);
-              setTranslatedLanguage(snapshot.data()?.translatedLanguageConfig);
-              setloading(false);
-              setIsAdmin(snapshot.data()?.isAdmin);
-
-              await Storage.setItem({
-                key: "nativeLanguage",
-                value: snapshot.data().nativeLanguage
-              })
-              try {           
-                await Storage.setItem({
-                  key: "translatedLanguage",
-                  value: snapshot.data().translatedLanguageConfig
-                })
-              } catch (err) {
-                console.log("Error caught")
-                firebase
-                .firestore()
-                .collection("userInfo")
-                .doc(firebase.auth().currentUser.uid)
-                .set({
-                  translatedLanguageConfig:{
-                    id: 'EN',
-                    item: "English",
-                    label: "English"
-                  },
-                }, {merge: true})
-
-                await Storage.setItem({
-                  key: "translatedLanguage",
-                  value: {
-                    id: 'EN',
-                    item: "English",
-                    label: "English"
-                  }
-                })
-              }
-            }
-          });
-
-        if (needUpdatedTranslateLanguage) {
-          console.log("Translated Language updated")
-          
-        }
+        const [grade, nativeLanguage, translatedLanguage, username, isAdmin] = await getUserInfoFirebase()
+        setUsername(username)
+        setnativeLanguage(nativeLanguage)
+        setTranslatedLanguage(translatedLanguage)
+        setIsAdmin(isAdmin)
+        setloading(false)
       } else {
         setloading(false);
         navigation.replace("Welcome Screen");
@@ -172,13 +78,34 @@ const Home = ({ navigation, route }) => {
     });
   }, []);
 
-  var filterdata = data.filter((item) => item.language == nativeLanguage.item);
+  // Update search data
+  function updateSearchData (text) {
+    setSearchData(data.filter((book) => {
+      let text1 = text.toLowerCase();
+      return text ? book.title.toLowerCase().includes(text1) : true;
+    }))
+  }
 
-  var searchData = filterdata.filter((book) => {
-    let text1 = searchText.toLowerCase();
-    return searchText ? book.title.toLowerCase().includes(text1) : true;
-  });
+  // Get admin data
+  useEffect(async () => {
+    if (isFocused && isAdmin) {
+      // get admin data
+      setAdminData(await getAdminBooks());
+    }
+  }, [isAdmin, isFocused]);
 
+  const renderAdmin = (title) => {
+    if (isAdmin) {
+      return (
+        <View style={{ marginTop: 5 }}>
+          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
+          <BookList item={adminData} navigation={navigation} />
+        </View>
+      );
+    } else {
+      return <></>;
+    }
+  };
 
   const test_request = async () => {
     const response = await axios({
@@ -219,7 +146,7 @@ const Home = ({ navigation, route }) => {
             style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
             placeholder="Search book"
             placeholderTextColor="white"
-            onChangeText={(text) => setsearchText(text)}
+            onChangeText={(text) => {updateSearchData(text)}}
           />
           <AntDesign name="search1" size={24} color="white" />
         </View>
@@ -235,7 +162,7 @@ const Home = ({ navigation, route }) => {
         >
           {/* Greetings */}
           <Text style={{ ...FONTS.h2, color: COLORS.black, flex: 1 }}>
-            {`${t("home.welcome")} ${user.username} `}
+            {`${t("home.welcome")} ${username} `}
           </Text>
           <TouchableOpacity onPress={() => setfeedbackModal(true)}>
             <Image
@@ -343,18 +270,6 @@ const Home = ({ navigation, route }) => {
     );
   };
 
-  // const renderScrollBar2 = () => {
-  //   return (
-  //     <View style={{ marginTop: 10 }}>
-  //       <Image
-  //         source={require("../assets/images/settingslogo2.png")}
-  //         style={{ height: 25, width: 25, marginLeft: 16 }}
-  //       />
-  //       <BookList item={completedBooks} navigation={navigation} />
-  //     </View>
-  //   );
-  // };
-
   const renderScrollBar3 = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
@@ -364,59 +279,7 @@ const Home = ({ navigation, route }) => {
     );
   };
 
-  useEffect(async () => {
-    if (isFocused && isAdmin) {
-      // get admin data
-      const snapshot = await firebase
-        .firestore()
-        .collection("BooksReview")
-        .get();
-
-      var ids = [];
-      var datas = [];
-      var arr = [];
-
-      snapshot.forEach((doc) => {
-        ids.push(doc.id);
-        datas.push(doc.data());
-      });
-
-      for (var x = 0; x < ids.length; x++) {
-        var dict = { ...datas[x], book: {} };
-
-        const lenPages = dict.lenPages;
-
-        // get collections data
-        // for (var i = 0; i < lenPages; i++) {
-        //   const pageSnapshot = await firebase.firestore()
-        //     .collection("BooksReview")
-        //     .doc(ids[x])
-        //     .collection("page" + (i + 1).toString())
-        //     .doc((i + 1).toString())
-        //     .get()
-        //   dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
-        // }
-        dict["isAdmin"] = true;
-        dict["id"] = ids[x];
-        dict["lenPages"] = lenPages;
-        arr.push(dict);
-      }
-      setAdminData(arr);
-    }
-  }, [isAdmin, isFocused]);
-
-  const renderAdmin = (title) => {
-    if (isAdmin) {
-      return (
-        <View style={{ marginTop: 5 }}>
-          <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-          <BookList item={adminData} navigation={navigation} />
-        </View>
-      );
-    } else {
-      return <></>;
-    }
-  };
+  
 
   return (
     <>
@@ -439,15 +302,10 @@ const Home = ({ navigation, route }) => {
             {renderHeader()}
 
             <ScrollView
-              // showsVerticalScrollIndicator={false}
               showsHorizontalScrollIndicator={false}
               style={{ marginHorizontal: 20, position: "absolute", top: 220 }}
             >
               {renderScrollBar(`${t("Featured Books")}`)}
-
-
-              {/* {renderScrollBar("Reccomended Books")}
-           {renderScrollBar("Latest Books")} */}
             </ScrollView>
 
 
@@ -457,8 +315,6 @@ const Home = ({ navigation, route }) => {
             >
               {renderScrollBar2(`Completed Books`)}
               {renderScrollBar3(`Favorite Books`)}
-              {/* {renderScrollBar("Reccomended Books")}
-           {renderScrollBar("Latest Books")} */}
 
               {renderAdmin(`Books Review`)}
             </ScrollView>

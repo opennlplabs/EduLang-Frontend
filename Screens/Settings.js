@@ -4,15 +4,12 @@ import RadioButtonRN from "radio-buttons-react-native";
 import {
   languageConfig,
   gradeConfig,
-  translatedLanguageConfig,
 } from "./../constants/HomeConfig";
 import Clickable from "./components/Clickable";
-import i18n from "../locale";
 import { useTranslation } from "react-i18next";
-import * as firebase from "firebase";
 import { useNavigation } from "@react-navigation/native";
-import { Storage } from "expo-storage";
 import SelectBox from "react-native-multi-selectbox";
+import * as UserStorage from "./StorageUtils/UserStorage";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -21,88 +18,48 @@ const Settings = () => {
   const [nativelanguage, setnativeLanguage] = useState({});
   const [translatedlanguage, setTranslatedLanguage] = useState({});
 
-  useEffect(() => {
-    firebase.auth().onAuthStateChanged((user) => {
+  useEffect(async () => {
+    firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        firebase
-          .firestore()
-          .collection("userInfo")
-          .doc(firebase.auth().currentUser.uid)
-          .onSnapshot((snapshot) => {
-            if (snapshot) {
-              console.log("Settings snapshot: ", snapshot.data());
-              setGradeLevel(snapshot.data().grade);
-              setnativeLanguage(snapshot.data()?.nativeLanguage);
-              setTranslatedLanguage(snapshot.data()?.translatedLanguageConfig);
-            }
-          });
+        const [grade, nativeLanguage, translatedLanguageConfig, username, isAdmin] = await UserStorage.getUserInfo()
+        setGradeLevel(grade)
+        setnativeLanguage(nativeLanguage)
+        setTranslatedLanguage(translatedLanguageConfig)
       }
     });
   }, []);
 
-  const UpdateLang = async () => {
-    console.log(translatedlanguage);
-    // if (translatedlanguage.id !== nativelanguage.id) {
-    console.log("_-----------------------UPDATE_++");
-    console.log(nativelanguage, translatedlanguage);
-    console.log("_-----------------------UPDATE_++");
-    await Storage.setItem({
-      key: "nativeLanguage",
-      value: JSON.stringify(nativelanguage),
-    });
-    // await Storage.setItem({
-    //   key: "translatedLanguage",
-    //   value: JSON.stringify(translatedlanguage),
-    // });
+  const SaveInfo = async () => {
+    if (translatedlanguage.id == nativelanguage.id) {
+      alert("The translated language and the native language cannot be the same!")
+    }
+    else {
+      await UserStorage.setUserInfo(
+        nativelanguage,
+        translatedlanguage,
+        gradeLevel,
+        username=undefined
+      )
 
-    let uid = firebase.auth()?.currentUser?.uid;
-    firebase
-      .firestore()
-      .collection("userInfo")
-      .doc(uid)
-      .update({
-        grade: gradeLevel,
-        nativeLanguage: nativelanguage,
-        // translatedLanguageConfig: translatedlanguage,
-      })
-      .then(() => {
-        navigation.goBack();
-      })
-      .catch((err) => {
-        console.log(err);
-      });
-    // } else {
-    //   alert(
-    //     "The translated language and your native language cannot be the same!"
-    //   );
-    // }
+      navigation.goBack()
+    }
   };
 
-  const logout = () => {
-    firebase
-      .auth()
-      .signOut()
-      .then(() => {
-        navigation.replace("Welcome Screen");
-      });
-  };
   return (
     <SafeAreaView style={styles.container}>
       <ScrollView>
         <Text style={styles.paddingBottomText}>
           {t("settings.native_language")}
         </Text>
-        {/* <RadioButtonRN
+        <RadioButtonRN
           data={languageConfig}
           selectedBtn={(e) => {
-            //i18n.changeLanguage(e.label)
             setnativeLanguage(e);
           }}
         />
         <View style={{ marginTop: 0 }}>
           <SelectBox
             label=""
-            // label={t("settings.native_language")}
             options={languageConfig}
             value={nativelanguage}
             onChange={(e) => setnativeLanguage(e)}
@@ -129,8 +86,8 @@ const Settings = () => {
       </ScrollView> 
        
       <View style={styles.loginButtons}>
-        <Clickable text={t("general.save")} onPress={UpdateLang} />
-        <Clickable text={"Logout"} onPress={logout} />
+        <Clickable text={t("general.save")} onPress={SaveInfo} />
+        <Clickable text={"Logout"} onPress={UserStorage.logoutUser()} />
       </View>
     </SafeAreaView>
   );

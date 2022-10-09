@@ -1,13 +1,10 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
   Text,
   TouchableOpacity,
-  Image,
   ScrollView,
-  FlatList,
-  TextInput,
   StyleSheet,
   ImageBackground,
 } from "react-native";
@@ -15,7 +12,6 @@ import { Camera } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
 import axios from "axios";
 import { addData } from "../constants/HomeConfig";
-import { StackActions } from "@react-navigation/native";
 import * as DocumentPicker from 'expo-document-picker';
 
 // **************************** SERVER INFORMATION ****************************
@@ -24,7 +20,6 @@ export const server = "https://edulangbackend.azurewebsites.net/";
 
 const LiveTranslation = ({ navigation, route }) => {
   const [images, setImages] = useState([]);
-  const [permission, requestPermission] = Camera.useCameraPermissions();
   const [cameraPreview, setCameraPreview] = useState(false);
   const [TranslateTitle, setTranslateTitle] = useState("Translate");
   var camera;
@@ -110,6 +105,7 @@ const LiveTranslation = ({ navigation, route }) => {
       return;
     }
 
+    // Manual translation
     for (var i = 0; i < images.length; i++) {
       const element = images[i];
       setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
