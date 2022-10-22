@@ -1,4 +1,4 @@
-import React, { useEffect, useState } from "react";
+import React, { useState } from "react";
 import {
   SafeAreaView,
   View,
@@ -11,88 +11,58 @@ import {
 } from "react-native";
 import { COLORS, FONTS } from "../constants";
 import BookList from "./components/BookList.js";
-import LottieView from "lottie-react-native";
 import { AntDesign } from "@expo/vector-icons";
 import { useTranslation } from "react-i18next";
-import * as firebase from "firebase";
 import FeedbackModal from "./components/FeedBackModal";
-import { useIsFocused } from "@react-navigation/native";
 import axios from "axios";
 import { server } from "./LiveTranslation";
-import { getAdminBooks, getBookData, getCompletedBooks, getFavBooks } from "./StorageUtils/BookStorage";
-import { getUserInfoFirebase } from "./StorageUtils/UserStorage";
+import { useEffect } from "react";
+import { useIsFocused } from "@react-navigation/native";
+import { Storage } from 'expo-storage'
+import { getCompletedBooks, getFavBooks } from "./StorageUtils/BookStorage";
+
+async function getStorage (key, array=false) {
+  var val = JSON.parse(await Storage.getItem({key: key}))
+  if (array === true) val = Array.from(val)
+  return val
+}
 
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
-  const [loading, setloading] = useState(false);
-  const [username, setUsername] = useState("");
-  const [nativeLanguage, setnativeLanguage] = useState({});
-  const [searchText, setSearchText] = useState("")
-  const [searchData, setSearchData] = useState({})
-  const [completedBooks, setcompletedBooks] = useState([]);
+  const [data, setData] = useState([])
+  const [nativeLanguage, setNativeLanguage] = useState({})
+  const [username, setUsername] = useState("")
+  const [completedBooks, setCompletedBooks] = useState([])
+  const [favBooks, setFavBooks] = useState([])
+  const [isAdmin, setIsAdmin] = useState([])
+  const [adminData, setAdminData] = useState([])
+  const [searchData, setSearchData] = useState([])
   const [feedbackModal, setfeedbackModal] = useState(false);
-  const [favList, setfavList] = useState([]);
-  const [adminData, setAdminData] = useState([]);
-  const [data, setData] = useState([]);
-  const [isAdmin, setIsAdmin] = useState(false);
-  const isFocused = useIsFocused();
+  const isFocused = useIsFocused()
 
-  // user information
-  function getUserDataloc () {
-    return new Promise((resolve, reject) => {
-      firebase.auth().onAuthStateChanged(async (user) => {
-        if (user) {
-          const [grade, nativeLanguage, translatedLanguage, username, isAdmin] = await getUserInfoFirebase()
-          console.log(username)
-          setUsername(username)
-          setnativeLanguage(nativeLanguage)
-          setIsAdmin(isAdmin)
-          setloading(false)
-        } else {
-          setloading(false);
-          navigation.replace("Welcome Screen");
-        }
-        resolve(nativeLanguage)
-      });
-    })
-  }
-
-  // Get books & favlist & completed books
   useEffect(async () => {
-    if (isFocused) {
-      setloading(true);
-      // Get user information
-      console.log("Getting user information")
-      const nativeLang = await getUserDataloc() 
+    setCompletedBooks(await getCompletedBooks(true))
+    setFavBooks(await getFavBooks(true))
 
-      // Get book data
-      console.log("Getting book data")
-      const value = await getBookData(nativeLang.item)
-      setData(value);
-      
-      // Update search data
-      console.log("Updating Search Dtaa")
-      updateSearchData(searchText) 
-      
-      // Get fav list and completed books
-      console.log("Get completed fav")
-      setfavList(await getFavBooks(true))
-      setcompletedBooks(await getCompletedBooks(true))
+    const data = await getStorage("data", true)
+    setData(data)
 
-      // Get admin books to accept/decline
-      if (isAdmin) {
-        console.log("Get admin data")
-        setAdminData(await getAdminBooks());
-      }
+    setUsername(await getStorage("username")) 
 
-      console.log("Completed")
-      setloading(false);
+    const isAdmin = await getStorage("isAdmin")
+    setIsAdmin(isAdmin)
+
+    if (isAdmin === true) {
+      setAdminData(await getStorage("AdminData", true))
     }
-  }, [navigation, isFocused]);
+    
+    setNativeLanguage(await getStorage("nativeLanguage"))
+    updateSearchData(data, "")
+  }, [isFocused])
 
   // Update search data
-  function updateSearchData (text) {
-    setSearchData(data.filter((book) => {
+  function updateSearchData (dataFilter, text) {
+    setSearchData(dataFilter.filter((book) => {
       let text1 = text.toLowerCase();
       return text ? book.title.toLowerCase().includes(text1) : true;
     }))
@@ -103,7 +73,7 @@ const Home = ({ navigation, route }) => {
       return (
         <View style={{ marginTop: 5 }}>
           <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-          <BookList item={adminData} navigation={navigation} />
+          <BookList item={adminData} navigation={navigation} NoMessage="No Admin Books found" />
         </View>
       );
     } else {
@@ -121,15 +91,10 @@ const Home = ({ navigation, route }) => {
 
   const renderHeader = () => {
     return (
-      <View>
+      <View style={{
+        height: 180
+      }}>
         {/* <SvgComponent /> */}
-        <View>
-          <Image
-            style={{ height: 425 }}
-            source={require("../assets/gradient.png")}
-          />
-        </View>
-
         <View
           style={{
             backgroundColor: "#4CA4D3",
@@ -151,8 +116,7 @@ const Home = ({ navigation, route }) => {
             placeholder="Search book"
             placeholderTextColor="white"
             onChangeText={(text) => {
-              setSearchText(text)
-              updateSearchData(text)
+              updateSearchData(data, text)
             }}
           />
           <AntDesign name="search1" size={24} color="white" />
@@ -184,26 +148,6 @@ const Home = ({ navigation, route }) => {
             />
           </TouchableOpacity>
         </View>
-        {/* <View
-          style={{
-            backgroundColor: "#eee",
-            padding: 15,
-            flexDirection: "row",
-            alignItems: "center",
-            alignSelf: "center",
-            margin: 5,
-            width: "90%",
-            borderRadius: 6,
-            justifyContent: "space-between",
-          }}
-        >
-          <TextInput
-            style={{ backgroundColor: "#eee", width: "90%" }}
-            placeholder="Search book"
-            onChangeText={(text) => setsearchText(text)}
-          />
-          <AntDesign name="search1" size={24} color="black" />
-        </View> */}
       </View>
     );
   };
@@ -264,29 +208,27 @@ const Home = ({ navigation, route }) => {
           </TouchableOpacity>
           
         </View>
-        <BookList item={searchData} navigation={navigation} />
+        <BookList item={searchData} navigation={navigation} NoMessage="No Books found!" />
       </View>
     );
   };
-  const renderScrollBar2 = (title) => {
+  const renderCompletedBooks = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-        <BookList item={completedBooks} navigation={navigation} />
+        <BookList item={completedBooks} navigation={navigation} NoMessage="No completed books." />
       </View>
     );
   };
 
-  const renderScrollBar3 = (title) => {
+  const renderFavoriteBooks = (title) => {
     return (
       <View style={{ marginTop: 5 }}>
         <Text style={{ fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-        <BookList item={favList} navigation={navigation} />
+        <BookList item={favBooks} navigation={navigation} NoMessage="No favorite books."/>
       </View>
     );
   };
-
-  
 
   return (
     <>
@@ -297,36 +239,17 @@ const Home = ({ navigation, route }) => {
           backgroundColor: "white",
         }}
       >
+        {renderHeader()}
 
-        {loading ? (
-          <LottieView
-            source={require("../assets/images/lottie1.json")}
-            autoPlay
-            style={{ justifyContent: "center", alignItems: "center" }}
-          />
-        ) : (
-          <>
-            {renderHeader()}
-
-            <ScrollView
-              showsHorizontalScrollIndicator={false}
-              style={{ marginHorizontal: 20, position: "absolute", top: 220 }}
-            >
-              {renderScrollBar(`${t("Featured Books")}`)}
-            </ScrollView>
-
-
-            <ScrollView
-              showsVerticalScrollIndicator={false}
-              style={{ marginHorizontal: 20 }}
-            >
-              {renderScrollBar2(`Completed Books`)}
-              {renderScrollBar3(`Favorite Books`)}
-
-              {renderAdmin(`Books Review`)}
-            </ScrollView>
-          </>
-        )}
+        <ScrollView
+          showsVerticalScrollIndicator={false}
+          style={{ marginHorizontal: 20 }}
+        >
+          {renderScrollBar(`${t("Featured Books")}`)}
+          {renderCompletedBooks(`Completed Books`)}
+          {renderFavoriteBooks(`Favorite Books`)}
+          {renderAdmin(`Books Review`)}
+        </ScrollView>
 
         <FeedbackModal
           visible={feedbackModal}

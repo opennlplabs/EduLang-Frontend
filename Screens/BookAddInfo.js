@@ -17,7 +17,7 @@ const BookAddInfo = ({ navigation, route }) => {
 
     async function Submit() {
         const titles = JSON.parse(await Storage.getItem({ key: "titles" }))
-        if (title.replace(/\s+/g, '_') in titles || title in titles) {
+        if (titles.indexOf(title.replace(/\s+/g, '_')) >= 0) {
             alert("Duplicate Title! Choose a different title.")
         }
         else {

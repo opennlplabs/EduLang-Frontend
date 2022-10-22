@@ -59,7 +59,6 @@ export function getUserInfoFirebase() {
             .doc(firebase.auth().currentUser.uid)
             .onSnapshot(async (snapshot) => {
                 if (snapshot) {
-                    console.log("Settings snapshot: ", snapshot.data());
                     // Get data from snapshot
                     var grade = snapshot.data().grade 
                     var nativeLanguage = snapshot.data()?.nativeLanguage
@@ -105,8 +104,6 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
     if (grade != undefined && grade != null) info.grade = grade
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
-
-    
 
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;

@@ -90,7 +90,7 @@ const BookInfo = ({ navigation, route }) => {
             </TouchableOpacity>
           </> : <>
             {favList.some((book) => book === item.title) ? (
-              <TouchableOpacity onPress={async () => removeFromFav(await removeFromFav(item))}>
+              <TouchableOpacity onPress={async () => setfavList(await removeFromFav(item))}>
                 <AntDesign name="heart" size={24} color="red" />
               </TouchableOpacity>
             ) : (

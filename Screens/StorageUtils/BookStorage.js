@@ -20,77 +20,72 @@ export async function clearAllStorageData() {
     })
 }
 
-export const getBookData = async (language) => {
+export const getLocalStorageBook = async (language) => {
     var storageData = await Storage.getItem({ key: "data" })
     if (storageData == undefined) storageData = []
     else storageData = Array.from(JSON.parse(storageData))
 
     var titles = await Storage.getItem({ key: "titles" })
     if (titles == undefined) titles = {}
-    else titles = JSON.parse(titles)
+    else titles = Array.from(JSON.parse(titles))
 
-    // Also get any books that has been accepted
-    const snapshot = await firebase.firestore().collection("Books").get()
+    // Filter Language
+    var dataLang = []
+    var titlesLang = [] 
+    for (var i = 0; i < storageData.length; i++) {
+        if (storageData[i].language == language.item) {
+            dataLang.push(storageData[i])
+            titlesLang.push(titles[i])
+        }
+    }
+
+    return [dataLang, titlesLang]
+}
+
+export const getNewTitlesFromCloud = async (origTitles, language) => {
+    var newTitles = [] 
     var ids = []
-    var datas = []
-
-    // Filter books
+    const snapshot = await firebase.firestore().collection("Books").get()
     snapshot.forEach((doc) => {
         const data = doc.data()
-        if (!(data.title in titles)) {
-            if ((language != null && data.language == language) || language == null) {
-                ids.push(doc.id)
-                datas.push(doc.data())
-            }
+        // Filter out language and check if cloud book is not in local storage
+        if (data.language == language.item && origTitles.indexOf(data.title) < 0) {
+            newTitles.push(data.title)
+            ids.push(doc.id)
         }
     })
 
-    for (var x = 0; x < ids.length; x++) {
-        var title = datas[x].title
-        if (title in titles) {
-            ids.splice(x)
-            datas.splice(x)
-        }
+    return [newTitles, ids]
+}
+
+export const getCloudBookFromId = async (id) => {
+    var data = {}
+    const bookSnapshot = await firebase.firestore()
+        .collection("Books")
+        .doc(id)
+        .get()
+    
+    data = {...bookSnapshot.data(), book: {} }
+    const lenPages = data.lenPages
+
+    // get pages data
+    for (var i = 0; i < lenPages; i++) {
+        const pageSnapshot = await firebase.firestore()
+            .collection("Books")
+            .doc(id)
+            .collection("page" + (i + 1).toString())
+            .doc((i + 1).toString())
+            .get()
+        data.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
     }
 
-    // Get Pages
-    for (var x = 0; x < ids.length; x++) {
-        var dict = { ...datas[x], book: {} }
-        const lenPages = dict.lenPages
-
-        // get collections data
-        for (var i = 0; i < lenPages; i++) {
-            const pageSnapshot = await firebase.firestore()
-                .collection("Books")
-                .doc(ids[x])
-                .collection("page" + (i + 1).toString())
-                .doc((i + 1).toString())
-                .get()
-            dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
-        }
-        titles[datas[x].title] = storageData.length
-        storageData.push(dict)
-    }
-
-    // Storage 
-    await Storage.setItem({
-        key: "data",
-        value: JSON.stringify(storageData)
-    })
-    await Storage.setItem({
-        key: "titles",
-        value: JSON.stringify(titles)
-    })
-
-    return storageData
+    return data
 }
 
 export const addBookLocally = async (title, description, language, book, imageBase64) => {
-    console.log("Fetching data...")
     var data = await Storage.getItem({ key: "data" })
     data = Array.from(JSON.parse(data))
 
-    console.log("Fetching titles")
     var titles = await Storage.getItem({ key: "titles" })
     titles = JSON.parse(titles)
 
@@ -104,16 +99,14 @@ export const addBookLocally = async (title, description, language, book, imageBa
         source: `data:image/jpeg;base64,${imageBase64}`,
         book: book
     }
-    titles[title] = data.length
+    titles.push(title)
     data.push(obj)
 
-    console.log("setting data....")
     await Storage.setItem({
         key: "data",
         value: JSON.stringify(data)
     })
 
-    console.log("setting titles...")
     await Storage.setItem({
         key: "titles",
         value: JSON.stringify(titles)
@@ -124,14 +117,14 @@ export async function getFavBooks(full_data) {
     const favBooks = Array.from(
         JSON.parse(await Storage.getItem({ key: "favBooks" }))
     );
-    if (full_data) {
+    if (full_data === true) {
         const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
         const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
         if (favBooks) {
             var arr = [];
-            favBooks.forEach((value, index) => {
-                if (value in titles) {
-                    arr.push(data[titles[value]]);
+            titles.forEach((value, index) => {
+                if (favBooks.indexOf(value) >= 0) {
+                    arr.push(data[index]);
                 }
             });
             return arr
@@ -147,14 +140,14 @@ export async function getCompletedBooks(full_data) {
     const completedBooks = Array.from(
         JSON.parse(await Storage.getItem({ key: "completedBooks" }))
     );
-    if (full_data) {
+    if (full_data === true) {
         const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
         const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
         if (completedBooks) {
             var arr = [];
-            completedBooks.forEach((value, index) => {
-                if (value in titles) {
-                    arr.push(data[titles[value]]);
+            titles.forEach((value, index) => {
+                if (completedBooks.indexOf(value) >= 0) {
+                    arr.push(data[index]);
                 }
             });
             return arr
@@ -258,7 +251,6 @@ export async function addToFav(item) {
         value: JSON.stringify(favBooks)
     })
     return favBooks
-    setfavList(favBooks)
 }
 
 export async function removeFromFav(item) {

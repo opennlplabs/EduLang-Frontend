@@ -11,7 +11,7 @@ import {
   Image,
 } from "react-native";
 
-const BookList = ({ navigation, item }) => {
+const BookList = ({ navigation, item, NoMessage }) => {
   const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
@@ -26,14 +26,22 @@ const BookList = ({ navigation, item }) => {
     );
   };
 
-  return (
-    <FlatList
-      showsHorizontalScrollIndicator={false}
-      data={item}
-      renderItem={renderItem}
-      horizontal
-    />
-  );
+  if (item.length == 0) {
+    return (
+      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height: 100}}>
+        <Text style={{textAlign: 'center', paddingLeft: 20, paddingRight: 20}}>{NoMessage}</Text>
+      </View>
+    )
+  } else {
+    return (
+      <FlatList
+        showsHorizontalScrollIndicator={false}
+        data={item}
+        renderItem={renderItem}
+        horizontal
+      />
+    );
+  }
 };
 
 const styles = StyleSheet.create({

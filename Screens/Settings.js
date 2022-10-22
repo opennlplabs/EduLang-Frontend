@@ -40,7 +40,7 @@ const Settings = () => {
         undefined
       )
 
-      navigation.goBack()
+      navigation.replace("Splash")
     }
   };
 
