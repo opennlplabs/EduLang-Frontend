@@ -2,7 +2,7 @@ import React from "react";
 import { View, ActivityIndicator, Text} from "react-native";
 import * as firebase from "firebase";
 import { useState } from "react";
-import { getUserInfoFirebase } from "./StorageUtils/UserStorage";
+import { getUserInfoFirebase, logoutUserFirebase } from "./StorageUtils/UserStorage";
 import { Storage } from "expo-storage";
 import { getAdminBooks, getBookData, getCloudBookFromId, getCloudBookFromTitle, getFirebaseTitles, getLocalStorageBook, getNewTitlesFromCloud, updateFromCloud } from "./StorageUtils/BookStorage";
 

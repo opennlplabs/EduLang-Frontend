@@ -55,7 +55,7 @@ const WelcomeScreenNew = ({ navigation }) => {
   const handleLogin = () => {
     loginEmailPassword(email, password).then(() => {
       i18n.changeLanguage("en");
-      navigation.replace("Home");
+      navigation.replace("Splash");
     }).catch((error) => {
       setErrorMessage(error);
     })

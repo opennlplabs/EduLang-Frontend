@@ -120,3 +120,18 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
             .catch((err) => { reject(err) });
     })
 }
+
+export const deleteAccount = () => {
+    return new Promise((resolve, reject) => {
+        firebase
+        .firestore()
+        .collection("userInfo")
+        .doc(firebase.auth().currentUser.uid)
+        .delete()
+        .then(() => {
+            firebase.auth().currentUser.delete();
+            firebase.auth().signOut();
+            resolve("Success")
+        }).catch((e) => reject(e));
+    })
+  };

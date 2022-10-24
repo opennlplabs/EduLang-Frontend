@@ -20,13 +20,14 @@ const SignUpScreen = ({ route }) => {
   const [username, setUsername] = useState("");
   const [loading, setloading] = useState(false);
   const [nativelanguage, setNativeLanguage] = useState({});
+  const [translatedlanguage, setTranslatedLanguage] = useState({})
 
   const authfromFirebase = async () => {
     const { email, password } = route.params;
     setloading(true);
     
-    await createUser(email, password).then(() => {
-      handleRegister();
+    await createUser(email, password).then(async () => {
+      await handleRegister();
     }).catch((err_msg) => {
       setloading(false);
       alert(err_msg)
@@ -35,7 +36,8 @@ const SignUpScreen = ({ route }) => {
 
   const handleRegister = async () => {
     // undefined is translated language, but it will not actually be set to undefined (it just won't be set/changed)
-    setUserInfo(nativeLanguage, undefined, grade, username).then(() => {
+    // we should add translated language later
+    await setUserInfo(nativelanguage, translatedlanguage, grade, username).then(() => {
       // Continue
       setloading(false)
     }).catch((e) => {
@@ -43,10 +45,6 @@ const SignUpScreen = ({ route }) => {
       setloading(false)
     })
   };
-
-  function onChange() {
-    return (val) => setNativeLanguage(val);
-  }
 
   return (
     <SafeAreaView style={styles.container}>
@@ -70,7 +68,7 @@ const SignUpScreen = ({ route }) => {
             label={t("settings.native_language")}
             options={languageConfig}
             value={nativelanguage}
-            onChange={onChange()}
+            onChange={(val) => setNativeLanguage(val)}
             hideInputFilter={false}
             containerStyle={{
               backgroundColor: "#808080",
@@ -81,6 +79,25 @@ const SignUpScreen = ({ route }) => {
             labelStyle={{ color: "#4CA4D3", fontWeight: "bold" }}
             selectedItemStyle={{ color: "white", fontSize: 15 }}
             inputPlaceholder={t("reg.native_language")}
+            arrowIconColor="white"
+          />
+        </View>
+        <View style={{ marginTop: 10 }}>
+          <SelectBox
+            label={t("settings.translated_language")}
+            options={languageConfig}
+            value={translatedlanguage}
+            onChange={(value) => {setTranslatedLanguage(value)}}
+            hideInputFilter={false}
+            containerStyle={{
+              backgroundColor: "#808080",
+              alignItems: "center",
+              padding: 8,
+              borderRadius: 4,
+            }}
+            labelStyle={{ color: "#4CA4D3", fontWeight: "bold" }}
+            selectedItemStyle={{ color: "white", fontSize: 15 }}
+            inputPlaceholder={t("reg.translated_language")}
             arrowIconColor="white"
           />
         </View>
