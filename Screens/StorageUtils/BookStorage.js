@@ -54,30 +54,6 @@ export const getCloudBooks = async () => {
     return datas
 }
 
-export const getCloudBookFromId = async (id) => {
-    var data = {}
-    const bookSnapshot = await firebase.firestore()
-        .collection("Books")
-        .doc(id)
-        .get()
-
-    data = { ...bookSnapshot.data(), book: {} }
-    const lenPages = data.lenPages
-
-    // get pages data
-    for (var i = 0; i < lenPages; i++) {
-        const pageSnapshot = await firebase.firestore()
-            .collection("Books")
-            .doc(id)
-            .collection("page" + (i + 1).toString())
-            .doc((i + 1).toString())
-            .get()
-        data.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
-    }
-
-    return data
-}
-
 export const addBookLocally = async (title, description, language, book, imageBase64) => {
     var data = await Storage.getItem({ key: "data" })
     data = Array.from(JSON.parse(data))
@@ -163,31 +139,8 @@ export async function getAdminBooks() {
 
     snapshot.forEach((doc) => {
         ids.push(doc.id);
-        datas.push(doc.data());
+        datas.push({ ...doc.data(), "isAdmin": true, "id": doc.id });
     });
-
-    for (var x = 0; x < ids.length; x++) {
-        var dict = { ...datas[x], book: {} };
-
-        const lenPages = dict.lenPages;
-
-        // get collections data
-        for (var i = 0; i < lenPages; i++) {
-            const pageSnapshot = await firebase.firestore()
-                .collection("BooksReview")
-                .doc(ids[x])
-                .collection("page" + (i + 1).toString())
-                .doc((i + 1).toString())
-                .get()
-            dict.book["page" + (i + 1).toString()] = pageSnapshot.data()["value"]
-        }
-
-        // Set extra information
-        dict["isAdmin"] = true;
-        dict["id"] = ids[x];
-        dict["lenPages"] = lenPages;
-        arr.push(dict);
-    }
 
     return arr
 }
