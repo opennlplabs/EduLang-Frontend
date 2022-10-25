@@ -31,7 +31,7 @@ export const getLocalStorageBook = async (language) => {
 
     // Filter Language
     var dataLang = []
-    var titlesLang = [] 
+    var titlesLang = []
     for (var i = 0; i < storageData.length; i++) {
         if (storageData[i].language == language.item) {
             dataLang.push(storageData[i])
@@ -42,20 +42,16 @@ export const getLocalStorageBook = async (language) => {
     return [dataLang, titlesLang]
 }
 
-export const getNewTitlesFromCloud = async (origTitles, language) => {
-    var newTitles = [] 
-    var ids = []
+export const getCloudBooks = async () => {
+    var datas = []
     const snapshot = await firebase.firestore().collection("Books").get()
     snapshot.forEach((doc) => {
         const data = doc.data()
         // Filter out language and check if cloud book is not in local storage
-        if (data.language == language.item && origTitles.indexOf(data.title) < 0) {
-            newTitles.push(data.title)
-            ids.push(doc.id)
-        }
+        datas.push(data)
     })
 
-    return [newTitles, ids]
+    return datas
 }
 
 export const getCloudBookFromId = async (id) => {
@@ -64,8 +60,8 @@ export const getCloudBookFromId = async (id) => {
         .collection("Books")
         .doc(id)
         .get()
-    
-    data = {...bookSnapshot.data(), book: {} }
+
+    data = { ...bookSnapshot.data(), book: {} }
     const lenPages = data.lenPages
 
     // get pages data
@@ -113,13 +109,11 @@ export const addBookLocally = async (title, description, language, book, imageBa
     })
 }
 
-export async function getFavBooks(full_data) {
+export async function getFavBooks(data, titles, use_full_data) {
     const favBooks = Array.from(
         JSON.parse(await Storage.getItem({ key: "favBooks" }))
     );
-    if (full_data === true) {
-        const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
-        const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
+    if (use_full_data === true) {
         if (favBooks) {
             var arr = [];
             titles.forEach((value, index) => {
@@ -136,13 +130,11 @@ export async function getFavBooks(full_data) {
     }
 }
 
-export async function getCompletedBooks(full_data) {
+export async function getCompletedBooks(data, titles, use_full_data) {
     const completedBooks = Array.from(
         JSON.parse(await Storage.getItem({ key: "completedBooks" }))
     );
-    if (full_data === true) {
-        const data = Array.from(JSON.parse(await Storage.getItem({ key: "data" })));
-        const titles = JSON.parse(await Storage.getItem({ key: "titles" }));
+    if (use_full_data === true) {
         if (completedBooks) {
             var arr = [];
             titles.forEach((value, index) => {
@@ -297,7 +289,7 @@ function delay(delayInms) {
     });
 }
 
-export async function uploadBook (item) {
+export async function uploadBook(item) {
     const collectionSelect = "BooksReview"
     let uid = firebase.auth()?.currentUser?.uid;
     const document = firebase.firestore().collection(collectionSelect).doc(item.title + " " + uid.toString())
@@ -315,18 +307,18 @@ export async function uploadBook (item) {
     }
 }
 
-export async function acceptBook (item) {
+export async function acceptBook(item) {
     const id = item["id"]
     const lenPages = item["lenPages"]
 
     // Then delete the data about the selected item
     for (var i = 0; i < lenPages; i++) {
-    await firebase.firestore()
-        .collection("BooksReview")
-        .doc(id)
-        .collection("page" + (i + 1).toString())
-        .doc((i + 1).toString())
-        .delete()
+        await firebase.firestore()
+            .collection("BooksReview")
+            .doc(id)
+            .collection("page" + (i + 1).toString())
+            .doc((i + 1).toString())
+            .delete()
     }
     await firebase.firestore().collection("BooksReview").doc(id).delete()
 

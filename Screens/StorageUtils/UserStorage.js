@@ -60,11 +60,11 @@ export function getUserInfoFirebase() {
             .onSnapshot(async (snapshot) => {
                 if (snapshot) {
                     // Get data from snapshot
-                    var grade = snapshot.data().grade 
+                    var grade = snapshot.data().grade
                     var nativeLanguage = snapshot.data()?.nativeLanguage
                     var translatedLanguageConfig = snapshot.data()?.translatedLanguageConfig
                     var username = snapshot.data()?.username
-                    var isAdmin = snapshot.data()?.isAdmin 
+                    var isAdmin = snapshot.data()?.isAdmin
 
                     // Check if variable are undefined and set to default values
                     if (grade == undefined) {
@@ -78,7 +78,7 @@ export function getUserInfoFirebase() {
                         }
                         await setUserInfo(val, undefined, undefined, undefined)
                         nativeLanguage = val
-                        
+
                     }
                     if (translatedLanguageConfig == undefined) {
                         const val = {
@@ -87,8 +87,8 @@ export function getUserInfoFirebase() {
                         }
                         await setUserInfo(undefined, val, undefined, undefined)
                         translatedLanguageConfig = val
-                    } 
-                    resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin]) 
+                    }
+                    resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin])
                 }
                 else {
                     reject("Unable to get snapshot data")
@@ -124,14 +124,22 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
 export const deleteAccount = () => {
     return new Promise((resolve, reject) => {
         firebase
-        .firestore()
-        .collection("userInfo")
-        .doc(firebase.auth().currentUser.uid)
-        .delete()
-        .then(() => {
-            firebase.auth().currentUser.delete();
-            firebase.auth().signOut();
-            resolve("Success")
-        }).catch((e) => reject(e));
+            .firestore()
+            .collection("userInfo")
+            .doc(firebase.auth().currentUser.uid)
+            .delete()
+            .then(() => {
+                firebase.auth().currentUser.delete();
+                firebase.auth().signOut();
+                resolve("Success")
+            }).catch((e) => reject(e));
     })
-  };
+};
+
+export const test_request = async () => {
+    const response = await axios({
+        method: "post",
+        url: `${server}/test`,
+    })
+    console.log("Test response:", JSON.parse(response.data["response"]))
+}

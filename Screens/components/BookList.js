@@ -2,16 +2,16 @@ import React from "react";
 import {
   View,
   Text,
-  Pressable,
   SafeAreaView,
   StyleSheet,
   Dimensions,
   TouchableOpacity,
   FlatList,
   Image,
+  ActivityIndicator,
 } from "react-native";
 
-const BookList = ({ navigation, item, NoMessage }) => {
+const BookList = ({ navigation, item, NoMessage, isLoading }) => {
   const renderItem = ({ item, index }) => {
     return (
       <TouchableOpacity
@@ -26,20 +26,29 @@ const BookList = ({ navigation, item, NoMessage }) => {
     );
   };
 
-  if (item.length == 0) {
+  if (isLoading) {
     return (
-      <View style={{flex: 1, justifyContent: 'center', alignItems: 'center', height: 100}}>
-        <Text style={{textAlign: 'center', paddingLeft: 20, paddingRight: 20}}>{NoMessage}</Text>
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: 100 }}>
+        <ActivityIndicator size={"large"} />
+      </View>
+    )
+  }
+  else if (item.length == 0) {
+    return (
+      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: 100 }}>
+        <Text style={styles.text}>{NoMessage}</Text>
       </View>
     )
   } else {
     return (
-      <FlatList
-        showsHorizontalScrollIndicator={false}
-        data={item}
-        renderItem={renderItem}
-        horizontal
-      />
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          showsHorizontalScrollIndicator={false}
+          data={item}
+          renderItem={renderItem}
+          numColumns={2}
+        />
+      </SafeAreaView>
     );
   }
 };
@@ -53,10 +62,18 @@ const styles = StyleSheet.create({
     alignItems: "center",
     justifyContent: "center",
   },
+  container: {
+    flex: 1,
+  },
+  text: {
+    textAlign: 'center',
+    paddingLeft: 30,
+    paddingRight: 30
+  },
   image: {
     //...StyleSheet.absoluteFillObject,
     resizeMode: "contain",
-    width: 180,
+    width: 150,
     height: 170,
   },
 });
