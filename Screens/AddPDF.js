@@ -14,8 +14,9 @@ import { styles } from "./LiveTranslation";
 import axios from "axios";
 import * as DocumentPicker from 'expo-document-picker';
 import { server } from "./LiveTranslation";
+import { uploadBook } from "./StorageUtils/BookStorage";
 
-export const AddPDF = () => {
+export const AddPDF = ({ navigation, route }) => {
     const [cameraPreview, setCameraPreview] = useState(false)
     const [images, setImages] = useState([])
     const [buttonTitle, setButtonTitle] = useState("Upload Book")
@@ -77,9 +78,24 @@ export const AddPDF = () => {
     }
 
     const uploadPDF = async () => {
-        console.log("Upload PDF")
-    }
+        console.log(route.params?.language.item)
+        setButtonTitle("Uploading Book...")
+        const title = route.params?.title
+        const description = route.params?.description
+        const lang = route.params?.language.item
+        const cover = images[0]
+        const pages = images
 
+        await uploadBook(
+            title,
+            description,
+            lang,
+            cover,
+            pages,
+            true
+        )
+        navigation.goBack()
+    }
 
     return (
         <View>
@@ -140,7 +156,7 @@ export const AddPDF = () => {
                                             style={styles.Image}
                                             imageStyle={{ borderRadius: 20 }}
                                             source={{
-                                                uri: `data:image/jpeg;base64,${element.base64}`,
+                                                uri: `data:image/jpeg;base64,${element}`,
                                             }}
                                         >
                                             <Text style={styles.PageText}>Page #{index + 1}</Text>
@@ -172,6 +188,8 @@ export const AddPDF = () => {
             <View style={styles.BottomView}>
                 <TouchableOpacity
                     style={[styles.Button, styles.TranslateButton]}
+                    onPress={uploadPDF}
+                    disabled={buttonTitle !== "Upload Book"}
                 >
                     <Text style={{ textAlign: "center" }}>{buttonTitle}</Text>
                 </TouchableOpacity>
