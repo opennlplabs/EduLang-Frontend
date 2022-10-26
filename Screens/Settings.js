@@ -21,7 +21,7 @@ const Settings = () => {
   useEffect(async () => {
     firebase.auth().onAuthStateChanged(async (user) => {
       if (user) {
-        const [grade, nativeLanguage, translatedLanguageConfig, username, isAdmin] = await getUserInfoFirebase() 
+        const [grade, nativeLanguage, translatedLanguageConfig, username, isAdmin] = await getUserInfoFirebase()
         setGradeLevel(grade)
         setnativeLanguage(nativeLanguage)
         setTranslatedLanguage(translatedLanguageConfig)
@@ -47,12 +47,14 @@ const Settings = () => {
 
   const deleteUser = async () => {
     Alert.alert("Confirm on deleting on your account?", "Would you like to delete your account? All storage data (books you have created, favorites, downloaded books, etc.) will be lost forever!", [
-      {text: "Confirm", onPress: async () => {
-        await clearAllStorageData()
-        await deleteAccount()
-        navigation.replace("Welcome Screen")
-      }},
-      {text: "Cancel", style: 'cancel'}
+      {
+        text: "Confirm", onPress: async () => {
+          await clearAllStorageData()
+          await deleteAccount()
+          navigation.replace("Welcome Screen")
+        }
+      },
+      { text: "Cancel", style: 'cancel' }
     ])
   }
 
@@ -110,11 +112,11 @@ const Settings = () => {
           data={gradeConfig}
           selectedBtn={(e) => setGradeLevel(e.label)}
         />
-      </ScrollView> 
-       
+      </ScrollView>
+
       <View style={styles.loginButtons}>
         <Clickable text={t("general.save")} onPress={SaveInfo} />
-        <Clickable text={"Logout"} onPress={() => {logoutUserFirebase().then(() => {navigation.replace("Welcome Screen");})}} />
+        <Clickable text={"Logout"} onPress={() => { logoutUserFirebase().then(() => { navigation.replace("Welcome Screen"); }) }} />
         <Clickable text={"Delete User"} onPress={deleteUser} />
       </View>
     </SafeAreaView>

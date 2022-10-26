@@ -19,6 +19,7 @@ import { AdminPage } from "./Screens/AdminPage.js";
 import CustomTranslation from "./Screens/CustomTranslation.js";
 import { Library } from "./Screens/Library.js";
 import { Ionicons } from "@expo/vector-icons";
+import { AddPDF } from "./Screens/AddPDF.js";
 
 LogBox.ignoreAllLogs();
 
@@ -67,6 +68,7 @@ function AdminNavigator() {
   return (
     <AdminScreenStack.Navigator>
       <AdminScreenStack.Screen name="Admin Page" component={AdminPage} />
+      <AdminScreenStack.Screen name="Add PDF" component={AddPDF} />
     </AdminScreenStack.Navigator>
   )
 }
@@ -89,8 +91,8 @@ function TabNavigator(props) {
     })}>
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
-      <Tab.Screen name="Settings" component={Settings} />
       <Tab.Screen name="Admin" component={AdminNavigator} />
+      <Tab.Screen name="Settings" component={Settings} />
     </Tab.Navigator>
   )
 }

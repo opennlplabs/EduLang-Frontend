@@ -133,16 +133,13 @@ export async function getAdminBooks() {
         .collection("BooksReview")
         .get();
 
-    var ids = [];
     var datas = [];
-    var arr = [];
 
     snapshot.forEach((doc) => {
-        ids.push(doc.id);
         datas.push({ ...doc.data(), "isAdmin": true, "id": doc.id });
     });
 
-    return arr
+    return datas
 }
 
 export async function setBookAsComplete(item) {

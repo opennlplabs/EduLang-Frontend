@@ -124,7 +124,7 @@ const LiveTranslation = ({ navigation, route }) => {
       copy[i].base64 = base64Out;
       setImages(copy);
     }
-    
+
     await addBookLocally(
       route.params?.title,
       route.params?.description,
@@ -241,7 +241,7 @@ const LiveTranslation = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   IntroText: {
     marginLeft: 30,
     marginRight: 30,

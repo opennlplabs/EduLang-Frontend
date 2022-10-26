@@ -52,12 +52,14 @@ export function Header(props) {
                 <Text style={{ ...FONTS.h2, color: COLORS.black, flex: 1 }}>
                     {props.title}
                 </Text>
-                <TouchableOpacity onPress={props.onFeedbackPress}>
-                    <Image
-                        source={require("../../assets/images/feedbackIcon.png")}
-                        style={{ height: 25, width: 25, marginLeft: 16 }}
-                    />
-                </TouchableOpacity>
+                {props.onFeedbackPress != undefined &&
+                    <TouchableOpacity onPress={props.onFeedbackPress}>
+                        <Image
+                            source={require("../../assets/images/feedbackIcon.png")}
+                            style={{ height: 25, width: 25, marginLeft: 16 }}
+                        />
+                    </TouchableOpacity>
+                }
             </View>
         </View>
     );
