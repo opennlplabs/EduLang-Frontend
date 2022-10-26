@@ -35,7 +35,10 @@ export function AdminPage({ navigation, route }) {
     }
 
     function redirectPage() {
-        navigation.navigate("Add PDF")
+        navigation.navigate({
+            name: "Add Book: Info",
+            params: { navigateTo: "Add PDF" }
+        })
     }
 
 

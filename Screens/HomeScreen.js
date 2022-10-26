@@ -37,7 +37,6 @@ async function getStorage(key, array = false) {
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
   const [data, setData] = useState([])
-  const [nativeLanguage, setNativeLanguage] = useState({})
   const [username, setUsername] = useState("")
   const [completedBooks, setCompletedBooks] = useState([])
   const [favBooks, setFavBooks] = useState([])
@@ -58,7 +57,6 @@ const Home = ({ navigation, route }) => {
 
       // set native lang and useState var
       await setStorage("nativeLanguage", nativeLanguage)
-      setNativeLanguage(nativeLanguage)
 
       // set username and useState var 
       await setStorage("username", username)
@@ -111,7 +109,7 @@ const Home = ({ navigation, route }) => {
       <HeaderSection title="Books" buttonTitle="Add Book" onButtonClick={() => {
         navigation.navigate({
           name: "Add Book: Info",
-          params: { language: nativeLanguage }
+          params: { navigateTo: "Live Translation" }
         })
       }} />
       <BookList item={searchData} navigation={navigation} NoMessage="No books found. Add a book from library or add a custom book!" isLoading={isLoading} />
