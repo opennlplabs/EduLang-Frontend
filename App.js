@@ -15,6 +15,7 @@ import { firebaseConfig } from "./firebase.js";
 import Splash from "./Screens/Splash.js";
 import BookAddInfo from "./Screens/BookAddInfo.js";
 import CustomTranslation from "./Screens/CustomTranslation.js";
+import { NativeBaseProvider } from "native-base";
 
 LogBox.ignoreAllLogs();
 
@@ -47,31 +48,36 @@ export default function App() {
 
   return (
     <Suspense fallback="Loading...">
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash">
-          <Stack.Screen name="Splash" component={Splash} />
-          <Stack.Screen
-            name="Welcome Screen"
-            component={WelcomeScreenNew}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Registration Page" component={RegistrationPage} />
-          <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
-          <Stack.Screen name="Live Translation" component={LiveTranslation} />
-          <Stack.Screen
-            name="Custom Translation"
-            component={CustomTranslation}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Book Info" component={BookInfo} />
-          <Stack.Screen name="Book Reader" component={PDFExample} />
-          <Stack.Screen name="Settings" component={Settings} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <Stack.Navigator initialRouteName="Splash">
+            <Stack.Screen name="Splash" component={Splash} />
+            <Stack.Screen
+              name="Welcome Screen"
+              component={WelcomeScreenNew}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen
+              name="Registration Page"
+              component={RegistrationPage}
+            />
+            <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
+            <Stack.Screen name="Live Translation" component={LiveTranslation} />
+            <Stack.Screen
+              name="Custom Translation"
+              component={CustomTranslation}
+            />
+            <Stack.Screen
+              name="Home"
+              component={HomeScreen}
+              options={{ headerShown: false }}
+            />
+            <Stack.Screen name="Book Info" component={BookInfo} />
+            <Stack.Screen name="Book Reader" component={PDFExample} />
+            <Stack.Screen name="Settings" component={Settings} />
+          </Stack.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
     </Suspense>
   );
 }
