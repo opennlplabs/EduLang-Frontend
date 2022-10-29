@@ -9,21 +9,8 @@ export function createUser(email, password) {
                 resolve("Success")
             })
             .catch((re) => {
-                switch (re.code) {
-                    case "auth/email-already-in-use":
-                        reject(`Email address ${email} already in use.`);
-                        break;
-                    case "auth/invalid-email":
-                        reject(`Email address ${email} is invalid.`);
-                        break;
-                    case "auth/weak-password":
-                        reject(
-                            "Password is not strong enough. Add additional characters including special characters and numbers."
-                        );
-                        break;
-                    default:
-                        reject("Unknown error!");
-                }
+                reject(re.code)
+
             });
     })
 }
@@ -37,12 +24,7 @@ export function loginEmailPassword(email, password) {
                 resolve("success")
             })
             .catch((re) => {
-                switch (re.code) {
-                    case "auth/wrong-password":
-                        reject("You have entered an incorrect password.");
-                        break;
-                }
-                reject("Unknown login error")
+                reject(re.code)
             });
     })
 };
@@ -72,19 +54,13 @@ export function getUserInfoFirebase() {
                         grade = 1
                     }
                     if (nativeLanguage == undefined) {
-                        const val = {
-                            id: "EN",
-                            item: "English"
-                        }
+                        const val = "EN"
                         await setUserInfo(val, undefined, undefined, undefined)
                         nativeLanguage = val
 
                     }
                     if (translatedLanguageConfig == undefined) {
-                        const val = {
-                            id: "XH",
-                            item: "Xhosa",
-                        }
+                        const val = "XH"
                         await setUserInfo(undefined, val, undefined, undefined)
                         translatedLanguageConfig = val
                     }

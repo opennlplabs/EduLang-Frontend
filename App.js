@@ -113,14 +113,29 @@ export default function App() {
   return (
     <Suspense fallback="Loading...">
       <NavigationContainer>
-        <SignupStack.Navigator screenOptions={{
-          headerShown: false
-        }}>
-          <SignupStack.Screen name="Splash" component={Splash} />
-          <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
-          <SignupStack.Screen name="Registration Page" component={RegistrationPage} />
-          <SignupStack.Screen name="Tabs" component={TabNavigator} />
-        </SignupStack.Navigator>
+        <Stack.Navigator initialRouteName="Splash">
+          <Stack.Screen name="Splash" component={Splash} />
+          <Stack.Screen
+            name="Welcome Screen"
+            component={WelcomeScreenNew}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="Registration Page" component={RegistrationPage} />
+          <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
+          <Stack.Screen name="Live Translation" component={LiveTranslation} />
+          <Stack.Screen
+            name="Custom Translation"
+            component={CustomTranslation}
+          />
+          <Stack.Screen
+            name="Home"
+            component={HomeScreen}
+            options={{ headerShown: false }}
+          />
+          <Stack.Screen name="Book Info" component={BookInfo} />
+          <Stack.Screen name="Book Reader" component={PDFExample} />
+          <Stack.Screen name="Settings" component={Settings} />
+        </Stack.Navigator>
       </NavigationContainer>
     </Suspense>
   );
