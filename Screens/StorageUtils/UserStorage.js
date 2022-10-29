@@ -10,7 +10,7 @@ export function createUser(email, password) {
             })
             .catch((re) => {
                 reject(re.code)
-                
+
             });
     })
 }
@@ -55,19 +55,13 @@ export function getUserInfoFirebase() {
                         grade = 1
                     }
                     if (nativeLanguage == undefined) {
-                        const val = {
-                            id: "EN",
-                            item: "English"
-                        }
+                        const val = "EN"
                         await setUserInfo(val, undefined, undefined, undefined)
                         nativeLanguage = val
 
                     }
                     if (translatedLanguageConfig == undefined) {
-                        const val = {
-                            id: "XH",
-                            item: "Xhosa",
-                        }
+                        const val = "XH"
                         await setUserInfo(undefined, val, undefined, undefined)
                         translatedLanguageConfig = val
                     }
@@ -87,8 +81,6 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
     if (grade != undefined && grade != null) info.grade = grade
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
-
-
 
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
