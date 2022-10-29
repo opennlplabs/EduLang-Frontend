@@ -12,7 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { useIsFocused } from "@react-navigation/native";
-import { addToFav, getFavBooks, removeFromFav, setBookAsComplete, removeFromCompleted, uploadBook, removeFromData, acceptBook} from "./StorageUtils/BookStorage";
+import { addToFav, getFavBooks, removeFromFav, setBookAsComplete, removeFromCompleted, uploadBook, removeFromData, acceptBook } from "./StorageUtils/BookStorage";
 
 const BookInfo = ({ navigation, route }) => {
   const { t } = useTranslation();
@@ -26,7 +26,7 @@ const BookInfo = ({ navigation, route }) => {
   // Get favorite list
   useEffect(async () => {
     if (isFocused) {
-      setfavList(await getFavBooks(full_data=false))
+      setfavList(await getFavBooks(full_data = false))
     }
   }, [isFocused])
 
@@ -90,7 +90,7 @@ const BookInfo = ({ navigation, route }) => {
             </TouchableOpacity>
           </> : <>
             {favList.some((book) => book === item.title) ? (
-              <TouchableOpacity onPress={async () => removeFromFav(await removeFromFav(item))}>
+              <TouchableOpacity onPress={async () => setfavList(await removeFromFav(item))}>
                 <AntDesign name="heart" size={24} color="red" />
               </TouchableOpacity>
             ) : (
@@ -133,7 +133,6 @@ const BookInfo = ({ navigation, route }) => {
 const styles = StyleSheet.create({
   container: {
     flex: 1,
-
     paddingHorizontal: 10,
   },
   contentContainer: {

@@ -16,14 +16,15 @@ const BookAddInfo = ({ navigation, route }) => {
     const [isCustomTranslated, setIsCustomTranslated] = useState(false);
 
     async function Submit() {
+        const language = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
         const titles = JSON.parse(await Storage.getItem({ key: "titles" }))
-        if (title.replace(/\s+/g, '_') in titles || title in titles) {
+        if (titles.indexOf(title.replace(/\s+/g, '_')) >= 0) {
             alert("Duplicate Title! Choose a different title.")
         }
         else {
             navigation.navigate({
-                name: "Live Translation", params:
-                    { language: route.params?.language, title: title.replace(/\s+/g, '_'), description: description, customTranslated: isCustomTranslated }
+                name: route.params?.navigateTo, params:
+                    { language: language, title: title.replace(/\s+/g, '_'), description: description, customTranslated: isCustomTranslated }
             })
         }
     }
@@ -42,10 +43,14 @@ const BookAddInfo = ({ navigation, route }) => {
                 onChangeText={onChangeDescription}
                 value={description}
             />
-            <Text style={styles.question}>Do you want to translated manually?</Text>
-            <View style={styles.SwitchContainer}>
-                <Switch style={styles.Switch} value={isCustomTranslated} onValueChange={() => setIsCustomTranslated(value => !value)} />
-            </View>
+            {route.params.navigateTo !== "Add PDF" &&
+                <>
+                    <Text style={styles.question}>Do you want to translated manually?</Text>
+                    <View style={styles.SwitchContainer}>
+                        <Switch style={styles.Switch} value={isCustomTranslated} onValueChange={() => setIsCustomTranslated(value => !value)} />
+                    </View>
+                </>
+            }
 
             <View style={{ flex: 1, alignItems: 'center', }}>
                 <TouchableOpacity style={styles.Button} onPress={Submit}>

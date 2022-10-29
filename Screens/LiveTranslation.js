@@ -43,7 +43,6 @@ const LiveTranslation = ({ navigation, route }) => {
   const __takePicture = async () => {
     if (!camera) return;
     const photo = await camera.takePictureAsync({ base64: true, quality: 0.15 });
-    console.log("Length of base 64:", photo.base64.length)
     var copy = [...images];
     copy.push(photo);
     setImages(copy);
@@ -67,7 +66,6 @@ const LiveTranslation = ({ navigation, route }) => {
     const result = await DocumentPicker.getDocumentAsync({ type: "application/pdf" })
     if (result.type === "cancel") return
     const base64 = await getBase64FromUrl(result.uri)
-    console.log(base64.length)
 
     setTranslateTitle("Converting PDF to Images...")
 
@@ -122,17 +120,15 @@ const LiveTranslation = ({ navigation, route }) => {
       });
       const base64Out = response.data["response"];
       bookArray["page" + (i + 1).toString()] = base64Out;
-      console.log("Len Base 64 out", base64Out.length)
       var copy = [...images];
       copy[i].base64 = base64Out;
       setImages(copy);
     }
-    
-    console.log("Adding data to the local storage...")
+
     await addBookLocally(
       route.params?.title,
       route.params?.description,
-      route.params?.language["item"],
+      route.params?.language.item,
       bookArray,
       originalImage
     );
@@ -245,7 +241,7 @@ const LiveTranslation = ({ navigation, route }) => {
   );
 };
 
-const styles = StyleSheet.create({
+export const styles = StyleSheet.create({
   IntroText: {
     marginLeft: 30,
     marginRight: 30,

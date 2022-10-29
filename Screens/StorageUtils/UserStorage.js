@@ -41,7 +41,6 @@ export function getUserInfoFirebase() {
             .doc(firebase.auth().currentUser.uid)
             .onSnapshot(async (snapshot) => {
                 if (snapshot) {
-                    console.log("Settings snapshot: ", snapshot.data());
                     // Get data from snapshot
                     var grade = snapshot.data().grade
                     var nativeLanguage = snapshot.data()?.nativeLanguage
@@ -96,4 +95,27 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
             .then(() => { resolve("success") })
             .catch((err) => { reject(err) });
     })
+}
+
+export const deleteAccount = () => {
+    return new Promise((resolve, reject) => {
+        firebase
+            .firestore()
+            .collection("userInfo")
+            .doc(firebase.auth().currentUser.uid)
+            .delete()
+            .then(() => {
+                firebase.auth().currentUser.delete();
+                firebase.auth().signOut();
+                resolve("Success")
+            }).catch((e) => reject(e));
+    })
+};
+
+export const test_request = async () => {
+    const response = await axios({
+        method: "post",
+        url: `${server}/test`,
+    })
+    console.log("Test response:", JSON.parse(response.data["response"]))
 }
