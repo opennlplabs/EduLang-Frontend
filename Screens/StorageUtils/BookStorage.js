@@ -239,8 +239,11 @@ function delay(delayInms) {
     });
 }
 
-export async function uploadBook(item) {
-    const collectionSelect = "BooksReview"
+export async function uploadBook(item, directBook = false) {
+    var collectionSelect = "BooksReview"
+    if (directBook === true) {
+        collectionSelect = "Book"
+    }
     let uid = firebase.auth()?.currentUser?.uid;
     const document = firebase.firestore().collection(collectionSelect).doc(item.title + " " + uid.toString())
 
@@ -248,7 +251,7 @@ export async function uploadBook(item) {
 
     for (var i = 0; i < Object.keys(item.book).length; i++) {
         const keySet = "page" + (i + 1).toString()
-        await document.collection(keySet).doc((i + 1).toString()).set({ value: item.book[keySet] }).catch((e) => {
+        await document.collection(keySet).doc((i + 1).toString()).set({ value: item.book[i] }).catch((e) => {
             alert(e)
             i = item.length
         })

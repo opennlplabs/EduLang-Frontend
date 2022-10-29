@@ -6,7 +6,7 @@ export function createUser(email, password) {
             .auth()
             .createUserWithEmailAndPassword(email, password)
             .then(() => {
-                resolve("Success")
+                resolve("success")
             })
             .catch((re) => {
                 reject(re.code)
@@ -73,7 +73,7 @@ export function getUserInfoFirebase() {
     })
 }
 
-export async function setUserInfo(nativelanguage, translatedlanguage, grade, username) {
+export function setUserInfo(nativelanguage, translatedlanguage, grade, username) {
     const info = {}
     if (nativelanguage != undefined && nativelanguage != null) info.nativeLanguage = nativelanguage
     if (translatedlanguage != undefined && translatedlanguage != null) info.translatedLanguageConfig = translatedlanguage
@@ -81,8 +81,11 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
 
+    console.log("Info", info)
+
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
+        console.log(uid)
         if (uid == undefined || uid == null) reject("UID is null!")
 
         firebase

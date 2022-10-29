@@ -33,7 +33,7 @@ import { COLORS } from "../constants/theme";
 import i18n from "../locale";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
-import { createUser, loginEmailPassword } from "./StorageUtils/UserStorage";
+import { createUser, loginEmailPassword, setUserInfo } from "./StorageUtils/UserStorage";
 import { Storage } from "expo-storage";
 import { useIsFocused } from "@react-navigation/native";
 import Svg, { Ellipse, ClipPath } from "react-native-svg";
@@ -41,7 +41,7 @@ import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useKeyboardShow } from "./hooks/useKeyboardShow";
 import { LanguageSelector } from "./components/LanguageSelector";
 
-const FormLogin = () => {
+const FormLogin = ({ navigation }) => {
   const [show, setShow] = React.useState(false);
   const [password, setPassword] = React.useState("")
   const [passwordErrorMsg, setPasswordErrorMsg] = React.useState("")
@@ -67,7 +67,7 @@ const FormLogin = () => {
       .then(() => {
         setIsInvalid(false)
         i18n.changeLanguage("en");
-        navigation.replace("Home");
+        // navigation.replace("Home");
       })
       .catch((error) => {
         // if we can't login, then notify the user the problem
@@ -149,7 +149,7 @@ const FormLogin = () => {
     </Stack>
   );
 };
-const FormRegister = () => {
+const FormRegister = ({ navigation }) => {
   const [show, setShow] = React.useState(false);
   const [grade, setGrade] = React.useState(-1)
   const [email, setEmail] = React.useState("")
@@ -191,7 +191,7 @@ const FormRegister = () => {
       return
     }
 
-    await createUser(email, password).catch((code) => {
+    var response = await createUser(email, password).catch((code) => {
       switch (code) {
         case "auth/email-already-in-use":
           setErrorMsg(`Email address already in use.`);
@@ -210,12 +210,16 @@ const FormRegister = () => {
       return
     })
 
-    await setUserInfo(nativeLanguage, translatedLanguage, grade, username).catch((code) => {
-      setErrorMsg("Something went wrong with err code: " + code)
-      return
-    })
-
-    navigation.replace("Home")
+    if (response === "success") {
+      console.log("Setting user...")
+      response = await setUserInfo(nativeLanguage, translatedLanguage, grade, username).catch((code) => {
+        setErrorMsg("Something went wrong with err code: " + code)
+        return
+      })
+      if (response === "success") {
+        console.log("Going home...")
+      }
+    }
   }
 
   return (
@@ -428,7 +432,7 @@ const WelcomeScreenNew = ({ navigation }) => {
   };
   const exitHandler = () => {
     imagePosition.value = 1;
-    setFormSelected(null);
+    // setFormSelected(null);
   };
 
   useEffect(async () => {
@@ -504,8 +508,8 @@ const WelcomeScreenNew = ({ navigation }) => {
                   bg="gray.100"
                   pt="1/6"
                 >
-                  {formSelected === "login" && <FormLogin />}
-                  {formSelected === "register" && <FormRegister />}
+                  {formSelected === "login" && <FormLogin navigation={navigation}/>}
+                  {formSelected === "register" && <FormRegister navigation={navigation}/>}
                 </Box>
               </Animated.View>
             </Animated.View>

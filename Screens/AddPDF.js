@@ -10,23 +10,17 @@ import {
 } from "react-native";
 import { Camera } from "expo-camera";
 import { AntDesign } from "@expo/vector-icons";
-import { styles } from "./LiveTranslation";
 import axios from "axios";
 import * as DocumentPicker from 'expo-document-picker';
+import { addBookLocally, uploadBook } from "./StorageUtils/BookStorage";
 import { server } from "./LiveTranslation";
-import { uploadBook } from "./StorageUtils/BookStorage";
+import { styles } from "./LiveTranslation";
 
 export const AddPDF = ({ navigation, route }) => {
-    const [cameraPreview, setCameraPreview] = useState(false)
-    const [images, setImages] = useState([])
-    const [buttonTitle, setButtonTitle] = useState("Upload Book")
+    const [images, setImages] = useState([]);
+    const [cameraPreview, setCameraPreview] = useState(false);
+    const [TranslateTitle, setTranslateTitle] = useState("Upload");
     var camera;
-
-    const __deletePicture = async (index) => {
-        var copy = [...images];
-        copy.splice(index, 1);
-        setImages(copy);
-    };
 
     const __startCamera = async () => {
         const { status } = await Camera.requestCameraPermissionsAsync();
@@ -38,11 +32,17 @@ export const AddPDF = ({ navigation, route }) => {
         }
     };
 
+    const __deletePicture = async (index) => {
+        var copy = [...images];
+        copy.splice(index, 1);
+        setImages(copy);
+    };
+
     const __takePicture = async () => {
         if (!camera) return;
         const photo = await camera.takePictureAsync({ base64: true, quality: 0.15 });
         var copy = [...images];
-        copy.push(photo);
+        copy.push(photo.base64);
         setImages(copy);
         setCameraPreview(false);
     };
@@ -65,6 +65,8 @@ export const AddPDF = ({ navigation, route }) => {
         if (result.type === "cancel") return
         const base64 = await getBase64FromUrl(result.uri)
 
+        setTranslateTitle("Converting PDF to Images...")
+
         const form = new FormData()
         form.append("PDFBase64", base64)
         const response = await axios({
@@ -75,33 +77,75 @@ export const AddPDF = ({ navigation, route }) => {
         });
         const out = JSON.parse(response.data["response"])
         setImages(out)
+        setTranslateTitle("Translate")
     }
 
-    const uploadPDF = async () => {
-        console.log(route.params?.language.item)
-        setButtonTitle("Uploading Book...")
-        const title = route.params?.title
-        const description = route.params?.description
-        const lang = route.params?.language.item
-        const cover = images[0]
-        const pages = images
+    const TranslatePages = async () => {
+        // if (images.length === 0 || TranslateTitle !== "Upload") { return }
 
-        await uploadBook(
-            title,
-            description,
-            lang,
-            cover,
-            pages,
-            true
-        )
-        navigation.goBack()
-    }
+        // const customTranslate = route.params?.customTranslated;
+        // const originalImage = images[0].base64;
+        // var bookArray = {};
+
+        // if (customTranslate && images.length > 0) {
+        //     //* Custom Translated
+        //     navigation.navigate({
+        //         name: "Custom Translation",
+        //         params: {
+        //             images: images,
+        //             title: route.params?.title,
+        //             description: route.params?.description,
+        //             language: route.params?.language,
+        //         },
+        //     });
+        //     return;
+        // }
+
+        // // Manual translation
+        // for (var i = 0; i < images.length; i++) {
+        //     const element = images[i];
+        //     setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
+        //     const form = new FormData();
+
+        //     form.append("base64Image", element.base64);
+        //     form.append("languageId", route.params?.language["id"]);
+        //     setTranslateTitle("Translating Page #" + (i + 1).toString() + "...");
+        //     const response = await axios({
+        //         method: "post",
+        //         url: `${server}/translate`,
+        //         data: form,
+        //         headers: { "Content-Type": "multipart/form-data" },
+        //     });
+        //     const base64Out = response.data["response"];
+        //     bookArray["page" + (i + 1).toString()] = base64Out;
+        //     var copy = [...images];
+        //     copy[i].base64 = base64Out;
+        //     setImages(copy);
+        // }
+
+        setTranslateTitle("Uploading...")
+
+        console.log(images[0].length)
+        await uploadBook({
+            title: route.params?.title,
+            language: route.params?.language,
+            description: route.params?.description,
+            source: images[0],
+            book: images
+        });
+
+        navigation.navigate("Home");
+    };
 
     return (
         <View>
+            {/* Intro Text */}
             <Text style={styles.IntroText}>
-                Take pictures of the book that you want to translate using buttons, "Add PDF" or "Add Page" below. When you are1 done, click "Upload" button!
+                Take pictures of the book that you want to translate using the "Add
+                Page" button and click the "Translate" button! {"\n"}
             </Text>
+
+            {/* Pages Preview + Add Page */}
             {cameraPreview ? (
                 <Camera
                     style={{ height: "65%", margin: 30, borderRadius: 20 }}
@@ -188,12 +232,11 @@ export const AddPDF = ({ navigation, route }) => {
             <View style={styles.BottomView}>
                 <TouchableOpacity
                     style={[styles.Button, styles.TranslateButton]}
-                    onPress={uploadPDF}
-                    disabled={buttonTitle !== "Upload Book"}
+                    onPress={TranslatePages}
                 >
-                    <Text style={{ textAlign: "center" }}>{buttonTitle}</Text>
+                    <Text style={{ textAlign: "center" }}>{TranslateTitle}</Text>
                 </TouchableOpacity>
             </View>
         </View>
-    )
-}
+    );
+};
