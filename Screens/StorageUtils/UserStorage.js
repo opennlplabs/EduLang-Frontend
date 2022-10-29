@@ -9,21 +9,8 @@ export function createUser(email, password) {
                 resolve("Success")
             })
             .catch((re) => {
-                switch (re.code) {
-                    case "auth/email-already-in-use":
-                        reject(`Email address ${email} already in use.`);
-                        break;
-                    case "auth/invalid-email":
-                        reject(`Email address ${email} is invalid.`);
-                        break;
-                    case "auth/weak-password":
-                        reject(
-                            "Password is not strong enough. Add additional characters including special characters and numbers."
-                        );
-                        break;
-                    default:
-                        reject("Unknown error!");
-                }
+                reject(re.code)
+                
             });
     })
 }
@@ -37,12 +24,7 @@ export function loginEmailPassword(email, password) {
                 resolve("success")
             })
             .catch((re) => {
-                switch (re.code) {
-                    case "auth/wrong-password":
-                        reject("You have entered an incorrect password.");
-                        break;
-                }
-                reject("Unknown login error")
+                reject(re.code)
             });
     })
 };
@@ -61,11 +43,11 @@ export function getUserInfoFirebase() {
                 if (snapshot) {
                     console.log("Settings snapshot: ", snapshot.data());
                     // Get data from snapshot
-                    var grade = snapshot.data().grade 
+                    var grade = snapshot.data().grade
                     var nativeLanguage = snapshot.data()?.nativeLanguage
                     var translatedLanguageConfig = snapshot.data()?.translatedLanguageConfig
                     var username = snapshot.data()?.username
-                    var isAdmin = snapshot.data()?.isAdmin 
+                    var isAdmin = snapshot.data()?.isAdmin
 
                     // Check if variable are undefined and set to default values
                     if (grade == undefined) {
@@ -79,7 +61,7 @@ export function getUserInfoFirebase() {
                         }
                         await setUserInfo(val, undefined, undefined, undefined)
                         nativeLanguage = val
-                        
+
                     }
                     if (translatedLanguageConfig == undefined) {
                         const val = {
@@ -88,8 +70,8 @@ export function getUserInfoFirebase() {
                         }
                         await setUserInfo(undefined, val, undefined, undefined)
                         translatedLanguageConfig = val
-                    } 
-                    resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin]) 
+                    }
+                    resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin])
                 }
                 else {
                     reject("Unable to get snapshot data")
@@ -106,7 +88,7 @@ export async function setUserInfo(nativelanguage, translatedlanguage, grade, use
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
 
-    
+
 
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
