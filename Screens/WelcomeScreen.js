@@ -50,8 +50,6 @@ const FormLogin = () => {
   const [isInvalid, setIsInvalid] = React.useState(false)
 
   function loginUser() {
-    console.log("Login with password", password)
-
     if (email === "") {
       setIsInvalid(true)
       setEmailErrorMsg("Enter your email address")

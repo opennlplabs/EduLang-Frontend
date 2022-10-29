@@ -3,10 +3,9 @@ import { Text, LogBox } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
 import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
-import RegistrationPage from "./Screens/RegistrationPage.js";
 import HomeScreen from "./Screens/HomeScreen";
 import { useFonts } from "expo-font";
-import WelcomeScreenNew from "./Screens/WelcomeScreenNew";
+import WelcomeScreenNew from "./Screens/WelcomeScreen";
 import BookInfo from "./Screens/BookInfo.js";
 import PDFExample from "./Screens/BookReader";
 import LiveTranslation from "./Screens/LiveTranslation.js";
@@ -20,25 +19,13 @@ import CustomTranslation from "./Screens/CustomTranslation.js";
 import { Library } from "./Screens/Library.js";
 import { Ionicons } from "@expo/vector-icons";
 import { AddPDF } from "./Screens/AddPDF.js";
+import { NativeBaseProvider } from 'native-base'
 
 LogBox.ignoreAllLogs();
 
 if (!firebase.apps.length) {
   firebase.initializeApp(firebaseConfig);
 }
-
-// Redux test
-function counterReducer(state = { value: 0 }, action) {
-  switch (action.type) {
-    case 'counter/incremented':
-      return { value: state.value + 1 }
-    case 'counter/decremented':
-      return { value: state.value - 1 }
-    default:
-      return state
-  }
-}
-
 
 const HomeScreenStack = createNativeStackNavigator();
 function HomeNavigator() {
@@ -91,8 +78,8 @@ function TabNavigator(props) {
     })}>
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
-      <Tab.Screen name="Admin" component={AdminNavigator} />
       <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Admin" component={AdminNavigator} />
     </Tab.Navigator>
   )
 }
@@ -112,31 +99,17 @@ export default function App() {
 
   return (
     <Suspense fallback="Loading...">
-      <NavigationContainer>
-        <Stack.Navigator initialRouteName="Splash">
-          <Stack.Screen name="Splash" component={Splash} />
-          <Stack.Screen
-            name="Welcome Screen"
-            component={WelcomeScreenNew}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Registration Page" component={RegistrationPage} />
-          <Stack.Screen name="Add Book: Info" component={BookAddInfo} />
-          <Stack.Screen name="Live Translation" component={LiveTranslation} />
-          <Stack.Screen
-            name="Custom Translation"
-            component={CustomTranslation}
-          />
-          <Stack.Screen
-            name="Home"
-            component={HomeScreen}
-            options={{ headerShown: false }}
-          />
-          <Stack.Screen name="Book Info" component={BookInfo} />
-          <Stack.Screen name="Book Reader" component={PDFExample} />
-          <Stack.Screen name="Settings" component={Settings} />
-        </Stack.Navigator>
-      </NavigationContainer>
+      <NativeBaseProvider>
+        <NavigationContainer>
+          <SignupStack.Navigator screenOptions={{
+            headerShown: false
+          }}>
+            <SignupStack.Screen name="Splash" component={Splash} />
+            <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
+            <SignupStack.Screen name="Tabs" component={TabNavigator} />
+          </SignupStack.Navigator>
+        </NavigationContainer>
+      </NativeBaseProvider>
     </Suspense>
   );
 }

@@ -30,44 +30,8 @@ const Splash = ({ navigation }) => {
   React.useEffect(() => {
     setTimeout(() => {
       firebase.auth().onAuthStateChanged(async (user) => {
-        if (user) {
-          // setText("Getting User Information...")
-          // const [grade, nativeLanguage, translatedLanguage, username, isAdmin] = await getUserInfoFirebase()
-
-          // await setStorage("grade", grade)
-          // await setStorage("nativeLanguage", nativeLanguage)
-          // await setStorage("translatedLanguage", translatedLanguage)
-          // await setStorage("username", username)
-          // await setStorage("isAdmin", isAdmin)
-
-          // setText("Getting Local Book Information...")
-          // var [bookData, titlesData] = await getLocalStorageBook(nativeLanguage)
-          // console.log("Local book titles", titlesData)
-
-          // setText("Fetching Cloud book database...")
-          // const [newTitles, ids] = await getNewTitlesFromCloud(titlesData, nativeLanguage)
-          // console.log("New book titles", newTitles)
-
-          // // For every book in cloud, get information
-          // for (var i = 0; i < newTitles.length; i++) {
-          //   setText(`Progress: ${i + 1}/${ids.length} books\nGetting book information ${newTitles[i]} from cloud...`)
-          //   bookData.push(await getCloudBookFromId(ids[i]))
-          //   titlesData.push(newTitles[i])
-          // }
-          // await setStorage("data", bookData, false)
-          // await setStorage("titles", titlesData)
-
-          // // Get admin data
-          // if (isAdmin === true) {
-          //   setText("Getting admin data...")
-          //   await setStorage("AdminData", await getAdminBooks(), false)
-          // }
-
-          // setText("Done. Redirecting to Home Page...")
-          navigation.replace("Tabs");
-        } else {
-          navigation.replace("Welcome Screen");
-        }
+        if (user) navigation.replace("Tabs");
+        else navigation.replace("Welcome Screen");
       });
     }, 3000);
   }, []);
