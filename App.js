@@ -104,8 +104,8 @@ export default function App() {
           <SignupStack.Navigator screenOptions={{
             headerShown: false
           }}>
-            <SignupStack.Screen name="Splash" component={Splash} />
             <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
+            <SignupStack.Screen name="Splash" component={Splash} />
             <SignupStack.Screen name="Tabs" component={TabNavigator} />
           </SignupStack.Navigator>
         </NavigationContainer>

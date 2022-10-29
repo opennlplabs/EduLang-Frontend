@@ -67,7 +67,7 @@ const FormLogin = ({ navigation }) => {
       .then(() => {
         setIsInvalid(false)
         i18n.changeLanguage("en");
-        // navigation.replace("Home");
+        navigation.replace("Tabs");
       })
       .catch((error) => {
         // if we can't login, then notify the user the problem
@@ -191,8 +191,9 @@ const FormRegister = ({ navigation }) => {
       return
     }
 
-    var response = await createUser(email, password).catch((code) => {
-      switch (code) {
+    console.log("starting user creating")
+    await createUser(email, password).catch((err) => {
+      switch (err) {
         case "auth/email-already-in-use":
           setErrorMsg(`Email address already in use.`);
           break;
@@ -206,20 +207,12 @@ const FormRegister = ({ navigation }) => {
           break;
         default:
           setErrorMsg("Unknown error with error code " + code);
+          break;
       }
-      return
+    }).then(async () => {
+      await setUserInfo(originalLanguage, translatedLanguage, grade, username)
+      navigation.navigate('Tabs');
     })
-
-    if (response === "success") {
-      console.log("Setting user...")
-      response = await setUserInfo(nativeLanguage, translatedLanguage, grade, username).catch((code) => {
-        setErrorMsg("Something went wrong with err code: " + code)
-        return
-      })
-      if (response === "success") {
-        console.log("Going home...")
-      }
-    }
   }
 
   return (
@@ -352,7 +345,7 @@ const CustomButtons = ({ title, onPress, icon, style, type = "button" }) => {
 };
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
-const WelcomeScreenNew = ({ navigation }) => {
+const WelcomeScreenNew = ({ navigation, route }) => {
   const { t } = useTranslation();
   // Decides which form to show
   const [formSelected, setFormSelected] = useState(null);
@@ -508,8 +501,8 @@ const WelcomeScreenNew = ({ navigation }) => {
                   bg="gray.100"
                   pt="1/6"
                 >
-                  {formSelected === "login" && <FormLogin navigation={navigation}/>}
-                  {formSelected === "register" && <FormRegister navigation={navigation}/>}
+                  {formSelected === "login" && <FormLogin navigation={navigation} />}
+                  {formSelected === "register" && <FormRegister navigation={navigation} />}
                 </Box>
               </Animated.View>
             </Animated.View>

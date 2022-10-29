@@ -81,11 +81,8 @@ export function setUserInfo(nativelanguage, translatedlanguage, grade, username)
     if (username != undefined && username != null) info.username = username
     info.isAdmin = false
 
-    console.log("Info", info)
-
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
-        console.log(uid)
         if (uid == undefined || uid == null) reject("UID is null!")
 
         firebase
