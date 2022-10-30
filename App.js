@@ -81,7 +81,7 @@ function TabNavigator(props) {
     })}>
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
       <Tab.Screen name="Admin" component={AdminNavigator} />
     </Tab.Navigator>
   )

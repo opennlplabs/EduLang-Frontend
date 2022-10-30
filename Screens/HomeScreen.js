@@ -88,19 +88,6 @@ const Home = ({ navigation, route }) => {
     }))
   }
 
-  const renderAdmin = (title) => {
-    if (isAdmin) {
-      return (
-        <View style={{ marginTop: 5 }}>
-          <Text style={{ paddingLeft: 20, marginTop: 10, marginBottom: 10, fontSize: 20, fontWeight: "bold" }}>{title}</Text>
-          <BookList item={adminData} navigation={navigation} NoMessage="No Admin Books found. " />
-        </View>
-      );
-    } else {
-      return <></>;
-    }
-  };
-
   return (
     <ScrollView>
       <StatusBar style={{ marginTop: 10, backgroundColor: 'red' }} barStyle={"dark-content"} backgroundColor={"green"} />

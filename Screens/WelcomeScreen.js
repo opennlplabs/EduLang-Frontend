@@ -28,7 +28,6 @@ import {
   Select
 } from "native-base";
 import logo from "../assets/images/RealEduLangLogo.png";
-import { languageConfig } from "../constants/LanguageConfig";
 import { COLORS } from "../constants/theme";
 import i18n from "../locale";
 import Clickable from "./components/Clickable";

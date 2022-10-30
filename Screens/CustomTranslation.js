@@ -48,7 +48,7 @@ export default function CustomTranslation({ navigation, route }) {
             await addBookLocally(
                 title,
                 description,
-                language.item,
+                language,
                 imgs_inp,
                 originalImage
             )

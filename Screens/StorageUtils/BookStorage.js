@@ -33,7 +33,7 @@ export const getLocalStorageBook = async (language) => {
     var dataLang = []
     var titlesLang = []
     for (var i = 0; i < storageData.length; i++) {
-        if (storageData[i].language == language.item) {
+        if (storageData[i].language.toLowerCase() == language.toLowerCase()) {
             dataLang.push(storageData[i])
             titlesLang.push(titles[i])
         }

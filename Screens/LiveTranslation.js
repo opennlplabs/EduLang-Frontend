@@ -128,7 +128,7 @@ const LiveTranslation = ({ navigation, route }) => {
     await addBookLocally(
       route.params?.title,
       route.params?.description,
-      route.params?.language.item,
+      route.params?.language,
       bookArray,
       originalImage
     );

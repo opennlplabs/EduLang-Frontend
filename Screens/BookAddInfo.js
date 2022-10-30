@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useState, useEffect } from "react";
 import {
     SafeAreaView,
     View,
@@ -9,14 +9,27 @@ import {
     StyleSheet,
 } from "react-native";
 import { Storage } from "expo-storage";
+import { useIsFocused } from "@react-navigation/native";
+import { LanguageSelector } from "./components/LanguageSelector";
+import { Stack } from "native-base";
 
 const BookAddInfo = ({ navigation, route }) => {
     const [title, onChangeTitle] = React.useState("");
     const [description, onChangeDescription] = React.useState("")
+    const [language, setLanguage] = React.useState("")
     const [isCustomTranslated, setIsCustomTranslated] = useState(false);
+    const isFocused = useIsFocused()
+
+    useEffect(async () => {
+        if (isFocused) {
+            const language = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
+            console.log("use effect", language)
+            setLanguage(language)
+        }
+    }, [isFocused])
+
 
     async function Submit() {
-        const language = JSON.parse(await Storage.getItem({ key: "nativeLanguage" }))
         const titles = JSON.parse(await Storage.getItem({ key: "titles" }))
         if (titles.indexOf(title.replace(/\s+/g, '_')) >= 0) {
             alert("Duplicate Title! Choose a different title.")
@@ -43,7 +56,18 @@ const BookAddInfo = ({ navigation, route }) => {
                 onChangeText={onChangeDescription}
                 value={description}
             />
-            {route.params.navigateTo !== "Add PDF" &&
+            {language !== "" &&
+                <>
+                    <Text style={[styles.question]}>What is the language of the book?</Text>
+                    <LanguageSelector
+                        placeholder="Select the language that your book is in"
+                        onValueChange={setLanguage}
+                        defaultValue={language}
+                    />
+                </>
+            }
+            {
+                route.params.navigateTo !== "Add PDF" &&
                 <>
                     <Text style={styles.question}>Do you want to translated manually?</Text>
                     <View style={styles.SwitchContainer}>
@@ -59,7 +83,7 @@ const BookAddInfo = ({ navigation, route }) => {
             </View>
 
 
-        </SafeAreaView>
+        </SafeAreaView >
     );
 };
 
