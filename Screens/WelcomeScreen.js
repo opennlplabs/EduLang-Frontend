@@ -25,72 +25,76 @@ import {
   Stack,
   Text,
   FormControl,
-  Select
+  Select,
 } from "native-base";
 import logo from "../assets/images/RealEduLangLogo.png";
 import { COLORS } from "../constants/theme";
 import i18n from "../locale";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
-import { createUser, loginEmailPassword, setUserInfo } from "./StorageUtils/UserStorage";
+import {
+  createUser,
+  loginEmailPassword,
+  setUserInfo,
+} from "./StorageUtils/UserStorage";
 import { Storage } from "expo-storage";
 import { useIsFocused } from "@react-navigation/native";
 import Svg, { Ellipse, ClipPath } from "react-native-svg";
 import { MaterialIcons, Ionicons } from "@expo/vector-icons";
 import { useKeyboardShow } from "./hooks/useKeyboardShow";
 import { LanguageSelector } from "./components/LanguageSelector";
+import CustomButton from "./globals/CustomeButton";
 
 const FormLogin = ({ navigation }) => {
   const [show, setShow] = React.useState(false);
-  const [password, setPassword] = React.useState("")
-  const [passwordErrorMsg, setPasswordErrorMsg] = React.useState("")
-  const [email, setEmail] = React.useState("")
-  const [emailErrorMsg, setEmailErrorMsg] = React.useState("")
-  const [isInvalid, setIsInvalid] = React.useState(false)
+  const [password, setPassword] = React.useState("");
+  const [passwordErrorMsg, setPasswordErrorMsg] = React.useState("");
+  const [email, setEmail] = React.useState("");
+  const [emailErrorMsg, setEmailErrorMsg] = React.useState("");
+  const [isInvalid, setIsInvalid] = React.useState(false);
 
   function loginUser() {
     if (email === "") {
-      setIsInvalid(true)
-      setEmailErrorMsg("Enter your email address")
-      setPasswordErrorMsg("")
-      return
+      setIsInvalid(true);
+      setEmailErrorMsg("Enter your email address");
+      setPasswordErrorMsg("");
+      return;
     }
     if (password === "") {
-      setIsInvalid(true)
-      setEmailErrorMsg("")
-      setPasswordErrorMsg("Enter your password")
-      return
+      setIsInvalid(true);
+      setEmailErrorMsg("");
+      setPasswordErrorMsg("Enter your password");
+      return;
     }
 
     loginEmailPassword(email, password)
       .then(() => {
-        setIsInvalid(false)
+        setIsInvalid(false);
         i18n.changeLanguage("en");
         navigation.replace("Tabs");
       })
       .catch((error) => {
         // if we can't login, then notify the user the problem
-        setIsInvalid(true)
+        setIsInvalid(true);
         switch (error) {
           case "auth/wrong-password":
-            setPasswordErrorMsg("Incorrect password")
-            setEmailErrorMsg("")
+            setPasswordErrorMsg("Incorrect password");
+            setEmailErrorMsg("");
             break;
           case "auth/invalid-email":
-            setPasswordErrorMsg("")
-            setEmailErrorMsg("Invalid Email")
+            setPasswordErrorMsg("");
+            setEmailErrorMsg("Invalid Email");
             break;
           case "auth/user-not-found":
-            setEmailErrorMsg("User not found.")
-            setPasswordErrorMsg("")
+            setEmailErrorMsg("User not found.");
+            setPasswordErrorMsg("");
             break;
           default:
-            setEmailErrorMsg("")
-            setPasswordErrorMsg("Error Message: " + error)
+            setEmailErrorMsg("");
+            setPasswordErrorMsg("Error Message: " + error);
             break;
         }
       });
-
   }
 
   return (
@@ -114,7 +118,10 @@ const FormLogin = ({ navigation }) => {
             placeholder="Email"
             onChangeText={(text) => setEmail(text)}
           />
-          <FormControl.ErrorMessage display={emailErrorMsg === "" ? "none" : undefined} leftIcon={<Ionicons name="alert-circle-outline" />}>
+          <FormControl.ErrorMessage
+            display={emailErrorMsg === "" ? "none" : undefined}
+            leftIcon={<Ionicons name="alert-circle-outline" />}
+          >
             {emailErrorMsg}
           </FormControl.ErrorMessage>
           <FormControl.Label>Password</FormControl.Label>
@@ -129,7 +136,9 @@ const FormLogin = ({ navigation }) => {
               <Pressable onPress={() => setShow(!show)}>
                 <Icon
                   as={
-                    <MaterialIcons name={show ? "visibility" : "visibility-off"} />
+                    <MaterialIcons
+                      name={show ? "visibility" : "visibility-off"}
+                    />
                   }
                   size={5}
                   mr="2"
@@ -139,78 +148,92 @@ const FormLogin = ({ navigation }) => {
             }
             placeholder="Password"
           />
-          <FormControl.ErrorMessage display={passwordErrorMsg === "" ? "none" : undefined} leftIcon={<Ionicons name="alert-circle-outline" />}>
+          <FormControl.ErrorMessage
+            display={passwordErrorMsg === "" ? "none" : undefined}
+            leftIcon={<Ionicons name="alert-circle-outline" />}
+          >
             {passwordErrorMsg}
           </FormControl.ErrorMessage>
         </FormControl>
-        <CustomButtons style={{ marginTop: 20 }} title="Login" onPress={loginUser} />
+        <CustomButton
+          style={{ marginTop: 20 }}
+          title="Login"
+          onPress={loginUser}
+        />
       </Stack>
     </Stack>
   );
 };
 const FormRegister = ({ navigation }) => {
   const [show, setShow] = React.useState(false);
-  const [grade, setGrade] = React.useState(-1)
-  const [email, setEmail] = React.useState("")
-  const [username, setUsername] = React.useState("")
-  const [errorMsg, setErrorMsg] = React.useState("")
-  const [password, setPassword] = React.useState("")
-  const [translatedLanguage, setTranslatedLanguage] = React.useState("")
-  const [originalLanguage, setOriginalLanguage] = React.useState("")
+  const [grade, setGrade] = React.useState(-1);
+  const [email, setEmail] = React.useState("");
+  const [username, setUsername] = React.useState("");
+  const [errorMsg, setErrorMsg] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [translatedLanguage, setTranslatedLanguage] = React.useState("");
+  const [originalLanguage, setOriginalLanguage] = React.useState("");
 
   async function registerUser() {
-    setErrorMsg("")
+    setErrorMsg("");
     // notify user that message
     if (username === "") {
-      setErrorMsg("Please enter a username!")
-      return
+      setErrorMsg("Please enter a username!");
+      return;
     }
     if (email === "") {
-      setErrorMsg("Please enter a email!")
-      return
+      setErrorMsg("Please enter a email!");
+      return;
     }
     if (grade === -1) {
-      setErrorMsg("Please select a grade!")
-      return
+      setErrorMsg("Please select a grade!");
+      return;
     }
     if (originalLanguage === "") {
-      setErrorMsg("Please select an original language!")
-      return
+      setErrorMsg("Please select an original language!");
+      return;
     }
     if (translatedLanguage === "") {
-      setErrorMsg("Please select a translated language!")
-      return
+      setErrorMsg("Please select a translated language!");
+      return;
     }
     if (translatedLanguage === originalLanguage) {
-      setErrorMsg("Your translated language cannot be equal to your original language!")
-      return
+      setErrorMsg(
+        "Your translated language cannot be equal to your original language!"
+      );
+      return;
     }
     if (password === "") {
-      setErrorMsg("Please enter a password!")
-      return
+      setErrorMsg("Please enter a password!");
+      return;
     }
 
-    await createUser(email, password).catch((err) => {
-      switch (err) {
-        case "auth/email-already-in-use":
-          setErrorMsg(`Email address already in use.`);
-          break;
-        case "auth/invalid-email":
-          setErrorMsg(`Email address is invalid.`);
-          break;
-        case "auth/weak-password":
-          setErrorMsg(
-            "Password is not strong enough."
-          );
-          break;
-        default:
-          setErrorMsg("Unknown error with error code " + code);
-          break;
-      }
-    }).then(async () => {
-      await setUserInfo(originalLanguage, translatedLanguage, grade, username)
-      navigation.navigate('Tabs');
-    })
+    await createUser(email, password)
+      .catch((err) => {
+        switch (err) {
+          case "auth/email-already-in-use":
+            setErrorMsg(`Email address already in use.`);
+            break;
+          case "auth/invalid-email":
+            setErrorMsg(`Email address is invalid.`);
+            break;
+          case "auth/weak-password":
+            setErrorMsg("Password is not strong enough.");
+            break;
+          default:
+            setErrorMsg("Unknown error with error code " + code);
+            break;
+        }
+      })
+      .then(async () => {
+        await setUserInfo(
+          originalLanguage,
+          translatedLanguage,
+          grade,
+          username
+        );
+        navigation.navigate("Tabs");
+      });
   }
 
   return (
@@ -271,8 +294,14 @@ const FormRegister = ({ navigation }) => {
               <Select.Item label="Grade 4" value={4} />
               <Select.Item label="Grade 5" value={5} />
             </Select>
-            <LanguageSelector placeholder="Original Language" onValueChange={setOriginalLanguage} />
-            <LanguageSelector placeholder="Translated Language" onValueChange={setTranslatedLanguage} />
+            <LanguageSelector
+              placeholder="Original Language"
+              onValueChange={setOriginalLanguage}
+            />
+            <LanguageSelector
+              placeholder="Translated Language"
+              onValueChange={setTranslatedLanguage}
+            />
 
             <Input
               w={{
@@ -284,7 +313,9 @@ const FormRegister = ({ navigation }) => {
                 <Pressable onPress={() => setShow(!show)}>
                   <Icon
                     as={
-                      <MaterialIcons name={show ? "visibility" : "visibility-off"} />
+                      <MaterialIcons
+                        name={show ? "visibility" : "visibility-off"}
+                      />
                     }
                     size={5}
                     mr="2"
@@ -295,10 +326,13 @@ const FormRegister = ({ navigation }) => {
               placeholder="Password"
               onChangeText={setPassword}
             />
-            <FormControl.ErrorMessage w="75%" display={errorMsg === "" ? "none" : undefined}>
+            <FormControl.ErrorMessage
+              w="75%"
+              display={errorMsg === "" ? "none" : undefined}
+            >
               {errorMsg}
             </FormControl.ErrorMessage>
-            <CustomButtons title="Register" onPress={registerUser} />
+            <CustomButton title="Register" onPress={registerUser} />
           </Stack>
         </FormControl>
       </Stack>
@@ -306,41 +340,6 @@ const FormRegister = ({ navigation }) => {
   );
 };
 
-const CustomButtons = ({ title, onPress, icon, style, type = "button" }) => {
-  return (
-    <Pressable style={style} onPress={onPress}>
-      {({ isHovered, isFocused, isPressed }) => {
-        return (
-          <Box
-            style={{
-              transform: [
-                {
-                  scale: isPressed ? 0.9 : 1,
-                },
-              ],
-            }}
-            rounded="full"
-            px={type === "button" ? "20" : "0"}
-            bg="tertiary.400:alpha.8"
-            py="2"
-            shadow={8}
-            alignSelf="center"
-          >
-            <Box
-              w={type === "button" ? "24" : "10"}
-              h={type === "icon" ? "6" : undefined}
-              alignItems="center"
-              justifyContent="center"
-              shadow={8}
-            >
-              {icon != undefined ? icon : <Text color="white">{title}</Text>}
-            </Box>
-          </Box>
-        );
-      }}
-    </Pressable>
-  );
-};
 const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
 
 const WelcomeScreenNew = ({ navigation, route }) => {
@@ -368,7 +367,7 @@ const WelcomeScreenNew = ({ navigation, route }) => {
   useEffect(() => {
     if (isKeyboardVisible) {
       if (formSelected === "login") formPosition.value = -0.3;
-      else formPosition.value = -0.45
+      else formPosition.value = -0.45;
     } else {
       formPosition.value = 1;
     }
@@ -402,7 +401,7 @@ const WelcomeScreenNew = ({ navigation, route }) => {
       transform: [
         { rotate: withTiming(interpolation + "deg", { duration: 1000 }) },
       ],
-      marginBottom: 10
+      marginBottom: 10,
     };
   });
   const formAnimatedStyle = useAnimatedStyle(() => {
@@ -476,19 +475,29 @@ const WelcomeScreenNew = ({ navigation, route }) => {
           </Animated.View>
 
           <Animated.View style={[animatedBottonsStyle, styles.buttons]}>
-            <CustomButtons title="Login" onPress={showFormsLoginHandler} />
+            <CustomButton title="Login" onPress={showFormsLoginHandler} />
           </Animated.View>
           <Animated.View style={[animatedBottonsStyle, styles.buttons]}>
-            <CustomButtons
-              title="Register"
-              onPress={showFormsRegisterHandler}
-            />
+            <CustomButton title="Register" onPress={showFormsRegisterHandler} />
           </Animated.View>
 
-          <Center top={HEIGHT * (formSelected === "register" ? 0.29 : 0.37)} alignSelf="center">
+          <Center
+            top={HEIGHT * (formSelected === "register" ? 0.29 : 0.37)}
+            alignSelf="center"
+          >
             <Animated.View style={keyboardAnimatedStyle}>
               <Animated.View style={closeBottonStyle}>
-                <CustomButtons icon={<MaterialIcons name="close" color="white" style={{ fontSize: 22 }} />} type="icon" onPress={exitHandler} />
+                <CustomButton
+                  icon={
+                    <MaterialIcons
+                      name="close"
+                      color="white"
+                      style={{ fontSize: 22 }}
+                    />
+                  }
+                  type="icon"
+                  onPress={exitHandler}
+                />
               </Animated.View>
               <Animated.View style={formAnimatedStyle}>
                 <Box
@@ -499,8 +508,12 @@ const WelcomeScreenNew = ({ navigation, route }) => {
                   bg="gray.100"
                   pt="1/6"
                 >
-                  {formSelected === "login" && <FormLogin navigation={navigation} />}
-                  {formSelected === "register" && <FormRegister navigation={navigation} />}
+                  {formSelected === "login" && (
+                    <FormLogin navigation={navigation} />
+                  )}
+                  {formSelected === "register" && (
+                    <FormRegister navigation={navigation} />
+                  )}
                 </Box>
               </Animated.View>
             </Animated.View>
