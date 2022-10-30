@@ -33,10 +33,8 @@ export const getLocalStorageBook = async (language) => {
     var dataLang = []
     var titlesLang = []
     for (var i = 0; i < storageData.length; i++) {
-        if (storageData[i].language.toLowerCase() == language.toLowerCase()) {
-            dataLang.push(storageData[i])
-            titlesLang.push(titles[i])
-        }
+        dataLang.push(storageData[i])
+        titlesLang.push(titles[i])
     }
 
     return [dataLang, titlesLang]
@@ -68,7 +66,7 @@ export const addBookLocally = async (title, description, language, book, imageBa
         title: title,
         language: language,
         description: description,
-        source: `data:image/jpeg;base64,${imageBase64}`,
+        source: imageBase64,
         book: book
     }
     titles.push(title)
@@ -284,7 +282,7 @@ export async function acceptBook(item) {
 
     for (var i = 0; i < Object.keys(item.book).length; i++) {
         const keySet = "page" + (i + 1).toString()
-        await document.collection(keySet).doc((i + 1).toString()).set({ value: item.book[keySet] }).catch((e) => {
+        await document.collection(keySet).doc((i + 1).toString()).set({ value: item.book[i] }).catch((e) => {
             alert(e)
             i = item.length
         })

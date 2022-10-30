@@ -76,7 +76,6 @@ export const AddPDF = ({ navigation, route }) => {
             headers: { "Content-Type": "multipart/form-data" },
         });
         const out = JSON.parse(response.data["response"])
-        console.log(Object.keys(out[0]))
         var imgArr = [...images]
         for (var i = 0; i < out.length; i++) {
             imgArr.push(out[i].base64)

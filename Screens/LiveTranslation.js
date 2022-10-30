@@ -44,7 +44,7 @@ const LiveTranslation = ({ navigation, route }) => {
     if (!camera) return;
     const photo = await camera.takePictureAsync({ base64: true, quality: 0.15 });
     var copy = [...images];
-    copy.push(photo);
+    copy.push(photo.base64);
     setImages(copy);
     setCameraPreview(false);
   };
@@ -78,7 +78,11 @@ const LiveTranslation = ({ navigation, route }) => {
       headers: { "Content-Type": "multipart/form-data" },
     });
     const out = JSON.parse(response.data["response"])
-    setImages(out)
+    var imgArr = [...images]
+    for (var i = 0; i < out.length; i++) {
+      imgArr.push(out[i].base64)
+    }
+    setImages(imgArr)
     setTranslateTitle("Translate")
   }
 
@@ -86,8 +90,8 @@ const LiveTranslation = ({ navigation, route }) => {
     if (images.length === 0 || TranslateTitle !== "Translate") { return }
 
     const customTranslate = route.params?.customTranslated;
-    const originalImage = images[0].base64;
-    var bookArray = {};
+    const originalImage = images[0];
+    var bookArray = [];
 
     if (customTranslate && images.length > 0) {
       //* Custom Translated
@@ -109,8 +113,8 @@ const LiveTranslation = ({ navigation, route }) => {
       setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
       const form = new FormData();
 
-      form.append("base64Image", element.base64);
-      form.append("languageId", route.params?.language["id"]);
+      form.append("base64Image", element);
+      form.append("languageId", route.params?.language);
       setTranslateTitle("Translating Page #" + (i + 1).toString() + "...");
       const response = await axios({
         method: "post",
@@ -119,12 +123,13 @@ const LiveTranslation = ({ navigation, route }) => {
         headers: { "Content-Type": "multipart/form-data" },
       });
       const base64Out = response.data["response"];
-      bookArray["page" + (i + 1).toString()] = base64Out;
+      bookArray.push(base64Out);
       var copy = [...images];
-      copy[i].base64 = base64Out;
+      copy[i] = base64Out;
       setImages(copy);
     }
 
+    setTranslateTitle("Adding Book Locally...");
     await addBookLocally(
       route.params?.title,
       route.params?.description,
@@ -133,7 +138,8 @@ const LiveTranslation = ({ navigation, route }) => {
       originalImage
     );
 
-    navigation.navigate("Home");
+    console.log("Navigating Home")
+    navigation.navigate("Home Screen");
   };
 
   return (
@@ -141,7 +147,7 @@ const LiveTranslation = ({ navigation, route }) => {
       {/* Intro Text */}
       <Text style={styles.IntroText}>
         Take pictures of the book that you want to translate using the "Add
-        Page" button. {"\n"}
+        Page" button.
         {"\n"}When you are done, click "Translate" button!
       </Text>
 
@@ -200,7 +206,7 @@ const LiveTranslation = ({ navigation, route }) => {
                       style={styles.Image}
                       imageStyle={{ borderRadius: 20 }}
                       source={{
-                        uri: `data:image/jpeg;base64,${element.base64}`,
+                        uri: `data:image/jpeg;base64,${element}`,
                       }}
                     >
                       <Text style={styles.PageText}>Page #{index + 1}</Text>

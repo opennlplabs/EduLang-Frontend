@@ -24,6 +24,7 @@ import * as firebase from "firebase";
 import { deleteAccount, getUserInfoFirebase, logoutUser, logoutUserFirebase, setUserInfo } from "./StorageUtils/UserStorage";
 import { clearAllStorageData } from "./StorageUtils/BookStorage";
 import { LanguageSelector } from "./components/LanguageSelector";
+import { Storage } from "expo-storage";
 
 const Settings = () => {
   const navigation = useNavigation();
@@ -73,6 +74,33 @@ const Settings = () => {
     ])
   }
 
+  async function deleteBookStorage() {
+    Alert.alert("Delete all books?", "Are you sure you want to delete all your books? The books in the library will remain.", [
+      {
+        text: "Confirm", onPress: async () => {
+          await Storage.setItem({
+            key: "data",
+            value: "[]",
+          });
+          await Storage.setItem({
+            key: "titles",
+            value: "[]",
+          });
+          await Storage.setItem({
+            key: "favBooks",
+            value: "[]",
+          });
+          await Storage.setItem({
+            key: "completedBooks",
+            value: "[]",
+          });
+        }
+      },
+      { text: "Cancel", style: 'cancel' }
+    ])
+
+  }
+
   return (
     <SafeAreaView style={styles.container}>
       <FormControl>
@@ -118,6 +146,7 @@ const Settings = () => {
         <Spacer />
         <Button w="1/3" onPress={deleteUser}>Delete User</Button>
       </Flex>
+      <Button marginTop={4} onPress={deleteBookStorage}>Delete all books</Button>
     </SafeAreaView>
   );
 };

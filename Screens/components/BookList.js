@@ -9,6 +9,7 @@ import {
   FlatList,
   Image,
   ActivityIndicator,
+  ImageBackground,
 } from "react-native";
 
 const BookList = ({ navigation, item, NoMessage, isLoading }) => {
@@ -20,7 +21,9 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
           navigation.navigate("Book Info", { item: item });
         }}
       >
-        <Image source={{ uri: `data:image/jpeg;base64,${item.source}` }} style={styles.image} />
+        <View style={styles.ImageContainer}>
+          <ImageBackground source={{ uri: `data:image/jpeg;base64,${item.source}` }} style={styles.image} />
+        </View>
         <Text>{item.title}</Text>
       </TouchableOpacity>
     );
@@ -75,7 +78,21 @@ const styles = StyleSheet.create({
     resizeMode: "contain",
     width: 150,
     height: 170,
+    borderRadius: 15,
+    overflow: 'hidden',
+
   },
+  ImageContainer: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 2
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    elevation: 5,
+    marginBottom: 5
+  }
 });
 
 export default BookList;

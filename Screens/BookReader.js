@@ -26,6 +26,12 @@ const PDFExample = ({ route }) => {
         setHeight(Math.floor(windowWidth * div));
       }
     );
+    setLeftButtonDisabled(true)
+    setRightButtonDisabled(false)
+    if (lenPages == 1) {
+      setLeftButtonDisabled(true);
+      setRightButtonDisabled(true);
+    }
   }, [Dimensions.get("window")]);
 
   function changePage(increment) {

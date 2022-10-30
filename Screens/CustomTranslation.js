@@ -53,7 +53,7 @@ export default function CustomTranslation({ navigation, route }) {
                 originalImage
             )
 
-            navigation.navigate("Home")
+            navigation.navigate("Home Screen")
         } else {
             setFinish(false)
             setIndex(index => index + 1)

@@ -209,7 +209,7 @@ const FormRegister = ({ navigation }) => {
       }
     }).then(async () => {
       await setUserInfo(originalLanguage, translatedLanguage, grade, username)
-      navigation.navigate('Tabs');
+      navigation.navigate("Tabs");
     })
   }
 

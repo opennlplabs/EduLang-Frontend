@@ -38,17 +38,17 @@ const BookInfo = ({ navigation, route }) => {
 
     setModalVisable(false)
     navigation.navigate({
-      name: "Home",
+      name: "Home Screen",
     })
   }
 
   // When admin decides to accept the book 
   const addToBooks = async () => {
-    if (Object.keys(item.book).length === 0) {
+    if (item.book == undefined || item.book.length === 0) {
       alert("You must read the book first before you submit!")
     }
     else {
-      setModalTitle("Deleting From Books Review...")
+      setModalTitle("Accepting Book...")
       setModalVisable(true)
 
       await acceptBook(item)
@@ -56,7 +56,7 @@ const BookInfo = ({ navigation, route }) => {
       setModalVisable(false)
 
       navigation.navigate({
-        name: "Home",
+        name: "Home Screen",
       })
     }
   }
@@ -66,7 +66,7 @@ const BookInfo = ({ navigation, route }) => {
     await removeFromCompleted(item)
     await removeFromData(item)
 
-    navigation.navigate("Home")
+    navigation.navigate("Home Screen")
   }
 
   const startReading = async (item) => {
@@ -74,7 +74,9 @@ const BookInfo = ({ navigation, route }) => {
     if (item.book == undefined || item.book.length === 0) {
       setModalVisable(true)
       setModalTitle("Getting Pages...")
-      const pages = await getBookPages(item.id, item.lenPages)
+      var isAdminBook = false
+      if (item.isAdmin === true) isAdminBook = true
+      const pages = await getBookPages(item.id, item.lenPages, isAdminBook)
       item.book = pages
       setModalVisable(false)
     }

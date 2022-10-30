@@ -19,11 +19,14 @@ export function AdminPage({ navigation, route }) {
     const [isLoading, setIsLoading] = useState(true)
 
     useEffect(async () => {
-        setIsAdmin(await getStorage("isAdmin"))
-        const data = await getAdminBooks()
-        setData(data)
-        updateSearchData(data, "")
-        setIsLoading(false)
+        const isAdmin = await getStorage("isAdmin")
+        setIsAdmin(isAdmin)
+        if (isAdmin) {
+            const data = await getAdminBooks()
+            setData(data)
+            updateSearchData(data, "")
+            setIsLoading(false)
+        }
     }, [])
 
     function updateSearchData(dataFilter, text) {
