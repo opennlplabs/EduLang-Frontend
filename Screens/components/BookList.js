@@ -20,7 +20,7 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
           navigation.navigate("Book Info", { item: item });
         }}
       >
-        <Image source={{ uri: item.source }} style={styles.image} />
+        <Image source={{ uri: `data:image/jpeg;base64,${item.source}` }} style={styles.image} />
         <Text>{item.title}</Text>
       </TouchableOpacity>
     );

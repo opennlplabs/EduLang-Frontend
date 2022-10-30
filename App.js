@@ -46,6 +46,8 @@ function LibraryNavigator() {
   return (
     <LibraryScreenStack.Navigator>
       <LibraryScreenStack.Screen name="Library Home Page" component={Library} />
+      <LibraryScreenStack.Screen name="Book Info" component={BookInfo} />
+      <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
     </LibraryScreenStack.Navigator>
   )
 }
@@ -55,6 +57,7 @@ function AdminNavigator() {
   return (
     <AdminScreenStack.Navigator>
       <AdminScreenStack.Screen name="Admin Page" component={AdminPage} />
+      <AdminScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
       <AdminScreenStack.Screen name="Add PDF" component={AddPDF} />
     </AdminScreenStack.Navigator>
   )
@@ -104,8 +107,8 @@ export default function App() {
           <SignupStack.Navigator screenOptions={{
             headerShown: false
           }}>
-            <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
             <SignupStack.Screen name="Splash" component={Splash} />
+            <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
             <SignupStack.Screen name="Tabs" component={TabNavigator} />
           </SignupStack.Navigator>
         </NavigationContainer>

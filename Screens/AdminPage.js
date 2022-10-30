@@ -21,7 +21,6 @@ export function AdminPage({ navigation, route }) {
     useEffect(async () => {
         setIsAdmin(await getStorage("isAdmin"))
         const data = await getAdminBooks()
-        console.log(data.length)
         setData(data)
         updateSearchData(data, "")
         setIsLoading(false)

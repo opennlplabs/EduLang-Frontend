@@ -191,7 +191,6 @@ const FormRegister = ({ navigation }) => {
       return
     }
 
-    console.log("starting user creating")
     await createUser(email, password).catch((err) => {
       switch (err) {
         case "auth/email-already-in-use":

@@ -11,28 +11,15 @@ import { Image, Dimensions } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
 const PDFExample = ({ route }) => {
   const { item } = route.params;
-  const [page, setPage] = useState(1);
+  const [page, setPage] = useState(0);
   const [leftButtonDisabled, setLeftButtonDisabled] = useState(true);
   const [rightButtonDisabled, setRightButtonDisabled] = useState(false);
   const [height, setHeight] = useState(100);
   const lenPages = Object.keys(item.book).length;
 
   useEffect(() => {
-    if (lenPages == 1) {
-      setLeftButtonDisabled(true);
-      setRightButtonDisabled(true);
-    } else if (page <= 1) {
-      setLeftButtonDisabled(true);
-      setRightButtonDisabled(false);
-    } else if (page >= lenPages) {
-      setLeftButtonDisabled(false);
-      setRightButtonDisabled(true);
-    } else {
-      setLeftButtonDisabled(false);
-      setRightButtonDisabled(false);
-    }
     Image.getSize(
-      `data:image/png;base64,${item.book["page1"]}`,
+      `data:image/png;base64,${item.book[0]}`,
       (width, height) => {
         const div = height / width;
         const windowWidth = Dimensions.get("window").width;
@@ -46,17 +33,17 @@ const PDFExample = ({ route }) => {
     if (increment && page < lenPages) {
       setPage((page) => page + 1);
       new_page = page + 1;
-    } else if (!increment && page > 1) {
+    } else if (!increment && page > 0) {
       setPage((page) => page - 1);
       new_page = page - 1;
     }
     if (lenPages == 1) {
       setLeftButtonDisabled(true);
       setRightButtonDisabled(true);
-    } else if (new_page <= 1) {
+    } else if (new_page <= 0) {
       setLeftButtonDisabled(true);
       setRightButtonDisabled(false);
-    } else if (new_page >= lenPages) {
+    } else if (new_page >= lenPages - 1) {
       setLeftButtonDisabled(false);
       setRightButtonDisabled(true);
     } else {
@@ -67,7 +54,7 @@ const PDFExample = ({ route }) => {
 
   const images = [
     {
-      url: `data:image/jpeg;base64,${item.book["page" + page.toString()]}`,
+      url: `data:image/jpeg;base64,${item.book[page]}`,
     },
   ];
 
@@ -115,7 +102,7 @@ const PDFExample = ({ route }) => {
             />
           </TouchableOpacity>
           <Text style={styles.PageNumDisplay}>
-            Page {page}/{lenPages}
+            Page {page + 1}/{lenPages}
           </Text>
           <TouchableOpacity
             disabled={rightButtonDisabled}

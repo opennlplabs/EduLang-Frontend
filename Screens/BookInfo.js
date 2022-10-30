@@ -12,7 +12,7 @@ import { AntDesign } from "@expo/vector-icons";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { useIsFocused } from "@react-navigation/native";
-import { addToFav, getFavBooks, removeFromFav, setBookAsComplete, removeFromCompleted, uploadBook, removeFromData, acceptBook } from "./StorageUtils/BookStorage";
+import { addToFav, getFavBooks, removeFromFav, setBookAsComplete, removeFromCompleted, uploadBook, removeFromData, acceptBook, getBookPages } from "./StorageUtils/BookStorage";
 
 const BookInfo = ({ navigation, route }) => {
   const { t } = useTranslation();
@@ -69,11 +69,23 @@ const BookInfo = ({ navigation, route }) => {
     navigation.navigate("Home")
   }
 
+  const startReading = async (item) => {
+    // first check if we have any pages
+    if (item.book == undefined || item.book.length === 0) {
+      setModalVisable(true)
+      setModalTitle("Getting Pages...")
+      const pages = await getBookPages(item.id, item.lenPages)
+      item.book = pages
+      setModalVisable(false)
+    }
+    navigation.navigate("Book Reader", { item: item })
+  }
+
   return (
     <View style={styles.container}>
       <View style={styles.contentContainer}>
         <Image
-          source={{ uri: item.source }}
+          source={{ uri: `data:image/jpeg;base64,${item.source}` }}
           style={{ height: 350, width: SIZES.width, resizeMode: "contain" }}
         />
         <Text>Description: {item.description}</Text>
@@ -110,7 +122,7 @@ const BookInfo = ({ navigation, route }) => {
       <View style={styles.loginButtons}>
         <Clickable
           text={t("book_info.start_reading")}
-          onPress={() => navigation.navigate("Book Reader", { item: item })}
+          onPress={() => startReading(item)}
         />
         <Clickable text={"Complete Reading"} onPress={async () => await setBookAsComplete(item)} />
       </View>

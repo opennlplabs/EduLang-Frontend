@@ -83,8 +83,6 @@ export function setUserInfo(nativelanguage, translatedlanguage, grade, username)
 
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
-        if (uid == undefined || uid == null) reject("UID is null!")
-
         firebase
             .firestore()
             .collection("userInfo")

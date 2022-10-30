@@ -76,65 +76,29 @@ export const AddPDF = ({ navigation, route }) => {
             headers: { "Content-Type": "multipart/form-data" },
         });
         const out = JSON.parse(response.data["response"])
-        setImages(out)
-        setTranslateTitle("Translate")
+        console.log(Object.keys(out[0]))
+        var imgArr = [...images]
+        for (var i = 0; i < out.length; i++) {
+            imgArr.push(out[i].base64)
+        }
+        setImages(imgArr)
+        setTranslateTitle("Upload")
     }
 
-    const TranslatePages = async () => {
-        // if (images.length === 0 || TranslateTitle !== "Upload") { return }
-
-        // const customTranslate = route.params?.customTranslated;
-        // const originalImage = images[0].base64;
-        // var bookArray = {};
-
-        // if (customTranslate && images.length > 0) {
-        //     //* Custom Translated
-        //     navigation.navigate({
-        //         name: "Custom Translation",
-        //         params: {
-        //             images: images,
-        //             title: route.params?.title,
-        //             description: route.params?.description,
-        //             language: route.params?.language,
-        //         },
-        //     });
-        //     return;
-        // }
-
-        // // Manual translation
-        // for (var i = 0; i < images.length; i++) {
-        //     const element = images[i];
-        //     setTranslateTitle("Sending Page #" + (i + 1).toString() + "...");
-        //     const form = new FormData();
-
-        //     form.append("base64Image", element.base64);
-        //     form.append("languageId", route.params?.language["id"]);
-        //     setTranslateTitle("Translating Page #" + (i + 1).toString() + "...");
-        //     const response = await axios({
-        //         method: "post",
-        //         url: `${server}/translate`,
-        //         data: form,
-        //         headers: { "Content-Type": "multipart/form-data" },
-        //     });
-        //     const base64Out = response.data["response"];
-        //     bookArray["page" + (i + 1).toString()] = base64Out;
-        //     var copy = [...images];
-        //     copy[i].base64 = base64Out;
-        //     setImages(copy);
-        // }
+    const uploadBookExt = async (navigation) => {
+        if (images.length === 0 || TranslateTitle !== "Upload") return
 
         setTranslateTitle("Uploading...")
 
-        console.log(images[0].length)
         await uploadBook({
             title: route.params?.title,
             language: route.params?.language,
             description: route.params?.description,
             source: images[0],
             book: images
-        });
+        }, true);
 
-        navigation.navigate("Home");
+        navigation.navigate("Admin Page");
     };
 
     return (
@@ -232,7 +196,7 @@ export const AddPDF = ({ navigation, route }) => {
             <View style={styles.BottomView}>
                 <TouchableOpacity
                     style={[styles.Button, styles.TranslateButton]}
-                    onPress={TranslatePages}
+                    onPress={() => uploadBookExt(navigation)}
                 >
                     <Text style={{ textAlign: "center" }}>{TranslateTitle}</Text>
                 </TouchableOpacity>

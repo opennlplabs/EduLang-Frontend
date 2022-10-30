@@ -48,7 +48,7 @@ export const getCloudBooks = async () => {
     snapshot.forEach((doc) => {
         const data = doc.data()
         // Filter out language and check if cloud book is not in local storage
-        datas.push(data)
+        datas.push({ ...data, id: doc.id })
     })
 
     return datas
@@ -242,7 +242,7 @@ function delay(delayInms) {
 export async function uploadBook(item, directBook = false) {
     var collectionSelect = "BooksReview"
     if (directBook === true) {
-        collectionSelect = "Book"
+        collectionSelect = "Books"
     }
     let uid = firebase.auth()?.currentUser?.uid;
     const document = firebase.firestore().collection(collectionSelect).doc(item.title + " " + uid.toString())
@@ -291,4 +291,22 @@ export async function acceptBook(item) {
         // To avoid writing too much at the same time :)
         await delay(1100)
     }
+}
+
+export async function getBookPages(id, lenPages, fromBookReview = false) {
+    var collectionName = "Books"
+    if (fromBookReview === true) {
+        collectionName = "BooksReview"
+    }
+
+    const document = firebase.firestore().collection(collectionName).doc(id)
+    const arr = []
+
+    for (var i = 0; i < lenPages; i++) {
+        const keySet = "page" + (i + 1).toString()
+        const snapshot = await document.collection(keySet).doc((i + 1).toString()).get()
+        arr.push(snapshot.data()["value"])
+    }
+
+    return arr
 }
