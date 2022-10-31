@@ -1,66 +1,75 @@
 import { COLORS, FONTS } from "../../constants";
 import {
-    View,
-    Text,
-    TouchableOpacity,
-    Image,
-    TextInput,
+  View,
+  TouchableOpacity,
+  Image,
+  TextInput,
+  Dimensions,
 } from "react-native";
-import { AntDesign } from "@expo/vector-icons";
+import { MaterialIcons } from "@expo/vector-icons";
+import {
+  Box,
+  Heading,
+  HStack,
+  Icon,
+  Input,
+  Stack,
+  Pressable,
+} from "native-base";
 
 export function Header(props) {
-    return (
-        <View style={{
-            height: 150
-        }}>
-            {/* <SvgComponent /> */}
-            <View
-                style={{
-                    backgroundColor: "#4CA4D3",
-                    padding: 15,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    alignSelf: "center",
-                    margin: 5,
-                    width: "90%",
-                    top: 60,
-                    position: "absolute",
-                    borderRadius: 6,
-                    justifyContent: "space-between",
-                }}
-            >
+  return (
+    <Box mt="1/4">
+      <Stack mx="4" flexDirection="row" justifyContent="space-between" pb="6">
+        <Heading color="info.500">{props.title}</Heading>
+        {props.onFeedbackPress != undefined && (
+          <Pressable onPress={props.onFeedbackPress}>
+            {({ isHovered, isFocused, isPressed }) => {
+              return (
+                <Box
+                  top="-26"
+                  style={{
+                    transform: [
+                      {
+                        scale: isPressed ? 0.9 : 1,
+                      },
+                    ],
+                  }}
+                  rounded="full"
+                  color="tertiary.500"
+                  shadow={8}
+                >
+                  <Icon
+                    as={<MaterialIcons name="info" />}
+                    size={7}
+                    color="tertiary.500"
+                  />
+                </Box>
+              );
+            }}
+          </Pressable>
+        )}
+      </Stack>
 
-                <TextInput
-                    style={{ backgroundColor: "#4CA4D3", width: "90%", color: "white" }}
-                    placeholder="Search book"
-                    placeholderTextColor="white"
-                    onChangeText={props.onSearchBarChange}
-                />
-                <AntDesign name="search1" size={24} color="white" />
-            </View>
-            <View
-                style={{
-                    position: "absolute",
-                    top: 10,
-                    flexDirection: "row",
-                    alignItems: "center",
-                    marginTop: 10,
-                    paddingHorizontal: 20,
-                }}
-            >
-                {/* Greetings */}
-                <Text style={{ ...FONTS.h2, color: COLORS.black, flex: 1 }}>
-                    {props.title}
-                </Text>
-                {props.onFeedbackPress != undefined &&
-                    <TouchableOpacity onPress={props.onFeedbackPress}>
-                        <Image
-                            source={require("../../assets/images/feedbackIcon.png")}
-                            style={{ height: 25, width: 25, marginLeft: 16 }}
-                        />
-                    </TouchableOpacity>
-                }
-            </View>
-        </View>
-    );
-};
+      <Input
+        mx="4"
+        onChangeText={props.onSearchBarChange}
+        width="90%"
+        bg="gray.100"
+        rounded="full"
+        height="10"
+        _focus={{ bg: "tertiary.200" }}
+        InputRightElement={
+          <Icon
+            as={<MaterialIcons name="search" />}
+            size={5}
+            mr="4"
+            color="tertiary.800"
+          />
+        }
+        placeholderTextColor="tertiary.800"
+        placeholder="Search book"
+      />
+    </Box>
+  );
+}

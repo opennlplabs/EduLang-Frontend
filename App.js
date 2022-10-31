@@ -1,8 +1,8 @@
 import React, { Suspense, useEffect } from "react";
-import { Text, LogBox } from "react-native";
+import { Text, LogBox, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
+import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./Screens/HomeScreen";
 import { useFonts } from "expo-font";
 import WelcomeScreenNew from "./Screens/WelcomeScreen";
@@ -19,8 +19,8 @@ import CustomTranslation from "./Screens/CustomTranslation.js";
 import { Library } from "./Screens/Library.js";
 import { Ionicons } from "@expo/vector-icons";
 import { AddPDF } from "./Screens/AddPDF.js";
-import { NativeBaseProvider } from 'native-base'
-
+import { NativeBaseProvider } from "native-base";
+import { Icon } from "native-base";
 LogBox.ignoreAllLogs();
 
 if (!firebase.apps.length) {
@@ -30,18 +30,28 @@ if (!firebase.apps.length) {
 const HomeScreenStack = createNativeStackNavigator();
 function HomeNavigator() {
   return (
-    <HomeScreenStack.Navigator>
+    <HomeScreenStack.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
+      })}
+    >
       <HomeScreenStack.Screen name="Home Screen" component={HomeScreen} />
       <HomeScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
-      <HomeScreenStack.Screen name="Live Translation" component={LiveTranslation} />
-      <HomeScreenStack.Screen name="Custom Translation" component={CustomTranslation} />
+      <HomeScreenStack.Screen
+        name="Live Translation"
+        component={LiveTranslation}
+      />
+      <HomeScreenStack.Screen
+        name="Custom Translation"
+        component={CustomTranslation}
+      />
       <HomeScreenStack.Screen name="Book Info" component={BookInfo} />
       <HomeScreenStack.Screen name="Book Reader" component={PDFExample} />
     </HomeScreenStack.Navigator>
-  )
+  );
 }
 
-const LibraryScreenStack = createNativeStackNavigator()
+const LibraryScreenStack = createNativeStackNavigator();
 function LibraryNavigator() {
   return (
     <LibraryScreenStack.Navigator>
@@ -49,10 +59,10 @@ function LibraryNavigator() {
       <LibraryScreenStack.Screen name="Book Info" component={BookInfo} />
       <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
     </LibraryScreenStack.Navigator>
-  )
+  );
 }
 
-const AdminScreenStack = createNativeStackNavigator()
+const AdminScreenStack = createNativeStackNavigator();
 function AdminNavigator() {
   return (
     <AdminScreenStack.Navigator>
@@ -60,31 +70,77 @@ function AdminNavigator() {
       <AdminScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
       <AdminScreenStack.Screen name="Add PDF" component={AddPDF} />
     </AdminScreenStack.Navigator>
-  )
+  );
 }
+//style for the tabBarContainer
+const tabBar = {
+  borderRadius: 100,
+  position: "absolute",
+  zIndex: 3,
+  height: Dimensions.get("window").height * 0.1,
+  backgroundColor: "#0ea5e9",
+  marginBottom: 18,
+
+  shadowOpacity: 0.6,
+  opacity: 0.7,
+};
 
 const Tab = createBottomTabNavigator();
 function TabNavigator(props) {
   return (
-    <Tab.Navigator screenOptions={({ route }) => ({
-      headerShown: false,
-      tabBarIcon: ({ focused, color, size }) => {
-        let iconName;
+    <Tab.Navigator
+      screenOptions={({ route }) => ({
+        headerShown: false,
 
-        if (route.name === 'Home') iconName = "home-outline"
-        else if (route.name === "Library") iconName = "library-outline"
-        else if (route.name === 'Settings') iconName = "cog-outline";
-        else if (route.name === "Admin") iconName = "lock-closed-outline"
+        tabBarHideOnKeyboard: true,
+        tabBarStyle: tabBar,
 
-        return <Ionicons name={iconName} size={size} color={color} />;
-      }
-    })}>
+        headerStyle: {
+          backgroundColor: "#047857",
+        },
+        tabBarIconStyle: {
+          paddingTop: 0,
+          paddingBottom: 0,
+        },
+        tabBarLabelStyle: {
+          paddingTop: 0,
+        },
+
+        headerTintColor: "#fff", //Set Header text color
+        headerTitleStyle: {
+          fontWeight: "bold", //Set Header text style
+        },
+        tabBarInactiveTintColor: "#ffff",
+        tabBarActiveTintColor: "#4ade80",
+
+        tabBarIcon: ({ focused, color, size }) => {
+          let iconName;
+
+          if (route.name === "Home") iconName = "home";
+          else if (route.name === "Library") iconName = "library";
+          else if (route.name === "Settings") iconName = "cog";
+          else if (route.name === "Admin") iconName = "lock-closed";
+
+          return (
+            <Ionicons
+              name={iconName}
+              size={size}
+              color={focused ? "#4ade80" : "#fff"}
+            />
+          );
+        },
+      })}
+    >
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
-      <Tab.Screen name="Settings" component={Settings} options={{ headerShown: true }} />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{ headerShown: true }}
+      />
       <Tab.Screen name="Admin" component={AdminNavigator} />
     </Tab.Navigator>
-  )
+  );
 }
 
 const SignupStack = createNativeStackNavigator();
@@ -104,11 +160,17 @@ export default function App() {
     <Suspense fallback="Loading...">
       <NativeBaseProvider>
         <NavigationContainer>
-          <SignupStack.Navigator screenOptions={{
-            headerShown: false
-          }}>
+          <SignupStack.Navigator
+            screenOptions={{
+              headerShown: false,
+            }}
+          >
             <SignupStack.Screen name="Splash" component={Splash} />
-            <SignupStack.Screen name="Welcome Screen" component={WelcomeScreenNew} options={{ headerShown: false }} />
+            <SignupStack.Screen
+              name="Welcome Screen"
+              component={WelcomeScreenNew}
+              options={{ headerShown: false }}
+            />
             <SignupStack.Screen name="Tabs" component={TabNavigator} />
           </SignupStack.Navigator>
         </NavigationContainer>
