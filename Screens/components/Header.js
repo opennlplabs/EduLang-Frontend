@@ -15,11 +15,12 @@ import {
   Input,
   Stack,
   Pressable,
+  Fab,
 } from "native-base";
 
 export function Header(props) {
   return (
-    <Box mt="1/4">
+    <Box mt={props.smallMarginTop === true ? "20px" : "1/4"}>
       <Stack mx="4" flexDirection="row" justifyContent="space-between" pb="6">
         <Heading color="info.500">{props.title}</Heading>
         {props.onFeedbackPress != undefined && (
@@ -27,7 +28,7 @@ export function Header(props) {
             {({ isHovered, isFocused, isPressed }) => {
               return (
                 <Box
-                  top="-26"
+                  top="0"
                   style={{
                     transform: [
                       {
@@ -36,7 +37,7 @@ export function Header(props) {
                     ],
                   }}
                   rounded="full"
-                  color="tertiary.500"
+                  bg="tertiary.600"
                   shadow={8}
                 >
                   <Icon

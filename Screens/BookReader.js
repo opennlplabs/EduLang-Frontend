@@ -138,7 +138,7 @@ const styles = StyleSheet.create({
   },
   bar: {
     position: "absolute",
-    bottom: 0,
+    bottom: 100,
     left: 0,
     width: "100%",
     height: 80,

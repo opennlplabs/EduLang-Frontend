@@ -104,7 +104,7 @@ const Settings = () => {
   return (
     <SafeAreaView style={styles.container}>
       <FormControl>
-        <Stack space={2.5} w="100%">
+        <Stack mt={5} space={2.5} w="100%">
           <FormControl.Label>Select your new grade level:</FormControl.Label>
           {!isLoading &&
             <>
@@ -140,13 +140,13 @@ const Settings = () => {
       </FormControl>
 
       <Flex marginTop={4} direction="row" justify="center">
-        <Button w="1/4" onPress={SaveInfo}>{t("general.save")}</Button>
+        <Button w="1/4" rounded={10} onPress={SaveInfo}>{t("general.save")}</Button>
         <Spacer />
-        <Button w="1/4" onPress={() => { logoutUserFirebase().then(() => { navigation.replace("Welcome Screen"); }) }}>Logout</Button>
+        <Button w="1/4" rounded={10} onPress={() => { logoutUserFirebase().then(() => { navigation.replace("Welcome Screen"); }) }}>Logout</Button>
         <Spacer />
-        <Button w="1/3" onPress={deleteUser}>Delete User</Button>
+        <Button w="1/3" rounded={10} onPress={deleteUser}>Delete User</Button>
       </Flex>
-      <Button marginTop={4} onPress={deleteBookStorage}>Delete all books</Button>
+      <Button marginTop={4} rounded={10} onPress={deleteBookStorage}>Delete all books</Button>
     </SafeAreaView>
   );
 };

@@ -34,7 +34,7 @@ export const Library = ({ navigation, route }) => {
 
     return (
         <ScrollView>
-            <Header title="Library" onSearchBarChange={(text) => searchBarChange(data, text)} onFeedbackPress={() => setfeedbackModal(true)} />
+            <Header smallMarginTop title="Library" onSearchBarChange={(text) => searchBarChange(data, text)} onFeedbackPress={() => setfeedbackModal(true)} />
             <HeaderSection title="Library Books" />
             <BookList item={searchData} navigation={navigation} NoMessage="No library books found at the moment." isLoading={isLoading} />
             <FeedbackModal

@@ -90,7 +90,6 @@ const Home = ({ navigation, route }) => {
     updateSearchData(data, "")
 
     setIsLoading(false)
-    console.log("USE EFFECT HOME SCREEN")
   }, [isFocused])
 
   // Update search data

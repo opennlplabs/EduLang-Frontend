@@ -23,7 +23,6 @@ const BookAddInfo = ({ navigation, route }) => {
     useEffect(async () => {
         if (isFocused) {
             const language = JSON.parse(await Storage.getItem({ key: "translatedLanguage" }))
-            console.log("use effect", language)
             setLanguage(language)
         }
     }, [isFocused])

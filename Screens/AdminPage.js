@@ -47,7 +47,7 @@ export function AdminPage({ navigation, route }) {
     if (isAdmin) {
         return (
             <ScrollView>
-                <Header title="Admin Page" onSearchBarChange={(text) => updateSearchData(data, text)} />
+                <Header smallMarginTop title="Admin Page" onSearchBarChange={(text) => updateSearchData(data, text)} />
                 <HeaderSection title="Books Under Review" buttonTitle="Add PDF" onButtonClick={redirectPage} />
                 <BookList item={searchData} navigation={navigation} NoMessage="No library books found at the moment." isLoading={isLoading} />
             </ScrollView>

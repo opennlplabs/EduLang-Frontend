@@ -54,7 +54,17 @@ function HomeNavigator() {
 const LibraryScreenStack = createNativeStackNavigator();
 function LibraryNavigator() {
   return (
-    <LibraryScreenStack.Navigator>
+    <LibraryScreenStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#10b981",
+        },
+        headerTintColor: "#fff", //Set Header text color
+        headerTitleStyle: {
+          fontWeight: "bold", //Set Header text style
+        },
+      }}
+    >
       <LibraryScreenStack.Screen name="Library Home Page" component={Library} />
       <LibraryScreenStack.Screen name="Book Info" component={BookInfo} />
       <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
@@ -65,7 +75,17 @@ function LibraryNavigator() {
 const AdminScreenStack = createNativeStackNavigator();
 function AdminNavigator() {
   return (
-    <AdminScreenStack.Navigator>
+    <AdminScreenStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#10b981",
+        },
+        headerTintColor: "#fff", //Set Header text color
+        headerTitleStyle: {
+          fontWeight: "bold", //Set Header text style
+        },
+      }}
+    >
       <AdminScreenStack.Screen name="Admin Page" component={AdminPage} />
       <AdminScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
       <AdminScreenStack.Screen name="Add PDF" component={AddPDF} />
@@ -80,7 +100,6 @@ const tabBar = {
   height: Dimensions.get("window").height * 0.1,
   backgroundColor: "#0ea5e9",
   marginBottom: 18,
-
   shadowOpacity: 0.6,
   opacity: 0.7,
 };
@@ -133,12 +152,12 @@ function TabNavigator(props) {
     >
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
+      <Tab.Screen name="Admin" component={AdminNavigator} />
       <Tab.Screen
         name="Settings"
         component={Settings}
         options={{ headerShown: true }}
       />
-      <Tab.Screen name="Admin" component={AdminNavigator} />
     </Tab.Navigator>
   );
 }

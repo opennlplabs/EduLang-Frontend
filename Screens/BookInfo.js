@@ -162,7 +162,7 @@ const styles = StyleSheet.create({
   loginButtons: {
     alignItems: "center",
     justifyContent: "space-evenly",
-    marginBottom: 20,
+    marginBottom: 130,
   },
   modalView: {
     margin: 20,

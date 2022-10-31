@@ -1,3 +1,4 @@
+import { Box, Center } from "native-base";
 import React from "react";
 import {
   View,
@@ -24,7 +25,7 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
         <View style={styles.ImageContainer}>
           <ImageBackground source={{ uri: `data:image/jpeg;base64,${item.source}` }} style={styles.image} />
         </View>
-        <Text>{item.title}</Text>
+        <Text style={{ marginBottom: 5 }}>{item.title}</Text>
       </TouchableOpacity>
     );
   };
@@ -38,9 +39,14 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
   }
   else if (item.length == 0) {
     return (
-      <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center', height: 100 }}>
-        <Text style={styles.text}>{NoMessage}</Text>
-      </View>
+      <Center _text={{ textAlign: 'center', marginX: 7 }} w="100%" h="100px">
+        {NoMessage}
+      </Center>
+      // <View style={{ height: '200px', width: '100%', backgroundColor: "black" }}>
+      //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
+      //     <Text style={styles.text}>{NoMessage}</Text>
+      //   </View>
+      // </View>
     )
   } else {
     return (
@@ -86,11 +92,10 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 3
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5,
     marginBottom: 5
   }
 });
