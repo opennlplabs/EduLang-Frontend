@@ -29,6 +29,7 @@ import { Header } from "./components/Header";
 import { HeaderSection } from "./components/HeaderSection.js";
 import { getUserInfoFirebase } from "./StorageUtils/UserStorage.js";
 import { useTranslation } from "react-i18next";
+import Background from "./components/Background.js";
 
 async function setStorage(key, value) {
   value = JSON.stringify(value);
@@ -63,34 +64,35 @@ const Home = ({ navigation, route }) => {
 
   useEffect(async () => {
     // Get information
-    const [grade, nativeLanguage, translatedLanguage, username, isadmin] = await getUserInfoFirebase()
+    const [grade, nativeLanguage, translatedLanguage, username, isadmin] =
+      await getUserInfoFirebase();
     // Set storage values for trade and translated langu
-    await setStorage("grade", grade)
-    await setStorage("translatedLanguage", translatedLanguage)
+    await setStorage("grade", grade);
+    await setStorage("translatedLanguage", translatedLanguage);
 
     // set native lang and useState var
-    await setStorage("nativeLanguage", nativeLanguage)
+    await setStorage("nativeLanguage", nativeLanguage);
 
-    // set username and useState var 
-    await setStorage("username", username)
-    setUsername(await getStorage("username"))
+    // set username and useState var
+    await setStorage("username", username);
+    setUsername(await getStorage("username"));
 
     // set isAdmin and useState var
-    await setStorage("isAdmin", isadmin)
-    setIsAdmin(isAdmin)
+    await setStorage("isAdmin", isadmin);
+    setIsAdmin(isAdmin);
 
-    // Get local storage book and set as data 
-    var [bookData, titlesData] = await getLocalStorageBook(translatedLanguage)
-    setData(bookData)
+    // Get local storage book and set as data
+    var [bookData, titlesData] = await getLocalStorageBook(translatedLanguage);
+    setData(bookData);
 
     // Get completed books and favorite books off of this.
-    setCompletedBooks(await getCompletedBooks(bookData, titlesData, true))
-    setFavBooks(await getFavBooks(bookData, titlesData, true))
+    setCompletedBooks(await getCompletedBooks(bookData, titlesData, true));
+    setFavBooks(await getFavBooks(bookData, titlesData, true));
 
-    updateSearchData(data, "")
+    updateSearchData(data, "");
 
-    setIsLoading(false)
-  }, [isFocused])
+    setIsLoading(false);
+  }, [isFocused]);
 
   // Update search data
   function updateSearchData(dataFilter, text) {
@@ -105,11 +107,13 @@ const Home = ({ navigation, route }) => {
 
   return (
     <Box bg="tertiary.100" flex={1}>
-      <Image
+      {/* <Image
         resizeMode="cover"
         style={{ height: HEIGHT * 0.18, width: WIDTH, position: "absolute" }}
         source={require("../assets/wave1.png")}
-      />
+      /> */}
+      <Background />
+
       {/* <ScrollView my="1/6">
         <StatusBar
           style={{ marginTop: 10, backgroundColor: "red" }}

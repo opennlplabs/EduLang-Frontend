@@ -65,7 +65,11 @@ function LibraryNavigator() {
         },
       }}
     >
-      <LibraryScreenStack.Screen name="Library Home Page" component={Library} />
+      <LibraryScreenStack.Screen
+        name="Library Home Page"
+        options={{ headerShown: false }}
+        component={Library}
+      />
       <LibraryScreenStack.Screen name="Book Info" component={BookInfo} />
       <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
     </LibraryScreenStack.Navigator>
@@ -156,7 +160,7 @@ function TabNavigator(props) {
       <Tab.Screen
         name="Settings"
         component={Settings}
-        options={{ headerShown: true }}
+        options={{ headerShown: false }}
       />
     </Tab.Navigator>
   );
