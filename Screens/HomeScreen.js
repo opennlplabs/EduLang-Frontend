@@ -79,6 +79,7 @@ const Home = ({ navigation, route }) => {
 
     // set isAdmin and useState var
     await setStorage("isAdmin", isadmin);
+
     setIsAdmin(isAdmin);
 
     // Get local storage book and set as data

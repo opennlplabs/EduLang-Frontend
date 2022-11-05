@@ -1,4 +1,4 @@
-import React, { Suspense, useEffect } from "react";
+import React, { Suspense, useEffect, useContext, useState } from "react";
 import { Text, LogBox, Dimensions } from "react-native";
 import { NavigationContainer } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
@@ -21,6 +21,15 @@ import { Ionicons } from "@expo/vector-icons";
 import { AddPDF } from "./Screens/AddPDF.js";
 import { NativeBaseProvider } from "native-base";
 import { Icon } from "native-base";
+import AuthContextProvider, { AuthContext } from "./context/authContext";
+import { Storage } from "expo-storage";
+
+async function getStorage(key, array = false) {
+  var val = JSON.parse(await Storage.getItem({ key: key }));
+  if (array === true) val = Array.from(val);
+  return val;
+}
+
 LogBox.ignoreAllLogs();
 
 if (!firebase.apps.length) {
@@ -110,6 +119,13 @@ const tabBar = {
 
 const Tab = createBottomTabNavigator();
 function TabNavigator(props) {
+  const [isAdmin, setIsAdmin] = useState(false);
+  // Would need to be tested with an actual admin account
+  useEffect(async () => {
+    const isAdmin = await getStorage("isAdmin");
+    setIsAdmin(isAdmin);
+  }, [isAdmin]);
+
   return (
     <Tab.Navigator
       screenOptions={({ route }) => ({
@@ -156,7 +172,7 @@ function TabNavigator(props) {
     >
       <Tab.Screen name="Home" component={HomeNavigator} />
       <Tab.Screen name="Library" component={LibraryNavigator} />
-      <Tab.Screen name="Admin" component={AdminNavigator} />
+      {isAdmin && <Tab.Screen name="Admin" component={AdminNavigator} />}
       <Tab.Screen
         name="Settings"
         component={Settings}
@@ -181,23 +197,25 @@ export default function App() {
 
   return (
     <Suspense fallback="Loading...">
-      <NativeBaseProvider>
-        <NavigationContainer>
-          <SignupStack.Navigator
-            screenOptions={{
-              headerShown: false,
-            }}
-          >
-            <SignupStack.Screen name="Splash" component={Splash} />
-            <SignupStack.Screen
-              name="Welcome Screen"
-              component={WelcomeScreenNew}
-              options={{ headerShown: false }}
-            />
-            <SignupStack.Screen name="Tabs" component={TabNavigator} />
-          </SignupStack.Navigator>
-        </NavigationContainer>
-      </NativeBaseProvider>
+      <AuthContextProvider>
+        <NativeBaseProvider>
+          <NavigationContainer>
+            <SignupStack.Navigator
+              screenOptions={{
+                headerShown: false,
+              }}
+            >
+              <SignupStack.Screen name="Splash" component={Splash} />
+              <SignupStack.Screen
+                name="Welcome Screen"
+                component={WelcomeScreenNew}
+                options={{ headerShown: false }}
+              />
+              <SignupStack.Screen name="Tabs" component={TabNavigator} />
+            </SignupStack.Navigator>
+          </NavigationContainer>
+        </NativeBaseProvider>
+      </AuthContextProvider>
     </Suspense>
   );
 }
