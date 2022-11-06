@@ -154,10 +154,12 @@ const BookInfo = ({ navigation, route }) => {
         <CustomButton
           title={t("book_info.start_reading")}
           onPress={() => startReading(item)}
+          customWidth="70%"
         />
         <CustomButton
           title={"Completed"}
           onPress={async () => await setBookAsComplete(item)}
+          customWidth="70%"
         />
       </VStack>
       <Modal animationType="slide" transparent={true} visible={modalVisible}>
