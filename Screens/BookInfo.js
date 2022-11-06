@@ -5,86 +5,97 @@ import {
   TouchableOpacity,
   Image,
   StyleSheet,
-  Modal
+  Modal,
 } from "react-native";
 import { SIZES } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
 import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { useIsFocused } from "@react-navigation/native";
-import { addToFav, getFavBooks, removeFromFav, setBookAsComplete, removeFromCompleted, uploadBook, removeFromData, acceptBook, getBookPages } from "./StorageUtils/BookStorage";
+import {
+  addToFav,
+  getFavBooks,
+  removeFromFav,
+  setBookAsComplete,
+  removeFromCompleted,
+  uploadBook,
+  removeFromData,
+  acceptBook,
+  getBookPages,
+} from "./StorageUtils/BookStorage";
+import CustomButton from "./globals/CustomeButton";
+import { Box, VStack } from "native-base";
 
 const BookInfo = ({ navigation, route }) => {
   const { t } = useTranslation();
-  const [modalVisible, setModalVisable] = useState(false)
+  const [modalVisible, setModalVisable] = useState(false);
   const [favList, setfavList] = useState([]);
   const { item } = route.params;
-  const isAdmin = Object.keys(item).includes("isAdmin")
-  const [modalTitle, setModalTitle] = useState("")
-  const isFocused = useIsFocused()
+  const isAdmin = Object.keys(item).includes("isAdmin");
+  const [modalTitle, setModalTitle] = useState("");
+  const isFocused = useIsFocused();
 
   // Get favorite list
   useEffect(async () => {
     if (isFocused) {
-      setfavList(await getFavBooks(full_data = false))
+      setfavList(await getFavBooks((full_data = false)));
     }
-  }, [isFocused])
+  }, [isFocused]);
 
   const uploadBookMod = async () => {
-    setModalVisable(true)
-    setModalTitle("Uploading to Books Review...")
+    setModalVisable(true);
+    setModalTitle("Uploading to Books Review...");
 
-    await uploadBook(item)
+    await uploadBook(item);
 
-    setModalVisable(false)
+    setModalVisable(false);
     navigation.navigate({
       name: "Home Screen",
-    })
-  }
+    });
+  };
 
-  // When admin decides to accept the book 
+  // When admin decides to accept the book
   const addToBooks = async () => {
     if (item.book == undefined || item.book.length === 0) {
-      alert("You must read the book first before you submit!")
-    }
-    else {
-      setModalTitle("Accepting Book...")
-      setModalVisable(true)
+      alert("You must read the book first before you submit!");
+    } else {
+      setModalTitle("Accepting Book...");
+      setModalVisable(true);
 
-      await acceptBook(item)
+      await acceptBook(item);
 
-      setModalVisable(false)
+      setModalVisable(false);
 
       navigation.navigate({
         name: "Home Screen",
-      })
+      });
     }
-  }
+  };
 
   const deleteBook = async (item) => {
-    await removeFromFav(item)
-    await removeFromCompleted(item)
-    await removeFromData(item)
+    await removeFromFav(item);
+    await removeFromCompleted(item);
+    await removeFromData(item);
 
-    navigation.navigate("Home Screen")
-  }
+    navigation.navigate("Home Screen");
+  };
 
   const startReading = async (item) => {
     // first check if we have any pages
     if (item.book == undefined || item.book.length === 0) {
-      setModalVisable(true)
-      setModalTitle("Getting Pages...")
-      var isAdminBook = false
-      if (item.isAdmin === true) isAdminBook = true
-      const pages = await getBookPages(item.id, item.lenPages, isAdminBook)
-      item.book = pages
-      setModalVisable(false)
+      setModalVisable(true);
+      setModalTitle("Getting Pages...");
+      var isAdminBook = false;
+      if (item.isAdmin === true) isAdminBook = true;
+      const pages = await getBookPages(item.id, item.lenPages, isAdminBook);
+      item.book = pages;
+      setModalVisable(false);
     }
-    navigation.navigate("Book Reader", { item: item })
-  }
+    navigation.navigate("Book Reader", { item: item });
+  };
 
   return (
-    <View style={styles.container}>
+    <Box bg="tertiary.100" flex={1}>
       <View style={styles.contentContainer}>
         <Image
           source={{ uri: `data:image/jpeg;base64,${item.source}` }}
@@ -98,49 +109,66 @@ const BookInfo = ({ navigation, route }) => {
             paddingHorizontal: 15,
           }}
         >
-          {isAdmin ? <>
-            <TouchableOpacity>
-              <AntDesign name="check" size={24} onPress={addToBooks} />
-            </TouchableOpacity>
-          </> : <>
-            {favList.some((book) => book === item.title) ? (
-              <TouchableOpacity onPress={async () => setfavList(await removeFromFav(item))}>
-                <AntDesign name="heart" size={24} color="red" />
+          {isAdmin ? (
+            <>
+              <TouchableOpacity>
+                <AntDesign name="check" size={24} onPress={addToBooks} />
               </TouchableOpacity>
-            ) : (
-              <TouchableOpacity onPress={async () => setfavList(await addToFav(item))}>
-                <AntDesign name="hearto" size={24} color="black" />
+            </>
+          ) : (
+            <>
+              {favList.some((book) => book === item.title) ? (
+                <TouchableOpacity
+                  onPress={async () => setfavList(await removeFromFav(item))}
+                >
+                  <AntDesign name="heart" size={24} color="red" />
+                </TouchableOpacity>
+              ) : (
+                <TouchableOpacity
+                  onPress={async () => setfavList(await addToFav(item))}
+                >
+                  <AntDesign name="hearto" size={24} color="black" />
+                </TouchableOpacity>
+              )}
+              <TouchableOpacity onPress={() => uploadBookMod()}>
+                <AntDesign
+                  style={{ marginLeft: 10 }}
+                  name="clouduploado"
+                  size={28}
+                  color="black"
+                />
               </TouchableOpacity>
-            )}
-            <TouchableOpacity onPress={() => uploadBookMod()}>
-              <AntDesign style={{ marginLeft: 10 }} name="clouduploado" size={28} color="black" />
-            </TouchableOpacity>
-            <TouchableOpacity onPress={() => deleteBook(item)}>
-              <AntDesign style={{ marginLeft: 10, marginTop: 3 }} name="closecircleo" size={23} color="black" />
-            </TouchableOpacity>
-          </>}
+              <TouchableOpacity onPress={() => deleteBook(item)}>
+                <AntDesign
+                  style={{ marginLeft: 10, marginTop: 3 }}
+                  name="closecircleo"
+                  size={23}
+                  color="black"
+                />
+              </TouchableOpacity>
+            </>
+          )}
         </View>
       </View>
-      <View style={styles.loginButtons}>
-        <Clickable
-          text={t("book_info.start_reading")}
+      <VStack mb="40" space={3}>
+        <CustomButton
+          title={t("book_info.start_reading")}
           onPress={() => startReading(item)}
+          customWidth="70%"
         />
-        <Clickable text={"Complete Reading"} onPress={async () => await setBookAsComplete(item)} />
-      </View>
-
-      <Modal
-        animationType="slide"
-        transparent={true}
-        visible={modalVisible}
-      >
+        <CustomButton
+          title={"Completed"}
+          onPress={async () => await setBookAsComplete(item)}
+          customWidth="70%"
+        />
+      </VStack>
+      <Modal animationType="slide" transparent={true} visible={modalVisible}>
         <View style={styles.modalView}>
           <Text>{modalTitle}</Text>
-          <View style={{ width: '100%', height: 20 }} />
+          <View style={{ width: "100%", height: 20 }} />
         </View>
       </Modal>
-
-    </View>
+    </Box>
   );
 };
 
@@ -174,11 +202,11 @@ const styles = StyleSheet.create({
     shadowColor: "#000",
     shadowOffset: {
       width: 0,
-      height: 2
+      height: 2,
     },
     shadowOpacity: 0.25,
     shadowRadius: 4,
-    elevation: 5
-  }
+    elevation: 5,
+  },
 });
 export default BookInfo;

@@ -9,6 +9,8 @@ import {
   TextInput,
 } from "react-native";
 import * as firebase from "firebase";
+import CustomButton from "../globals/CustomeButton";
+import { Center, VStack } from "native-base";
 
 const FeedbackModal = ({ visible, hideModal }) => {
   const [feedbackText, setfeedbackText] = useState("");
@@ -41,14 +43,7 @@ const FeedbackModal = ({ visible, hideModal }) => {
 
   return (
     <Modal transparent onRequestClose={hideModal} visible={visible}>
-      <Pressable
-        style={{
-          flex: 1,
-          alignItems: "center",
-          justifyContent: "center",
-          backgroundColor: "rgba(0,0,0,0.5)",
-        }}
-      >
+      <Center mt="3/6">
         <View style={styles.modalView}>
           <Text style={{ alignSelf: "center", margin: 10 }}>
             Submit your feedback for our app!
@@ -60,16 +55,13 @@ const FeedbackModal = ({ visible, hideModal }) => {
             multiline
             placeholder="Enter here"
           />
-          <View>
-            <Pressable onPress={hideModal} style={styles.buttonStyle}>
-              <Text>Cancel</Text>
-            </Pressable>
-            <Pressable onPress={SubmitFeedback} style={styles.buttonStyle}>
-              <Text>Submit</Text>
-            </Pressable>
-          </View>
+
+          <VStack space={3}>
+            <CustomButton title="Cancel" onPress={hideModal} />
+            <CustomButton title="Submit" onPress={SubmitFeedback} />
+          </VStack>
         </View>
-      </Pressable>
+      </Center>
     </Modal>
   );
 };
