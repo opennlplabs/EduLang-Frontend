@@ -7,21 +7,22 @@ EduLang is a bilingual childrens book app that translates books for children who
 
 ## HOW TO PUSH CHANGES
 ------------
+**Make sure that you create seperate branches for your UI changes!**
+
+- First, check periodically on the master branch to check any code updates using `git pull`
+- Create a new branch on your local machine and switch: `git checkout -b [nameOfYourNewBranch]`
+- Tip: You can see all the branches by using: `git branch -a`
+
 - Check "git status" to see any changes
-- "git add ."
-- git commit -m "description of changes"
-- git push origin master
+- To add all of your changes, do: "git add ."
+- Then commit using `git commit -m "[descriptionOfChanges]"`
+- Push your changes and branch to github (official cloud repository): `git push origin [nameOfYourNewBranch]`
+- We then create a pull request after we people review your code, handles merge changes, approve it to the master branch :) 
+
+Don't feel hesistant to reach out to Eshaan, Jovani, Subha, or anyone else for help. :)
 
 ## STEPS TO RUNNING
 ------------
-- make sure to add your path to tesseract ("brew list tesseract" on mac), in Paragraph.py line 57. 
-- if you dont have a gpu, change all instances of `cuda=True` to `cuda=False`
-- download frontend dependencies by "npm install"
-- make sure to change the server in app.py to 0.0.0.0
-- make sure to change the server in LiveTranslation.js line 21 to your IPv4 Adress, add that part before `:5000`
-- start the backend by `npm run backend`
-- start the frontend on a separate terminal, try doing split terminal for easy use by `npm run frontend`
-
-Note: when done with using, make sure to do **CONTROL C** instead of closing the terminals.
-
-
+- Install `node` using the official [Node.js website](https://nodejs.org/en/)
+- Open up the directory in terminal, and install all dependencies using `npm install --legacy-peer-deps`
+- Then, in the same directory in terminal, run `npm run frontend`!
