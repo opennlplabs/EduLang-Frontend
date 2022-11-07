@@ -6,7 +6,7 @@ import { addBookLocally } from './StorageUtils/BookStorage';
 
 export default function CustomTranslation({ navigation, route }) {
     var images = route.params?.images
-    var originalImage = images[0].base64
+    var originalImage = images[0]
     var title = route.params?.title
     var description = route.params?.description
     var language = route.params?.language
@@ -22,10 +22,12 @@ export default function CustomTranslation({ navigation, route }) {
     async function processInformation() {
         setTranslateTitle("Processing Information...")
         const form = new FormData()
-        form.append("languageId", JSON.stringify(route.params?.language["id"]))
-        form.append("base64Image", images[index].base64)
+        console.log("testing...")
+        console.log(images[index].length)
+        form.append("languageId", JSON.stringify(route.params?.language))
+        form.append("base64Image", images[index])
         form.append("boxes", JSON.stringify(boxes))
-        form.append("index", index)
+        form.append("index", JSON.stringify(index))
         form.append("responses", JSON.stringify(responses))
         const resp = await axios({
             method: "post",
@@ -33,6 +35,7 @@ export default function CustomTranslation({ navigation, route }) {
             data: form,
             headers: { "content-type": "multipart/form-data" },
         })
+        console.log("reviewved response data")
         var copy = [...newImages]
         copy[index] = resp.data["response"]
         setNewImages(copy)
@@ -40,16 +43,12 @@ export default function CustomTranslation({ navigation, route }) {
         setResponses([])
         if (index + 1 === images.length) {
             setTranslateTitle("Adding Book to Library...")
-            var imgs_inp = {}
-            for (var i = 0; i < copy.length; i++) {
-                imgs_inp["page" + (i + 1).toString()] = copy[i]
-            }
 
             await addBookLocally(
                 title,
                 description,
                 language,
-                imgs_inp,
+                copy,
                 originalImage
             )
 
@@ -70,7 +69,7 @@ export default function CustomTranslation({ navigation, route }) {
         // The finish variable tracks if the new image has bounding boxes for manual translation input. 
         if (!finish) {
             // Start Translating first image
-            const base64Image = images[index].base64
+            const base64Image = images[index]
             const form = new FormData()
 
             var copy = [...newImages]
@@ -185,3 +184,4 @@ const styles = StyleSheet.create({
         color: 'black'
     }
 })
+
