@@ -1,0 +1,17 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`Checks react native is testing library is working 1`] = `
+<View>
+  <Text>
+    Hello World!
+  </Text>
+</View>
+`;
+
+exports[`Checks react native testing library is working 1`] = `
+<View>
+  <Text>
+    Hello World!
+  </Text>
+</View>
+`;

@@ -62,37 +62,42 @@ const Home = ({ navigation, route }) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const isFocused = useIsFocused();
 
-  useEffect(async () => {
-    // Get information
-    const [grade, nativeLanguage, translatedLanguage, username, isadmin] =
-      await getUserInfoFirebase();
-    // Set storage values for trade and translated langu
-    await setStorage("grade", grade);
-    await setStorage("translatedLanguage", translatedLanguage);
+  useEffect(() => {
+    const firstRenderFunc = async () => {
+      // Get information
+      const [grade, nativeLanguage, translatedLanguage, username, isadmin] =
+        await getUserInfoFirebase();
+      // Set storage values for trade and translated langu
+      await setStorage("grade", grade);
+      await setStorage("translatedLanguage", translatedLanguage);
 
-    // set native lang and useState var
-    await setStorage("nativeLanguage", nativeLanguage);
+      // set native lang and useState var
+      await setStorage("nativeLanguage", nativeLanguage);
 
-    // set username and useState var
-    await setStorage("username", username);
-    setUsername(await getStorage("username"));
+      // set username and useState var
+      await setStorage("username", username);
+      setUsername(await getStorage("username"));
 
-    // set isAdmin and useState var
-    await setStorage("isAdmin", isadmin);
+      // set isAdmin and useState var
+      await setStorage("isAdmin", isadmin);
 
-    setIsAdmin(isAdmin);
+      setIsAdmin(isAdmin);
 
-    // Get local storage book and set as data
-    var [bookData, titlesData] = await getLocalStorageBook(translatedLanguage);
-    setData(bookData);
+      // Get local storage book and set as data
+      var [bookData, titlesData] = await getLocalStorageBook(
+        translatedLanguage
+      );
+      setData(bookData);
 
-    // Get completed books and favorite books off of this.
-    setCompletedBooks(await getCompletedBooks(bookData, titlesData, true));
-    setFavBooks(await getFavBooks(bookData, titlesData, true));
+      // Get completed books and favorite books off of this.
+      setCompletedBooks(await getCompletedBooks(bookData, titlesData, true));
+      setFavBooks(await getFavBooks(bookData, titlesData, true));
 
-    updateSearchData(data, "");
+      updateSearchData(data, "");
 
-    setIsLoading(false);
+      setIsLoading(false);
+    };
+    firstRenderFunc();
   }, [isFocused]);
 
   // Update search data

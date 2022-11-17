@@ -50,20 +50,23 @@ const Settings = () => {
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
-  useEffect(async () => {
-    if (isFocused === true) {
-      const [
-        grade,
-        nativeLanguage,
-        translatedLanguageConfig,
-        username,
-        isAdmin,
-      ] = await getUserInfoFirebase();
-      setGradeLevel(grade);
-      setnativeLanguage(nativeLanguage);
-      setTranslatedLanguage(translatedLanguageConfig);
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    const firstRenderFunc = async () => {
+      if (isFocused === true) {
+        const [
+          grade,
+          nativeLanguage,
+          translatedLanguageConfig,
+          username,
+          isAdmin,
+        ] = await getUserInfoFirebase();
+        setGradeLevel(grade);
+        setnativeLanguage(nativeLanguage);
+        setTranslatedLanguage(translatedLanguageConfig);
+        setIsLoading(false);
+      }
+    };
+    firstRenderFunc();
   }, [isFocused]);
 
   const SaveInfo = async () => {

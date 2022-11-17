@@ -445,6 +445,29 @@ const WelcomeScreenNew = ({ navigation, route }) => {
     });
   }, [isFocused]);
 
+  useEffect(() => {
+    const onRenderFunc = async () => {
+      // Set local variables
+      await Storage.setItem({
+        key: "data",
+        value: "[]",
+      });
+      await Storage.setItem({
+        key: "titles",
+        value: "[]",
+      });
+      await Storage.setItem({
+        key: "favBooks",
+        value: "[]",
+      });
+      await Storage.setItem({
+        key: "completedBooks",
+        value: "[]",
+      });
+    };
+    onRenderFunc();
+  }, [isFocused]);
+
   return (
     <View style={styles.container}>
       <TouchableWithoutFeedback onPress={Keyboard.dismiss}>
