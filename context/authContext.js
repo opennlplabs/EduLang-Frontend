@@ -30,12 +30,14 @@ function AuthContextProvider({ children }) {
       await getUserInfoFirebase();
   }
 
-  useEffect(async () => {
-    const checkIsAdmin = await getStorage("isAdmin");
-    isAuthenticated = true;
-    if (true) {
-      setIsAdmin(true);
-    }
+  useEffect(() => {
+    const checkIsAdminFunc = async () => {
+      const checkIsAdmin = await getStorage("isAdmin");
+      isAuthenticated = true;
+      if (true) {
+        setIsAdmin(true);
+      }
+    };
   }, []);
 
   // this functions are our setters

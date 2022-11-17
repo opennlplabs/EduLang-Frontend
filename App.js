@@ -121,9 +121,12 @@ const Tab = createBottomTabNavigator();
 function TabNavigator(props) {
   const [isAdmin, setIsAdmin] = useState(false);
   // Would need to be tested with an actual admin account
-  useEffect(async () => {
-    const isAdmin = await getStorage("isAdmin");
-    setIsAdmin(isAdmin);
+  useEffect(() => {
+    const checkIsAdmin = async () => {
+      const isAdmin = await getStorage("isAdmin");
+      setIsAdmin(isAdmin);
+    };
+    checkIsAdmin();
   }, [isAdmin]);
 
   return (

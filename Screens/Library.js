@@ -17,13 +17,16 @@ export const Library = ({ navigation, route }) => {
   const [feedbackModal, setfeedbackModal] = useState(false);
   const isFocused = useIsFocused();
 
-  useEffect(async () => {
-    if (isFocused === true) {
-      const data = await getCloudBooks();
-      setData(data);
-      searchBarChange(data, "");
-      setIsLoading(false);
-    }
+  useEffect(() => {
+    const firstRenderFunc = async () => {
+      if (isFocused === true) {
+        const data = await getCloudBooks();
+        setData(data);
+        searchBarChange(data, "");
+        setIsLoading(false);
+      }
+    };
+    firstRenderFunc();
   }, [isFocused]);
 
   function searchBarChange(dataSearch, text) {

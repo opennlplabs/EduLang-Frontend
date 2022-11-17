@@ -36,10 +36,13 @@ const BookInfo = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   // Get favorite list
-  useEffect(async () => {
-    if (isFocused) {
-      setfavList(await getFavBooks((full_data = false)));
-    }
+  useEffect(() => {
+    const firstRenderFunc = async () => {
+      if (isFocused) {
+        setfavList(await getFavBooks((full_data = false)));
+      }
+    };
+    firstRenderFunc();
   }, [isFocused]);
 
   const uploadBookMod = async () => {

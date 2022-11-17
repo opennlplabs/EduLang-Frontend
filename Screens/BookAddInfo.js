@@ -21,13 +21,16 @@ const BookAddInfo = ({ navigation, route }) => {
   const [isCustomTranslated, setIsCustomTranslated] = useState(false);
   const isFocused = useIsFocused();
 
-  useEffect(async () => {
-    if (isFocused) {
-      const language = JSON.parse(
-        await Storage.getItem({ key: "translatedLanguage" })
-      );
-      setLanguage(language);
-    }
+  useEffect(() => {
+    const firstRenderFunc = async () => {
+      if (isFocused) {
+        const language = JSON.parse(
+          await Storage.getItem({ key: "translatedLanguage" })
+        );
+        setLanguage(language);
+      }
+    };
+    firstRenderFunc();
   }, [isFocused]);
 
   async function Submit() {
