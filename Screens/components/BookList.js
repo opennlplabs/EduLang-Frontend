@@ -1,6 +1,5 @@
-import React from "react";
+import React, { useEffect } from "react";
 import {
-  View,
   SafeAreaView,
   StyleSheet,
   Dimensions,
@@ -10,6 +9,7 @@ import {
   ImageBackground,
 } from "react-native";
 import {
+  View,
   Box,
   Heading,
   AspectRatio,
@@ -24,27 +24,107 @@ import {
 const BookList = ({ navigation, item, NoMessage, isLoading }) => {
   const renderItem = ({ item, index }) => {
     return (
-      // <TouchableOpacity
-      //   style={styles.item}
+      <View m={3} h="200" w="160" shadow={8} >
+        <Pressable
+          onPress={(e) => {
+            navigation.navigate("Book Info", { item: item });
+          }}
+        >
+          <Box bg="gray.50" h="160" borderRadius={15} overflow="hidden" justifyContent={"center"}>
+            <AspectRatio w="90%" h="70%">
+              <Image
+                source={{
+                  uri: `data:image/jpeg;base64,${item.source}`,
+                }}
+                alt="image"
+              />
+            </AspectRatio>
+          </Box>
+          <Text style={{ marginTop: 15, textAlign: 'center' }}>{item.title.replaceAll('_', ' ')}</Text>
+        </Pressable>
+      </View>
+    );
+  };
 
-      // >
-      //   <View style={styles.ImageContainer}>
-      //     <ImageBackground
-      //       source={{ uri: `data:image/jpeg;base64,${item.source}` }}
-      //       style={styles.image}
-      //     />
-      //   </View>
-      //   <Text style={{ marginBottom: 5 }}>{item.title}</Text>
-      // </TouchableOpacity>
-      <Pressable
-        m="8"
-        onPress={(e) => {
-          navigation.navigate("Book Info", { item: item });
+  if (isLoading) {
+    return (
+      <View
+        style={{
+          flex: 1,
+          justifyContent: "center",
+          alignItems: "center",
+          height: 100,
         }}
       >
-        {({ isHovered, isFocused, isPressed }) => {
-          return (
-            <Box
+        <ActivityIndicator size={"large"} />
+      </View>
+    );
+  } else if (item.length == 0) {
+    return (
+      <Center _text={{ textAlign: "center", marginX: 7 }} w="100%" h="100px">
+        {NoMessage}
+      </Center>
+    );
+  } else {
+    return (
+      <SafeAreaView style={styles.container}>
+        <FlatList
+          style={{ marginTop: 20 }}
+          contentContainerStyle={{ flexDirection: 'column', alignItems: 'center' }}
+          showsHorizontalScrollIndicator={false}
+          data={item}
+          renderItem={renderItem}
+          numColumns={2}
+        />
+      </SafeAreaView>
+    );
+  }
+};
+
+const styles = StyleSheet.create({
+  item: {
+    marginHorizontal: 10,
+    marginVertical: 5,
+    flex: 1,
+    //backgroundColor: "red",
+    alignItems: "center",
+    justifyContent: "center",
+  },
+  container: {
+    flex: 1,
+    marginBottom: 100
+  },
+  text: {
+    textAlign: "center",
+    paddingLeft: 30,
+    paddingRight: 30,
+  },
+  image: {
+    //...StyleSheet.absoluteFillObject,
+    resizeMode: "contain",
+    width: 150,
+    height: 170,
+    borderRadius: 15,
+    overflow: "hidden",
+  },
+  ImageContainer: {
+    shadowColor: "#000",
+    shadowOffset: {
+      width: 0,
+      height: 3,
+    },
+    shadowOpacity: 0.25,
+    shadowRadius: 4,
+    marginBottom: 5,
+  },
+});
+
+export default BookList;
+
+
+// Later design
+
+{/* <Box
               top="0"
               style={{
                 transform: [
@@ -58,10 +138,8 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
                 borderColor: "tertiary.700",
                 borderWidth: "4",
               }}
-              bg="info.300:alpha.50"
+              // bg="info.300:alpha.50"
               shadow={8}
-              w="48"
-              h="64"
             >
               <Box
                 m="2"
@@ -70,10 +148,11 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
                 borderWidth="1"
                 borderColor="tertiary.500"
                 shadow={8}
-                flex={1}
+                w={150}
+                h={80}
               >
                 <Center bg="gray.50" flex={2} m="4">
-                  <AspectRatio w="90%" h="100%" ratio={6 / 7}>
+                  <AspectRatio w="90%" h="60%" >
                     <Image
                       source={{
                         uri: `data:image/jpeg;base64,${item.source}`,
@@ -115,87 +194,4 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
                   </Text>
                 </Stack>
               </Box>
-            </Box>
-          );
-        }}
-      </Pressable>
-    );
-  };
-
-  if (isLoading) {
-    return (
-      <View
-        style={{
-          flex: 1,
-          justifyContent: "center",
-          alignItems: "center",
-          height: 100,
-        }}
-      >
-        <ActivityIndicator size={"large"} />
-      </View>
-    );
-  } else if (item.length == 0) {
-    return (
-      <Center _text={{ textAlign: "center", marginX: 7 }} w="100%" h="100px">
-        {NoMessage}
-      </Center>
-      // <View style={{ height: '200px', width: '100%', backgroundColor: "black" }}>
-      //   <View style={{ flex: 1, justifyContent: 'center', alignItems: 'center' }}>
-      //     <Text style={styles.text}>{NoMessage}</Text>
-      //   </View>
-      // </View>
-    );
-  } else {
-    return (
-      <SafeAreaView style={styles.container}>
-        <FlatList
-          horizontal
-          showsHorizontalScrollIndicator={false}
-          data={item}
-          renderItem={renderItem}
-          // numColumns={2}
-        />
-      </SafeAreaView>
-    );
-  }
-};
-
-const styles = StyleSheet.create({
-  item: {
-    marginHorizontal: 10,
-    marginVertical: 5,
-    flex: 1,
-    //backgroundColor: "red",
-    alignItems: "center",
-    justifyContent: "center",
-  },
-  container: {
-    flex: 1,
-  },
-  text: {
-    textAlign: "center",
-    paddingLeft: 30,
-    paddingRight: 30,
-  },
-  image: {
-    //...StyleSheet.absoluteFillObject,
-    resizeMode: "contain",
-    width: 150,
-    height: 170,
-    borderRadius: 15,
-    overflow: "hidden",
-  },
-  ImageContainer: {
-    shadowColor: "#000",
-    shadowOffset: {
-      width: 0,
-      height: 3,
-    },
-    shadowOpacity: 0.25,
-    shadowRadius: 4,
-    marginBottom: 5,
-  },
-});
-
-export default BookList;
+            </Box> */}

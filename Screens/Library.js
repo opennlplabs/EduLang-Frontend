@@ -1,5 +1,4 @@
 import { useState } from "react";
-import { ScrollView } from "react-native";
 import { Header } from "./components/Header";
 import { HeaderSection } from "./components/HeaderSection";
 import BookList from "./components/BookList";
@@ -8,7 +7,8 @@ import { getCloudBooks } from "./StorageUtils/BookStorage";
 import { useIsFocused } from "@react-navigation/native";
 import FeedbackModal from "./components/FeedBackModal";
 import Background from "./components/Background";
-import { Box, Center } from "native-base";
+import { Box } from "native-base";
+import { getStorage } from "./HomeScreen";
 
 export const Library = ({ navigation, route }) => {
   const [isLoading, setIsLoading] = useState(true);
@@ -18,15 +18,16 @@ export const Library = ({ navigation, route }) => {
   const isFocused = useIsFocused();
 
   useEffect(() => {
-    const firstRenderFunc = async () => {
+    async function asyncFunction() {
       if (isFocused === true) {
-        const data = await getCloudBooks();
+        const language = await getStorage("translatedLanguage")
+        const data = await getCloudBooks(language);
         setData(data);
         searchBarChange(data, "");
         setIsLoading(false);
       }
-    };
-    firstRenderFunc();
+    }
+    asyncFunction()
   }, [isFocused]);
 
   function searchBarChange(dataSearch, text) {

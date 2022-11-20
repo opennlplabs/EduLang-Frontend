@@ -20,7 +20,7 @@ export async function clearAllStorageData() {
     })
 }
 
-export const getLocalStorageBook = async (language) => {
+export const getLocalStorageBook = async () => {
     var storageData = await Storage.getItem({ key: "data" })
     if (storageData == undefined) storageData = []
     else storageData = Array.from(JSON.parse(storageData))
@@ -40,19 +40,26 @@ export const getLocalStorageBook = async (language) => {
     return [dataLang, titlesLang]
 }
 
-export const getCloudBooks = async () => {
+export const getCloudBooks = async (languageFilter) => {
+    // First get local books
+    const [dataLang, titlesLang] = await getLocalStorageBook()
+
+    // Now
+    console.log(titlesLang)
     var datas = []
     const snapshot = await firebase.firestore().collection("Books").get()
     snapshot.forEach((doc) => {
         const data = doc.data()
         // Filter out language and check if cloud book is not in local storage
-        datas.push({ ...data, id: doc.id })
+        if ((data.language == languageFilter && !titlesLang.includes(data.title)) || languageFilter == undefined) {
+            datas.push({ ...data, id: doc.id, isFromLibrary: true, isAtHome: false })
+        }
     })
 
     return datas
 }
 
-export const addBookLocally = async (title, description, language, book, imageBase64) => {
+export const addBookLocally = async (title, description, language, book, imageBase64, isFromLibrary = false) => {
     var data = await Storage.getItem({ key: "data" })
     data = Array.from(JSON.parse(data))
 
@@ -67,7 +74,9 @@ export const addBookLocally = async (title, description, language, book, imageBa
         language: language,
         description: description,
         source: imageBase64,
-        book: book
+        book: book,
+        isFromLibrary: isFromLibrary,
+        isAtHome: true
     }
     titles.push(title)
     data.push(obj)
@@ -190,7 +199,7 @@ export async function addToFav(item) {
         key: "favBooks",
         value: JSON.stringify(favBooks)
     })
-    return favBooks
+    return true
 }
 
 export async function removeFromFav(item) {
@@ -209,7 +218,7 @@ export async function removeFromFav(item) {
         value: JSON.stringify(favBooks)
     })
 
-    return favBooks
+    return false
 }
 
 export async function removeFromData(item) {
@@ -229,11 +238,11 @@ export async function removeFromData(item) {
     })
 }
 
-function delay(delayInms) {
+export function delay(delayInMS) {
     return new Promise(resolve => {
         setTimeout(() => {
             resolve(2);
-        }, delayInms);
+        }, delayInMS);
     });
 }
 

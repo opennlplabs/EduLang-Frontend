@@ -21,6 +21,7 @@ import { useEffect } from "react";
 import { useIsFocused } from "@react-navigation/native";
 import { Storage } from "expo-storage";
 import {
+  delay,
   getCompletedBooks,
   getFavBooks,
   getLocalStorageBook,
@@ -43,7 +44,7 @@ async function setStorage(key, value) {
   });
 }
 
-async function getStorage(key, array = false) {
+export async function getStorage(key, array = false) {
   var val = JSON.parse(await Storage.getItem({ key: key }));
   if (array === true) val = Array.from(val);
   return val;
@@ -84,9 +85,7 @@ const Home = ({ navigation, route }) => {
       setIsAdmin(isAdmin);
 
       // Get local storage book and set as data
-      var [bookData, titlesData] = await getLocalStorageBook(
-        translatedLanguage
-      );
+      var [bookData, titlesData] = await getLocalStorageBook();
       setData(bookData);
 
       // Get completed books and favorite books off of this.
@@ -97,7 +96,8 @@ const Home = ({ navigation, route }) => {
 
       setIsLoading(false);
     };
-    firstRenderFunc();
+    if (isFocused)
+      firstRenderFunc();
   }, [isFocused]);
 
   // Update search data

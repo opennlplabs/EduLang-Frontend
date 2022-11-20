@@ -40,18 +40,29 @@ const HomeScreenStack = createNativeStackNavigator();
 function HomeNavigator() {
   return (
     <HomeScreenStack.Navigator
-      screenOptions={({ route }) => ({
-        headerShown: false,
-      })}
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: "#10b981",
+        },
+        headerTintColor: "#fff", //Set Header text color
+        headerTitleStyle: {
+          fontWeight: "bold", //Set Header text style
+        },
+      }}
     >
-      <HomeScreenStack.Screen name="Home Screen" component={HomeScreen} />
-      <HomeScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
+      <HomeScreenStack.Screen
+        options={{ headerShown: false }}
+        name="Home Screen" component={HomeScreen} />
+      <HomeScreenStack.Screen
+        options={{ headerShown: false }}
+        name="Add Book: Info" component={BookAddInfo} />
       <HomeScreenStack.Screen
         name="Live Translation"
         component={LiveTranslation}
       />
       <HomeScreenStack.Screen
         name="Custom Translation"
+        options={{ headerShown: false }}
         component={CustomTranslation}
       />
       <HomeScreenStack.Screen name="Book Info" component={BookInfo} />

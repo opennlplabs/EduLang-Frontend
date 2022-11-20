@@ -104,6 +104,7 @@ export default function CustomTranslation({ navigation, route }) {
         }
       }
     };
+    firstRenderFunc();
   }, [index]);
 
   return (
