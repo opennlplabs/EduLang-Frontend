@@ -160,7 +160,7 @@ const Settings = () => {
                     />
                   }
                   placeholder="Grade"
-                  onValueChange={(value) => setGrade(value)}
+                  onValueChange={(value) => setGradeLevel(value)}
                   defaultValue={gradeLevel}
                 >
                   <Select.Item label="Grade 1" value={1} />
