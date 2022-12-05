@@ -31,6 +31,7 @@ import { HeaderSection } from "./components/HeaderSection.js";
 import { getUserInfoFirebase } from "./StorageUtils/UserStorage.js";
 import { useTranslation } from "react-i18next";
 import Background from "./components/Background.js";
+import BookRow from "./components/HomeScreenComponents/BookRow.js";
 
 async function setStorage(key, value) {
   value = JSON.stringify(value);
@@ -49,6 +50,16 @@ export async function getStorage(key, array = false) {
   if (array === true) val = Array.from(val);
   return val;
 }
+
+const DummyData = [
+  { name: "test1", id: 1 },
+  { name: "test2", id: 2 },
+  { name: "test3", id: 3 },
+  { name: "test4", id: 4 },
+  { name: "test4", id: 4 },
+  { name: "test5", id: 5 },
+  { name: "test6", id: 6 },
+];
 
 const Home = ({ navigation, route }) => {
   const { t } = useTranslation();
@@ -96,8 +107,7 @@ const Home = ({ navigation, route }) => {
 
       setIsLoading(false);
     };
-    if (isFocused)
-      firstRenderFunc();
+    if (isFocused) firstRenderFunc();
   }, [isFocused]);
 
   // Update search data
@@ -110,7 +120,13 @@ const Home = ({ navigation, route }) => {
     );
   }
   const { width: WIDTH, height: HEIGHT } = Dimensions.get("window");
-
+  /*/-----------------------------------
+----------NEEED TO SHOW--------------- 
+-----INDICATOR WHILE FETCHING DATA----
+--------------------------------------
+---------REPLACE DUMMY DATA-----------
+--------------------------------------
+--------------------------------------*/
   return (
     <Box bg="tertiary.100" flex={1}>
       {/* <Image
@@ -142,12 +158,27 @@ const Home = ({ navigation, route }) => {
           });
         }}
       />
-      <BookList
+      <BookRow
+        data={[]}
+        type={"Favorite"}
+        noMessage={"No favorite books"}
+        navigation={navigation}
+        onAddPress={() => navigation.navigate("Library")}
+      />
+      <BookRow
+        data={DummyData}
+        type={"Offline"}
+        noMessage={"No Downloaded Books"}
+        navigation={navigation}
+        onAddPress={() => navigation.navigate("Library")}
+      />
+
+      {/* <BookList
         item={searchData}
         navigation={navigation}
         NoMessage="No books found. Add a book from library or add a custom book!"
         isLoading={isLoading}
-      />
+      /> */}
 
       <FeedbackModal
         visible={feedbackModal}
