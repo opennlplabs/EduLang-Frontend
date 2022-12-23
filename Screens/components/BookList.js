@@ -40,11 +40,13 @@ const BookList = ({ navigation, item, NoMessage, isLoading }) => {
               />
             </AspectRatio>
           </Box>
-          <Text style={{ marginTop: 15, textAlign: 'center' }}>{item.title.replaceAll('_', ' ')}</Text>
+          <Text style={{ marginTop: 15, textAlign: 'center' }}>{item.title.replace(new RegExp("_", 'g'), " ")}</Text>
+
         </Pressable>
       </View>
     );
   };
+  // item.title.replaceAll('_', ' ')
 
   if (isLoading) {
     return (

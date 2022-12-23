@@ -209,7 +209,7 @@ const BookInfo = ({ navigation, route }) => {
     <Box bg="tertiary.100" flex={1}>
       <View style={styles.contentContainer}>
         <NativeBase.View>
-          <Text fontSize={32} my={3}>{item.title.replaceAll('_', ' ')}</Text>
+          <Text fontSize={32} my={3}>{item.title.replace(new RegExp("_", 'g'), " ")}</Text>
         </NativeBase.View>
         <Image
           source={{ uri: `data:image/jpeg;base64,${item.source}` }}
