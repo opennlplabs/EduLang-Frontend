@@ -18,7 +18,7 @@ const PDFExample = ({ route }) => {
   const lenPages = Object.keys(item.book).length;
 
   // find screen orientation
-  const [orientation, setOrientation] = useState('LANDSCAPE');
+  const [orientation, setOrientation] = useState('PORTRAIT');
 
   const determineAndSetOrientation = () => {
     let width = Dimensions.get('window').width;
@@ -36,9 +36,9 @@ const PDFExample = ({ route }) => {
     determineAndSetOrientation();
     Dimensions.addEventListener('change', determineAndSetOrientation);
 
-    return () => {
-      Dimensions.removeEventListener('change', determineAndSetOrientation)
-    }
+    // return () => {
+    //   Dimensions.removeEventListener('change', determineAndSetOrientation)
+    // }
   }, []);
 
 
@@ -90,7 +90,7 @@ const PDFExample = ({ route }) => {
     },
   ];
 
-  if (orientation == "POTRAIT") {
+  if (orientation == "PORTRAIT") {
 
     return (
       <>
@@ -154,9 +154,69 @@ const PDFExample = ({ route }) => {
       </>
     );
   } else {
-    // TODO: put landscape orientation here
     return (
-      <Text>HELLO</Text>
+      <>
+        <View style={{
+          flex: 1,
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center"
+        }}>
+          <View
+            style={styles.horizontalContainer}
+          >
+            <TouchableOpacity
+              disable={leftButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(false)}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color={leftButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+            <ImageViewer
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              renderIndicator={() => null}
+              imageUrls={images}
+            />
+            <TouchableOpacity
+              disabled={rightButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(true)}
+            >
+              <AntDesign
+                name="arrowright"
+                size={24}
+                color={rightButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+          </View>
+          <Text style={styles.PageNumDisplay}>
+            Page {page + 1}/{lenPages}
+          </Text>
+        </View>
+
+        {/* <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
+          >
+
+            <Text style={styles.PageNumDisplay}>
+              Page {page + 1}/{lenPages}
+            </Text>
+          </View> */}
+      </>
     );
   }
 };
@@ -184,4 +244,11 @@ const styles = StyleSheet.create({
   PageNumDisplay: {
     fontSize: 15,
   },
+  horizontalContainer: {
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  }
 });
