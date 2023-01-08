@@ -162,7 +162,8 @@ const PDFExample = ({ route }) => {
           width: "100%",
           height: "100%",
           justifyContent: "center",
-          alignItems: "center"
+          alignItems: "center",
+          paddingBottom: 100
         }}>
           <View
             style={styles.horizontalContainer}
@@ -202,20 +203,6 @@ const PDFExample = ({ route }) => {
             Page {page + 1}/{lenPages}
           </Text>
         </View>
-
-        {/* <View
-            style={{
-              flex: 1,
-              flexDirection: "row",
-              justifyContent: "space-between",
-              alignItems: "center",
-            }}
-          >
-
-            <Text style={styles.PageNumDisplay}>
-              Page {page + 1}/{lenPages}
-            </Text>
-          </View> */}
       </>
     );
   }
