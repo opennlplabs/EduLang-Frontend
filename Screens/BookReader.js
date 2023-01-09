@@ -17,6 +17,32 @@ const PDFExample = ({ route }) => {
   const [height, setHeight] = useState(100);
   const lenPages = Object.keys(item.book).length;
 
+  // find screen orientation
+  const [orientation, setOrientation] = useState('PORTRAIT');
+
+  const determineAndSetOrientation = () => {
+    let width = Dimensions.get('window').width;
+    let height = Dimensions.get('window').height;
+
+    if (width < height) {
+      setOrientation('PORTRAIT');
+    } else {
+      setOrientation('LANDSCAPE');
+    }
+  }
+
+  useEffect(() => {
+
+    determineAndSetOrientation();
+    Dimensions.addEventListener('change', determineAndSetOrientation);
+
+    // return () => {
+    //   Dimensions.removeEventListener('change', determineAndSetOrientation)
+    // }
+  }, []);
+
+
+
   useEffect(() => {
     Image.getSize(
       `data:image/png;base64,${item.book[0]}`,
@@ -64,67 +90,122 @@ const PDFExample = ({ route }) => {
     },
   ];
 
-  return (
-    <>
-      <View
-        style={styles.container}
-      >
-        <ImageViewer
-          style={{
-            width: "100%",
-            height: height,
-            marginBottom: 100,
-          }}
-          renderIndicator={() => null}
-          imageUrls={images}
-        />
-        {/* <ImageBackground style={{
+  if (orientation == "PORTRAIT") {
+
+    return (
+      <>
+        <View
+          style={styles.container}
+        >
+          <ImageViewer
+            style={{
+              width: "100%",
+              height: height,
+              marginBottom: 100,
+            }}
+            renderIndicator={() => null}
+            imageUrls={images}
+          />
+          {/* <ImageBackground style={{
           width: '100%',
           height: height,
           marginBottom: 80
         }} source={{
           uri: `data:image/jpeg;base64,${item.book["page" + page.toString()]}`,
         }} /> */}
-      </View>
+        </View>
 
-      <View style={styles.bar}>
-        <View
-          style={{
-            flex: 1,
-            flexDirection: "row",
-            justifyContent: "space-between",
-            alignItems: "center",
-          }}
-        >
-          <TouchableOpacity
-            disable={leftButtonDisabled}
-            style={styles.Button}
-            onPress={() => changePage(false)}
+        <View style={styles.bar}>
+          <View
+            style={{
+              flex: 1,
+              flexDirection: "row",
+              justifyContent: "space-between",
+              alignItems: "center",
+            }}
           >
-            <AntDesign
-              name="arrowleft"
-              size={24}
-              color={leftButtonDisabled ? "grey" : "black"}
+            <TouchableOpacity
+              disable={leftButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(false)}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color={leftButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+            <Text style={styles.PageNumDisplay}>
+              Page {page + 1}/{lenPages}
+            </Text>
+            <TouchableOpacity
+              disabled={rightButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(true)}
+            >
+              <AntDesign
+                name="arrowright"
+                size={24}
+                color={rightButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+          </View>
+        </View>
+      </>
+    );
+  } else {
+    return (
+      <>
+        <View style={{
+          flex: 1,
+          flexDirection: "column",
+          width: "100%",
+          height: "100%",
+          justifyContent: "center",
+          alignItems: "center",
+          paddingBottom: 100
+        }}>
+          <View
+            style={styles.horizontalContainer}
+          >
+            <TouchableOpacity
+              disable={leftButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(false)}
+            >
+              <AntDesign
+                name="arrowleft"
+                size={24}
+                color={leftButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+            <ImageViewer
+              style={{
+                width: "100%",
+                height: "100%",
+              }}
+              renderIndicator={() => null}
+              imageUrls={images}
             />
-          </TouchableOpacity>
+            <TouchableOpacity
+              disabled={rightButtonDisabled}
+              style={styles.Button}
+              onPress={() => changePage(true)}
+            >
+              <AntDesign
+                name="arrowright"
+                size={24}
+                color={rightButtonDisabled ? "grey" : "black"}
+              />
+            </TouchableOpacity>
+          </View>
           <Text style={styles.PageNumDisplay}>
             Page {page + 1}/{lenPages}
           </Text>
-          <TouchableOpacity
-            disabled={rightButtonDisabled}
-            style={styles.Button}
-            onPress={() => changePage(true)}
-          >
-            <AntDesign
-              name="arrowright"
-              size={24}
-              color={rightButtonDisabled ? "grey" : "black"}
-            />
-          </TouchableOpacity>
         </View>
-      </View>
-    </>
-  );
+      </>
+    );
+  }
 };
 
 export default PDFExample;
@@ -150,4 +231,11 @@ const styles = StyleSheet.create({
   PageNumDisplay: {
     fontSize: 15,
   },
+  horizontalContainer: {
+    width: "100%",
+    height: "100%",
+    flex: 1,
+    flexDirection: "row",
+    alignItems: "center",
+  }
 });

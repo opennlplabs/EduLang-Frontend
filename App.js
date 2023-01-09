@@ -51,21 +51,22 @@ function HomeNavigator() {
       }}
     >
       <HomeScreenStack.Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: false, orientation: 'portrait' }}
         name="Home Screen" component={HomeScreen} />
       <HomeScreenStack.Screen
-        options={{ headerShown: false }}
+        options={{ headerShown: false, orientation: 'portrait' }}
         name="Add Book: Info" component={BookAddInfo} />
       <HomeScreenStack.Screen
+        options={{ orientation: 'portrait' }}
         name="Live Translation"
         component={LiveTranslation}
       />
       <HomeScreenStack.Screen
         name="Custom Translation"
-        options={{ headerShown: false }}
+        options={{ headerShown: false, orientation: 'portrait' }}
         component={CustomTranslation}
       />
-      <HomeScreenStack.Screen name="Book Info" component={BookInfo} />
+      <HomeScreenStack.Screen options={{ orientation: 'portrait' }} name="Book Info" component={BookInfo} />
       <HomeScreenStack.Screen name="Book Reader" component={PDFExample} />
     </HomeScreenStack.Navigator>
   );
@@ -87,10 +88,10 @@ function LibraryNavigator() {
     >
       <LibraryScreenStack.Screen
         name="Library Home Page"
-        options={{ headerShown: false }}
+        options={{ headerShown: false, orientation: 'portrait' }}
         component={Library}
       />
-      <LibraryScreenStack.Screen name="Book Info" component={BookInfo} />
+      <LibraryScreenStack.Screen name="Book Info" component={BookInfo} options={{ orientation: 'portrait' }} />
       <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
     </LibraryScreenStack.Navigator>
   );
@@ -110,9 +111,9 @@ function AdminNavigator() {
         },
       }}
     >
-      <AdminScreenStack.Screen name="Admin Page" component={AdminPage} />
-      <AdminScreenStack.Screen name="Add Book: Info" component={BookAddInfo} />
-      <AdminScreenStack.Screen name="Add PDF" component={AddPDF} />
+      <AdminScreenStack.Screen name="Admin Page" component={AdminPage} options={{ orientation: 'portrait' }} />
+      <AdminScreenStack.Screen name="Add Book: Info" component={BookAddInfo} options={{ orientation: 'portrait' }} />
+      <AdminScreenStack.Screen name="Add PDF" component={AddPDF} options={{ orientation: 'portrait' }} />
     </AdminScreenStack.Navigator>
   );
 }
