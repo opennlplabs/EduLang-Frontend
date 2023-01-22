@@ -2,9 +2,9 @@
   "expo": {
     "name": "EduLangNew",
     "slug": "EduLangNew",
-    "version": "4.0.0",
+    "version": "22.0.0",
     "orientation": "default",
-    "icon": "./assets/icon.png",
+    "icon": "./assets/edulanglogowhitebackground.png",
     "splash": {
       "image": "./assets/splash.png",
       "resizeMode": "contain",
@@ -26,7 +26,7 @@
         "backgroundColor": "#FFFFFF"
       },
       "package": "com.linguisticsjusticeleague.EduLang",
-      "versionCode": 4,
+      "versionCode": 22,
       "permissions": []
     },
     "web": {
