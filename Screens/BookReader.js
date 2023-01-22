@@ -9,6 +9,7 @@ import {
 import { AntDesign } from "@expo/vector-icons";
 import { Image, Dimensions } from "react-native";
 import ImageViewer from "react-native-image-zoom-viewer";
+import { Center } from "native-base";
 const PDFExample = ({ route }) => {
   const { item } = route.params;
   const [page, setPage] = useState(0);
@@ -101,10 +102,10 @@ const PDFExample = ({ route }) => {
             style={{
               width: "100%",
               height: height,
-              marginBottom: 100,
             }}
             renderIndicator={() => null}
             imageUrls={images}
+            backgroundColor="#FFFFFF"
           />
           {/* <ImageBackground style={{
           width: '100%',
@@ -155,15 +156,12 @@ const PDFExample = ({ route }) => {
     );
   } else {
     return (
-      <>
+      <Center>
         <View style={{
-          flex: 1,
-          flexDirection: "column",
-          width: "100%",
+          width: "90%",
           height: "100%",
-          justifyContent: "center",
           alignItems: "center",
-          paddingBottom: 100
+          paddingBottom: 10
         }}>
           <View
             style={styles.horizontalContainer}
@@ -186,6 +184,7 @@ const PDFExample = ({ route }) => {
               }}
               renderIndicator={() => null}
               imageUrls={images}
+              backgroundColor="#FFFFFF"
             />
             <TouchableOpacity
               disabled={rightButtonDisabled}
@@ -203,7 +202,7 @@ const PDFExample = ({ route }) => {
             Page {page + 1}/{lenPages}
           </Text>
         </View>
-      </>
+      </Center>
     );
   }
 };
@@ -219,10 +218,10 @@ const styles = StyleSheet.create({
   },
   bar: {
     position: "absolute",
-    bottom: 100,
+    bottom: 0,
     left: 0,
     width: "100%",
-    height: 80,
+    height: 100,
     backgroundColor: "white",
   },
   Button: {
@@ -234,6 +233,7 @@ const styles = StyleSheet.create({
   horizontalContainer: {
     width: "100%",
     height: "100%",
+    paddingBottom: 10,
     flex: 1,
     flexDirection: "row",
     alignItems: "center",

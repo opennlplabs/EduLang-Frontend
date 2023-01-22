@@ -1,8 +1,8 @@
 import React, { Suspense, useEffect, useContext, useState } from "react";
 import { Text, LogBox, Dimensions } from "react-native";
-import { NavigationContainer } from "@react-navigation/native";
+import { NavigationContainer, getFocusedRouteNameFromRoute } from "@react-navigation/native";
 import { createNativeStackNavigator } from "@react-navigation/native-stack";
-import { createBottomTabNavigator } from "@react-navigation/bottom-tabs";
+import { BottomTabBar, createBottomTabNavigator } from "@react-navigation/bottom-tabs";
 import HomeScreen from "./Screens/HomeScreen";
 import { useFonts } from "expo-font";
 import WelcomeScreenNew from "./Screens/WelcomeScreen";
@@ -92,7 +92,10 @@ function LibraryNavigator() {
         component={Library}
       />
       <LibraryScreenStack.Screen name="Book Info" component={BookInfo} options={{ orientation: 'portrait' }} />
-      <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
+      <LibraryScreenStack.Screen
+        name="Book Reader"
+        component={PDFExample}
+      />
     </LibraryScreenStack.Navigator>
   );
 }
@@ -186,7 +189,20 @@ function TabNavigator(props) {
       })}
     >
       <Tab.Screen name="Home" component={HomeNavigator} />
-      <Tab.Screen name="Library" component={LibraryNavigator} />
+      <Tab.Screen
+        options={({ route }) => ({
+          tabBarStyle: ((route) => {
+            const routeName = getFocusedRouteNameFromRoute(route) ?? ""
+            console.log(routeName)
+            if (routeName === 'Book Reader') {
+              return { display: "none" }
+            }
+            return tabBar
+          })(route),
+        })}
+        name="Library"
+        component={LibraryNavigator}
+      />
       {isAdmin && <Tab.Screen name="Admin" component={AdminNavigator} />}
       <Tab.Screen
         name="Settings"
