@@ -1,0 +1,25 @@
+{
+    "cli": {
+        "version": ">= 2.7.0"
+    },
+    "build": {
+        "development": {
+            "developmentClient": true,
+            "distribution": "internal"
+        },
+        "preview": {
+            "distribution": "internal"
+        },
+        "production": {},
+        "production-ios": {
+            "ios": {
+                "image": "latest"
+            },
+            "distribution": "store",
+            "releaseChannel": "production.ios-1.7.1"
+        }
+    },
+    "submit": {
+        "production": {}
+    }
+}

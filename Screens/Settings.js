@@ -211,9 +211,6 @@ const Settings = () => {
             Delete User
           </Button>
         </Flex>
-        <Button marginTop={4} rounded={10} onPress={deleteBookStorage}>
-          Delete all books
-        </Button>
       </Box>
     </Box>
   );

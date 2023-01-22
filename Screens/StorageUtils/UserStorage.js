@@ -79,6 +79,7 @@ export function setUserInfo(nativelanguage, translatedlanguage, grade, username)
     if (translatedlanguage != undefined && translatedlanguage != null) info.translatedLanguageConfig = translatedlanguage
     if (grade != undefined && grade != null) info.grade = grade
     if (username != undefined && username != null) info.username = username
+    info.isAdmin = false; // set default as no admin 
 
     return new Promise((resolve, reject) => {
         let uid = firebase.auth()?.currentUser?.uid;
