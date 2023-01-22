@@ -169,14 +169,14 @@ const Settings = () => {
                   <Select.Item label="Grade 4" value={4} />
                   <Select.Item label="Grade 5" value={5} />
                 </Select>
-                <FormControl.Label>
+                {/* <FormControl.Label>
                   Select your native language:
                 </FormControl.Label>
                 <LanguageSelector
                   placeholder="Original Language"
                   onValueChange={setnativeLanguage}
                   defaultValue={nativelanguage}
-                />
+                /> */}
                 <FormControl.Label>
                   Select your translated language:
                 </FormControl.Label>
