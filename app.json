@@ -1,36 +1,4 @@
 {
-  "expo": {
-    "name": "EduLangNew",
-    "slug": "EduLangNew",
-    "version": "22.0.0",
-    "orientation": "default",
-    "icon": "./assets/edulanglogowhitebackground.png",
-    "splash": {
-      "image": "./assets/splash.png",
-      "resizeMode": "contain",
-      "backgroundColor": "#ffffff"
-    },
-    "updates": {
-      "fallbackToCacheTimeout": 0
-    },
-    "assetBundlePatterns": [
-      "**/*"
-    ],
-    "ios": {
-      "supportsTablet": true,
-      "bundleIdentifier": "com.linguisticsjusticeleague.EduLang"
-    },
-    "android": {
-      "adaptiveIcon": {
-        "foregroundImage": "./assets/adaptive-icon.png",
-        "backgroundColor": "#FFFFFF"
-      },
-      "package": "com.linguisticsjusticeleague.EduLang",
-      "versionCode": 22,
-      "permissions": []
-    },
-    "web": {
-      "favicon": "./assets/favicon.png"
-    }
-  }
+  "name": "EduLangFrontend",
+  "displayName": "EduLangFrontend"
 }

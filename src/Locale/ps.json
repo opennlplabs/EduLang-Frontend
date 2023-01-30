@@ -1,0 +1,29 @@
+{
+  "general": {
+    "login": "د ننه کیدل",
+    "sign_up": "ګډون کول",
+    "password": "رمز",
+    "email": "ایمیل",
+    "save": "خوندي کړئ",
+    "appSubstring": "د کیسې له لارې د ژبې تشه ډکول",
+    "strong_password": "پاسورډ دومره پیاوړی نه دی. اضافي حروف اضافه کړئ په شمول ځانګړي حروف او شمیرې."
+  },
+  "reg": {
+    "username": "کارن نوم",
+    "grade_level": "د ټولګي کچه",
+    "phone_number": "د تلیفون شمیره",
+    "native_language": "مورنۍ ژبه",
+    "register": "راجستر"
+  },
+  "home": {
+    "welcome": "ښه راغلاست",
+    "library": "کتابتون"
+  },
+  "book_info": {
+    "start_reading": "لوستل پیل کړئ"
+  },
+  "settings": {
+    "native_language": "مورنۍ ژبه غوره کړئ",
+    "grade_level": "د درجې کچه غوره کړئ"
+  }
+}
