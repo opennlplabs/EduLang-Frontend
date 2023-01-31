@@ -1,5 +1,61 @@
 # EduLang App
 
+HOW TO INSTALL ENVIRONMENT
+
+1. Installation
+   Install Brew and xcode or android studio
+   https://reactnative.dev/docs/0.69/getting-started
+
+brew install rbenv
+rbenv init  
+rbenv install 2.7.6
+rbenv global 2.7.6
+npm install --global yarn
+
+Ruby version should be ruby 2.7.6 or ruby 2.7.6p219
+test it by running ruby -v
+
+2. How to run the project
+   Git clone the project and run yarn install in the root directory.
+   Cd into ios folder and run pod install
+   In project directory run metro server npx react-native start (sometimes it runs automatically when building the project)
+   Open <projectname>.xcworkspace in ios folder file with xcode
+   Wait till xcode finishes processing all files to build the project
+
+For android follow react native instructions for android studio installation
+In project directory open android folder with android Studio
+Wait till the files are process to build (make sure metro server is running)
+Normal issues would be missing metro server when running emulator
+adb reverse tcp:8081 tcp:8081 - will solve the issue
+If you have multiple emulators kill all of them and used only one
+adb devices - list all devices
+Adb -s <name of device> emu kill - will kill emulator
+
+FOLDER STRUCTURE
+
+Containers
+Will only hold logic and dumb components, mostly screens are containers
+Home
+Containers
+Components
+Styles
+DashBoard
+Containers
+Components
+Styles
+CommonFeatures
+Redux
+Actions
+Reducers
+Saga
+Services
+Api’s
+asyncStorage
+Navigation
+Locals
+Globals
+Components
+
 ## DESCRIPTION
 
 ---

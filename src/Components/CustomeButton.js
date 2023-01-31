@@ -1,27 +1,9 @@
-import {
-  Box,
-  Center,
-  Heading,
-  HStack,
-  Icon,
-  Input,
-  Pressable,
-  Stack,
-  Text,
-  FormControl,
-  Select,
-} from 'native-base';
+import {Box, Pressable, Text} from 'native-base';
 import React from 'react';
-const CustomButton = ({
-  title,
-  onPress,
-  icon,
-  style,
-  customWidth,
-  type = 'button',
-}) => {
+import theme, {normalize} from '../Globals/theme';
+const CustomButton = props => {
   return (
-    <Pressable style={style} onPress={onPress}>
+    <Pressable style={props?.style} onPress={props?.onPress}>
       {({isHovered, isFocused, isPressed}) => {
         return (
           <Box
@@ -33,26 +15,26 @@ const CustomButton = ({
               ],
             }}
             rounded="full"
-            px={type === 'button' ? '20' : '0'}
+            px={props?.type === 'button' ? '20' : '0'}
             bg="tertiary.400:alpha.8"
             py="2"
             shadow={8}
             alignSelf="center"
-            w={customWidth != undefined ? customWidth : undefined}
+            w={props?.width}
           >
-            {icon != undefined ? (
+            {props?.icon != undefined ? (
               <Box
-                w={type === 'button' ? '24' : '10'}
-                h={type === 'icon' ? '6' : undefined}
+                w={props?.type === 'button' ? '24' : '10'}
+                h={props?.type === 'icon' ? '6' : undefined}
                 alignItems="center"
                 justifyContent="center"
                 shadow={8}
               >
-                {icon}
+                {props?.icon}
               </Box>
             ) : (
               <Text color="white" textAlign="center">
-                {title}
+                {props?.title}
               </Text>
             )}
           </Box>

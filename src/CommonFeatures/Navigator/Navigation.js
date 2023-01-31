@@ -1,12 +1,20 @@
 import React, {Suspense, useEffect, useContext, useState} from 'react';
-import {Text, LogBox, Dimensions} from 'react-native';
+import {
+  LogBox,
+  Dimensions,
+  StyleSheet,
+  View,
+  TouchableOpacity,
+} from 'react-native';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+import {Text, Icon, Center, VStack} from 'native-base';
 import {NavigationContainer} from '@react-navigation/native';
 import {createNativeStackNavigator} from '@react-navigation/native-stack';
 import {createBottomTabNavigator} from '@react-navigation/bottom-tabs';
 //import HomeScreen from './Screens/HomeScreen';
 //import { useFonts } from "expo-font";
 //import WelcomeScreenNew from './Screens/WelcomeScreen';
-// import BookInfo from "./Screens/BookInfo.js";
+
 // import PDFExample from "./Screens/BookReader";
 // import LiveTranslation from "./Screens/LiveTranslation.js";
 // import Settings from "./Screens/Settings";
@@ -24,11 +32,12 @@ import {NativeBaseProvider} from 'native-base';
 // import AuthContextProvider, { AuthContext } from "./context/authContext";
 // import { Storage } from "expo-storage";
 
-import Home from '../../Containers/Home/Home';
-import Library from '../../Containers/Library/Library';
-import Admin from '../../Containers/Admin/Admin';
-import Settings from '../../Containers/Settings/Settings';
-import Login from '../../Containers/Auth/Login';
+import Home from '../../Containers/Home/Containers/Home';
+import Library from '../../Containers/Library/Containers/Library';
+import BookInfo from '../../Containers/Library/Containers/BookInfo';
+import Admin from '../../Containers/Admin/Containers/Admin';
+import Settings from '../../Containers/Settings/Containers/Settings';
+import Login from '../../Containers/Auth/Containers/Login';
 
 const Stack = createNativeStackNavigator();
 const Tab = createBottomTabNavigator();
@@ -89,34 +98,34 @@ const Tab = createBottomTabNavigator();
 //   );
 // }
 
-// const LibraryScreenStack = createNativeStackNavigator();
-// function LibraryNavigator() {
-//   return (
-//     <LibraryScreenStack.Navigator
-//       screenOptions={{
-//         headerStyle: {
-//           backgroundColor: '#10b981',
-//         },
-//         headerTintColor: '#fff', //Set Header text color
-//         headerTitleStyle: {
-//           fontWeight: 'bold', //Set Header text style
-//         },
-//       }}
-//     >
-//       <LibraryScreenStack.Screen
-//         name="Library Home Page"
-//         options={{headerShown: false, orientation: 'portrait'}}
-//         component={Library}
-//       />
-//       <LibraryScreenStack.Screen
-//         name="Book Info"
-//         component={BookInfo}
-//         options={{orientation: 'portrait'}}
-//       />
-//       <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
-//     </LibraryScreenStack.Navigator>
-//   );
-// }
+const LibraryScreenStack = createNativeStackNavigator();
+function LibraryNavigator() {
+  return (
+    <LibraryScreenStack.Navigator
+      screenOptions={{
+        headerStyle: {
+          backgroundColor: '#10b981',
+        },
+        headerTintColor: '#fff', //Set Header text color
+        headerTitleStyle: {
+          fontWeight: 'bold', //Set Header text style
+        },
+      }}
+    >
+      <LibraryScreenStack.Screen
+        name="Library Home Page"
+        options={{headerShown: false, orientation: 'portrait'}}
+        component={Library}
+      />
+      <LibraryScreenStack.Screen
+        name="Book Info"
+        component={BookInfo}
+        options={{orientation: 'portrait'}}
+      />
+      <LibraryScreenStack.Screen name="Book Reader" component={PDFExample} />
+    </LibraryScreenStack.Navigator>
+  );
+}
 
 // const AdminScreenStack = createNativeStackNavigator();
 // function AdminNavigator() {
@@ -271,10 +280,22 @@ export function App() {
   );
 }
 
+const TabIcon = ({name, size, color, tabBarLabel}) => {
+  return (
+    <Center>
+      <Icon as={Ionicons} name={name} size={size} color={color} />
+      <Text mt="1.5" color={color}>
+        {tabBarLabel}
+      </Text>
+    </Center>
+  );
+};
+
 const BottomTabs = () => {
   return (
     <Tab.Navigator
       screenOptions={{
+        tabBarShowLabel: false,
         tabBarHideOnKeyboard: true,
         headerStyle: {
           backgroundColor: 'black',
@@ -297,7 +318,7 @@ const BottomTabs = () => {
           borderRadius: 100,
 
           height: 85,
-          backgroundColor: '#e5e0f0',
+          backgroundColor: '#0ea5e9',
           marginBottom: 18,
 
           shadowOpacity: 0.6,
@@ -305,10 +326,62 @@ const BottomTabs = () => {
         },
       }}
     >
-      <Tab.Screen name="Home" component={Home} />
-      <Tab.Screen name="Library" component={Library} />
-      <Tab.Screen name="Admin" component={Admin} />
-      <Tab.Screen name="Settings" component={Settings} />
+      <Tab.Screen
+        name="Home"
+        component={Home}
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <TabIcon
+              name="home"
+              tabBarLabel="Home"
+              size={size}
+              color={focused ? '#4ade80' : '#ffff'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Library"
+        component={Library}
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <TabIcon
+              name="library"
+              tabBarLabel="Library"
+              size={size}
+              color={focused ? '#4ade80' : '#ffff'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Admin"
+        component={Admin}
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <TabIcon
+              name="lock-closed"
+              tabBarLabel="Admin"
+              size={size}
+              color={focused ? '#4ade80' : '#ffff'}
+            />
+          ),
+        }}
+      />
+      <Tab.Screen
+        name="Settings"
+        component={Settings}
+        options={{
+          tabBarIcon: ({color, size, focused}) => (
+            <TabIcon
+              tabBarLabel="Settings"
+              name="cog"
+              size={size}
+              color={focused ? '#4ade80' : '#ffff'}
+            />
+          ),
+        }}
+      />
     </Tab.Navigator>
   );
 };
@@ -322,7 +395,7 @@ function AuthStack() {
 }
 
 export default function Navigation() {
-  const isAuth = false;
+  const isAuth = true;
 
   return (
     <NavigationContainer>
@@ -346,3 +419,11 @@ export default function Navigation() {
     </NavigationContainer>
   );
 }
+
+const styles = StyleSheet.create({
+  container: {
+    flex: 1,
+    alignItems: 'center',
+    justifyContent: 'center',
+  },
+});

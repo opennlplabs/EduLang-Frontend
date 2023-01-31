@@ -1,109 +1,13 @@
-import React, {useEffect, useState} from 'react';
-import {
-  View,
-  Image,
-  StyleSheet,
-  Keyboard,
-  Dimensions,
-  TouchableWithoutFeedback,
-} from 'react-native';
+import React from 'react';
+
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
-import Ionicons from 'react-native-vector-icons/Ionicons';
+import CustomButton from '../../../Components/CustomeButton';
+import {LanguageSelector} from '../../../Components/LanguageSelector';
+import {normalize} from '../../../Globals/theme';
 
-import Animated, {
-  useSharedValue,
-  useAnimatedStyle,
-  interpolate,
-  withTiming,
-  withDelay,
-} from 'react-native-reanimated';
+import {Icon, Input, Pressable, Stack, FormControl, Select} from 'native-base';
 
-import {
-  Box,
-  Center,
-  Heading,
-  HStack,
-  Icon,
-  Input,
-  Pressable,
-  Stack,
-  Text,
-  FormControl,
-  Select,
-} from 'native-base';
-
-const FormRegister = ({navigation}) => {
-  const [show, setShow] = React.useState(false);
-  const [grade, setGrade] = React.useState(-1);
-  const [email, setEmail] = React.useState('');
-  const [username, setUsername] = React.useState('');
-  const [errorMsg, setErrorMsg] = React.useState('');
-  const [password, setPassword] = React.useState('');
-  const [translatedLanguage, setTranslatedLanguage] = React.useState('');
-  const [originalLanguage, setOriginalLanguage] = React.useState('');
-
-  async function registerUser() {
-    setErrorMsg('');
-    // notify user that message
-    if (username === '') {
-      setErrorMsg('Please enter a username!');
-      return;
-    }
-    if (email === '') {
-      setErrorMsg('Please enter a email!');
-      return;
-    }
-    if (grade === -1) {
-      setErrorMsg('Please select a grade!');
-      return;
-    }
-    if (originalLanguage === '') {
-      setErrorMsg('Please select an original language!');
-      return;
-    }
-    if (translatedLanguage === '') {
-      setErrorMsg('Please select a translated language!');
-      return;
-    }
-    if (translatedLanguage === originalLanguage) {
-      setErrorMsg(
-        'Your translated language cannot be equal to your original language!',
-      );
-      return;
-    }
-    if (password === '') {
-      setErrorMsg('Please enter a password!');
-      return;
-    }
-
-    await createUser(email, password)
-      .catch(err => {
-        switch (err) {
-          case 'auth/email-already-in-use':
-            setErrorMsg('Email address already in use.');
-            break;
-          case 'auth/invalid-email':
-            setErrorMsg('Email address is invalid.');
-            break;
-          case 'auth/weak-password':
-            setErrorMsg('Password is not strong enough.');
-            break;
-          default:
-            setErrorMsg('Unknown error with error code ' + code);
-            break;
-        }
-      })
-      .then(async () => {
-        await setUserInfo(
-          originalLanguage,
-          translatedLanguage,
-          grade,
-          username,
-        );
-        navigation.navigate('Tabs');
-      });
-  }
-
+const FormRegister = props => {
   return (
     <Stack w="100%" alignItems="center">
       <Stack>
@@ -123,7 +27,7 @@ const FormRegister = ({navigation}) => {
                 />
               }
               placeholder="Username"
-              onChangeText={setUsername}
+              onChangeText={props?.setUsernameRegister}
             />
             <Input
               w={{
@@ -139,7 +43,7 @@ const FormRegister = ({navigation}) => {
                 />
               }
               placeholder="Email"
-              onChangeText={setEmail}
+              onChangeText={props?.setEmailRegister}
             />
             <Select
               w={{
@@ -154,7 +58,7 @@ const FormRegister = ({navigation}) => {
                 />
               }
               placeholder="Grade"
-              onValueChange={value => setGrade(value)}
+              onValueChange={value => props?.setGradeRegister(value)}
             >
               <Select.Item label="Grade 1" value={1} />
               <Select.Item label="Grade 2" value={2} />
@@ -164,11 +68,11 @@ const FormRegister = ({navigation}) => {
             </Select>
             <LanguageSelector
               placeholder="Original Language"
-              onValueChange={setOriginalLanguage}
+              onValueChange={props?.setOriginalLanguage}
             />
             <LanguageSelector
               placeholder="Translated Language"
-              onValueChange={setTranslatedLanguage}
+              onValueChange={props?.setTranslatedLanguage}
             />
 
             <Input
@@ -176,13 +80,17 @@ const FormRegister = ({navigation}) => {
                 base: '75%',
                 md: '25%',
               }}
-              type={show ? 'text' : 'password'}
+              type={props?.showRegister ? 'text' : 'password'}
               InputRightElement={
-                <Pressable onPress={() => setShow(!show)}>
+                <Pressable
+                  onPress={() => props?.setShowRegister(!props?.showRegister)}
+                >
                   <Icon
                     as={
                       <MaterialIcons
-                        name={show ? 'visibility' : 'visibility-off'}
+                        name={
+                          props?.showRegister ? 'visibility' : 'visibility-off'
+                        }
                       />
                     }
                     size={5}
@@ -192,18 +100,25 @@ const FormRegister = ({navigation}) => {
                 </Pressable>
               }
               placeholder="Password"
-              onChangeText={setPassword}
+              onChangeText={props?.setPasswordRegister}
             />
             <FormControl.ErrorMessage
               w="75%"
-              display={errorMsg === '' ? 'none' : undefined}
+              display={props?.errorMsgRegister === '' ? 'none' : undefined}
             >
-              {errorMsg}
+              {props?.errorMsgRegister}
             </FormControl.ErrorMessage>
-            <CustomButton title="Register" onPress={registerUser} />
+            <CustomButton
+              style={{margin: normalize(5)}}
+              width={normalize(200)}
+              title="Register"
+              onPress={props?.registerUserRegister}
+            />
           </Stack>
         </FormControl>
       </Stack>
     </Stack>
   );
 };
+
+export default FormRegister;

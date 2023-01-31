@@ -12,6 +12,8 @@ import {
   VStack,
   Box,
 } from 'native-base';
+import {Provider} from 'react-redux';
+import {store} from './src/redux';
 
 import Navigation from './src/CommonFeatures/Navigator/Navigation';
 import {StatusBar} from 'react-native';
@@ -25,10 +27,12 @@ const config = {
 export const theme = extendTheme({config});
 const App = () => {
   return (
-    <NativeBaseProvider theme={theme}>
-      <StatusBar style="light" />
-      <Navigation />
-    </NativeBaseProvider>
+    <Provider store={store}>
+      <NativeBaseProvider theme={theme}>
+        <StatusBar style="light" />
+        <Navigation />
+      </NativeBaseProvider>
+    </Provider>
   );
 };
 

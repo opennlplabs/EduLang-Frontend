@@ -1,40 +1,41 @@
-import { useEffect, useState } from "react";
-import { ScrollView, View, Text, StyleSheet } from "react-native";
-import BookList from "./components/BookList";
-import { Header } from "./components/Header";
-import { HeaderSection } from "./components/HeaderSection";
-import { Storage } from "expo-storage";
-import { getAdminBooks } from "./StorageUtils/BookStorage";
+import React, {useEffect, useState} from 'react';
+import {ScrollView, View, Text, StyleSheet} from 'react-native';
+import BookList from '../../../Components/BookList.js';
+import {Header} from '../../../Components/Header';
+import {HeaderSection} from '../../../Components/HeaderSection.js';
+//import { Storage } from "expo-storage";
+// import {getAdminBooks} from './StorageUtils/BookStorage';
 
 async function getStorage(key, array = false) {
-  var val = JSON.parse(await Storage.getItem({ key: key }));
-  if (array === true) val = Array.from(val);
+  var val = JSON.parse(await Storage.getItem({key: key}));
+  if (array === true) {
+    val = Array.from(val);
+  }
   return val;
 }
-
-export function AdminPage({ navigation, route }) {
+const Admin = ({navigation, route}) => {
   const [data, setData] = useState([]);
   const [searchData, setSearchData] = useState([]);
   const [isAdmin, setIsAdmin] = useState(false);
   const [isLoading, setIsLoading] = useState(true);
 
-  useEffect(() => {
-    const checkIsAdmin = async () => {
-      const isAdmin = await getStorage("isAdmin");
-      setIsAdmin(isAdmin);
-      if (isAdmin) {
-        const data = await getAdminBooks();
-        setData(data);
-        updateSearchData(data, "");
-        setIsLoading(false);
-      }
-    };
-    checkIsAdmin();
-  }, []);
+  // useEffect(() => {
+  //   const checkIsAdmin = async () => {
+  //     const isAdmin = await getStorage('isAdmin');
+  //     setIsAdmin(isAdmin);
+  //     if (isAdmin) {
+  //       const data = await getAdminBooks();
+  //       setData(data);
+  //       updateSearchData(data, '');
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   checkIsAdmin();
+  // }, []);
 
   function updateSearchData(dataFilter, text) {
     setSearchData(
-      dataFilter.filter((book) => {
+      dataFilter.filter(book => {
         let text1 = text.toLowerCase();
         return text ? book.title.toLowerCase().includes(text1) : true;
       })
@@ -43,8 +44,8 @@ export function AdminPage({ navigation, route }) {
 
   function redirectPage() {
     navigation.navigate({
-      name: "Add Book: Info",
-      params: { navigateTo: "Add PDF" },
+      name: 'Add Book: Info',
+      params: {navigateTo: 'Add PDF'},
     });
   }
 
@@ -54,7 +55,7 @@ export function AdminPage({ navigation, route }) {
         <Header
           smallMarginTop
           title="Admin Page"
-          onSearchBarChange={(text) => updateSearchData(data, text)}
+          onSearchBarChange={text => updateSearchData(data, text)}
         />
         <HeaderSection
           title="Books Under Review"
@@ -76,12 +77,14 @@ export function AdminPage({ navigation, route }) {
       </View>
     );
   }
-}
+};
 
 const styles = StyleSheet.create({
   NewView: {
     flex: 1,
-    alignItems: "center",
-    justifyContent: "center",
+    alignItems: 'center',
+    justifyContent: 'center',
   },
 });
+
+export default Admin;
