@@ -1,3 +1,4 @@
+import React from 'react';
 import {COLORS, FONTS} from '../../constants';
 import {
   View,
@@ -6,7 +7,7 @@ import {
   TextInput,
   Dimensions,
 } from 'react-native';
-import {MaterialIcons} from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import {
   Box,
   Heading,

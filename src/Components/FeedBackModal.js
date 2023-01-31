@@ -8,8 +8,8 @@ import {
   Pressable,
   TextInput,
 } from 'react-native';
-import * as firebase from 'firebase';
-import CustomButton from '../globals/CustomeButton';
+// import * as firebase from 'firebase';
+import CustomButton from '../Components/CustomeButton';
 import {Center, VStack} from 'native-base';
 
 const FeedbackModal = ({visible, hideModal}) => {

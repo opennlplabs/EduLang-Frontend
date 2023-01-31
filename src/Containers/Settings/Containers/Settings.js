@@ -1,4 +1,6 @@
-import { MaterialIcons, Ionicons } from "@expo/vector-icons";
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import Ionicons from 'react-native-vector-icons/Ionicons';
+
 import {
   Box,
   Center,
@@ -14,65 +16,58 @@ import {
   Button,
   Flex,
   Spacer,
-} from "native-base";
-import React, { useState, useEffect } from "react";
-import {
-  View,
-  StyleSheet,
-  SafeAreaView,
-  ScrollView,
-  Alert,
-} from "react-native";
-import Clickable from "./components/Clickable";
-import { useTranslation } from "react-i18next";
-import { useIsFocused, useNavigation } from "@react-navigation/native";
-import * as firebase from "firebase";
-import {
-  deleteAccount,
-  getUserInfoFirebase,
-  logoutUser,
-  logoutUserFirebase,
-  setUserInfo,
-} from "./StorageUtils/UserStorage";
-import { clearAllStorageData } from "./StorageUtils/BookStorage";
-import { LanguageSelector } from "./components/LanguageSelector";
-import { Storage } from "expo-storage";
-import Background from "./components/Background";
-import { HeaderSection } from "./components/HeaderSection";
-import { Header } from "./components/Header";
+} from 'native-base';
+import React, {useState, useEffect} from 'react';
+import {View, StyleSheet, SafeAreaView, ScrollView, Alert} from 'react-native';
+import {useTranslation} from 'react-i18next';
+import {useIsFocused, useNavigation} from '@react-navigation/native';
+// import * as firebase from 'firebase';
+// import {
+//   deleteAccount,
+//   getUserInfoFirebase,
+//   logoutUser,
+//   logoutUserFirebase,
+//   setUserInfo,
+// } from './StorageUtils/UserStorage';
+// import {clearAllStorageData} from './StorageUtils/BookStorage';
+import {LanguageSelector} from '../../../Components/LanguageSelector';
+// import {Storage} from 'expo-storage';
+import Background from '../../../Components/Background';
+import {HeaderSection} from '../../../Components/HeaderSection';
+import {Header} from '../../../Components/Header';
 
 const Settings = () => {
   const navigation = useNavigation();
-  const { t } = useTranslation();
+  const {t} = useTranslation();
   const [gradeLevel, setGradeLevel] = useState(0);
   const [nativelanguage, setnativeLanguage] = useState({});
   const [translatedlanguage, setTranslatedLanguage] = useState({});
   const [isLoading, setIsLoading] = useState(true);
   const isFocused = useIsFocused();
 
-  useEffect(() => {
-    const firstRenderFunc = async () => {
-      if (isFocused === true) {
-        const [
-          grade,
-          nativeLanguage,
-          translatedLanguageConfig,
-          username,
-          isAdmin,
-        ] = await getUserInfoFirebase();
-        setGradeLevel(grade);
-        setnativeLanguage(nativeLanguage);
-        setTranslatedLanguage(translatedLanguageConfig);
-        setIsLoading(false);
-      }
-    };
-    firstRenderFunc();
-  }, [isFocused]);
+  // useEffect(() => {
+  //   const firstRenderFunc = async () => {
+  //     if (isFocused === true) {
+  //       const [
+  //         grade,
+  //         nativeLanguage,
+  //         translatedLanguageConfig,
+  //         username,
+  //         isAdmin,
+  //       ] = await getUserInfoFirebase();
+  //       setGradeLevel(grade);
+  //       setnativeLanguage(nativeLanguage);
+  //       setTranslatedLanguage(translatedLanguageConfig);
+  //       setIsLoading(false);
+  //     }
+  //   };
+  //   firstRenderFunc();
+  // }, [isFocused]);
 
   const SaveInfo = async () => {
     if (translatedlanguage == nativelanguage) {
       alert(
-        "The translated language and the native language cannot be the same!"
+        'The translated language and the native language cannot be the same!'
       );
     } else {
       await setUserInfo(
@@ -82,55 +77,55 @@ const Settings = () => {
         undefined
       );
 
-      navigation.replace("Splash");
+      navigation.replace('Splash');
     }
   };
 
   const deleteUser = async () => {
     Alert.alert(
-      "Confirm on deleting on your account?",
-      "Would you like to delete your account? All storage data (books you have created, favorites, downloaded books, etc.) will be lost forever!",
+      'Confirm on deleting on your account?',
+      'Would you like to delete your account? All storage data (books you have created, favorites, downloaded books, etc.) will be lost forever!',
       [
         {
-          text: "Confirm",
+          text: 'Confirm',
           onPress: async () => {
             await clearAllStorageData();
             await deleteAccount();
-            navigation.replace("Welcome Screen");
+            navigation.replace('Welcome Screen');
           },
         },
-        { text: "Cancel", style: "cancel" },
+        {text: 'Cancel', style: 'cancel'},
       ]
     );
   };
 
   async function deleteBookStorage() {
     Alert.alert(
-      "Delete all books?",
-      "Are you sure you want to delete all your books? The books in the library will remain.",
+      'Delete all books?',
+      'Are you sure you want to delete all your books? The books in the library will remain.',
       [
         {
-          text: "Confirm",
+          text: 'Confirm',
           onPress: async () => {
             await Storage.setItem({
-              key: "data",
-              value: "[]",
+              key: 'data',
+              value: '[]',
             });
             await Storage.setItem({
-              key: "titles",
-              value: "[]",
+              key: 'titles',
+              value: '[]',
             });
             await Storage.setItem({
-              key: "favBooks",
-              value: "[]",
+              key: 'favBooks',
+              value: '[]',
             });
             await Storage.setItem({
-              key: "completedBooks",
-              value: "[]",
+              key: 'completedBooks',
+              value: '[]',
             });
           },
         },
-        { text: "Cancel", style: "cancel" },
+        {text: 'Cancel', style: 'cancel'},
       ]
     );
   }
@@ -149,7 +144,7 @@ const Settings = () => {
               <>
                 <Select
                   w={{
-                    base: "100%",
+                    base: '100%',
                   }}
                   InputLeftElement={
                     <Icon
@@ -160,7 +155,7 @@ const Settings = () => {
                     />
                   }
                   placeholder="Grade"
-                  onValueChange={(value) => setGradeLevel(value)}
+                  onValueChange={value => setGradeLevel(value)}
                   defaultValue={gradeLevel}
                 >
                   <Select.Item label="Grade 1" value={1} />
@@ -169,14 +164,14 @@ const Settings = () => {
                   <Select.Item label="Grade 4" value={4} />
                   <Select.Item label="Grade 5" value={5} />
                 </Select>
-                {/* <FormControl.Label>
+                <FormControl.Label>
                   Select your native language:
                 </FormControl.Label>
                 <LanguageSelector
                   placeholder="Original Language"
                   onValueChange={setnativeLanguage}
                   defaultValue={nativelanguage}
-                /> */}
+                />
                 <FormControl.Label>
                   Select your translated language:
                 </FormControl.Label>
@@ -192,7 +187,7 @@ const Settings = () => {
 
         <Flex marginTop={4} direction="row" justify="center">
           <Button w="1/4" rounded={10} onPress={SaveInfo}>
-            {t("general.save")}
+            {t('general.save')}
           </Button>
           <Spacer />
           <Button
@@ -200,7 +195,7 @@ const Settings = () => {
             rounded={10}
             onPress={() => {
               logoutUserFirebase().then(() => {
-                navigation.replace("Welcome Screen");
+                navigation.replace('Welcome Screen');
               });
             }}
           >
@@ -211,6 +206,9 @@ const Settings = () => {
             Delete User
           </Button>
         </Flex>
+        <Button marginTop={4} rounded={10} onPress={deleteBookStorage}>
+          Delete all books
+        </Button>
       </Box>
     </Box>
   );
@@ -222,9 +220,9 @@ const styles = StyleSheet.create({
     marginHorizontal: 20,
   },
   loginButtons: {
-    flexDirection: "row",
-    alignItems: "center",
-    justifyContent: "space-evenly",
+    flexDirection: 'row',
+    alignItems: 'center',
+    justifyContent: 'space-evenly',
   },
   paddingBottomText: {
     marginTop: 20,

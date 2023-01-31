@@ -1,5 +1,7 @@
 import {View, Text, TouchableOpacity, StyleSheet} from 'react-native';
-import {AntDesign, MaterialIcons} from '@expo/vector-icons';
+import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
+import React from 'react';
+
 import {Box, Heading, HStack, Pressable, Icon, Input, Stack} from 'native-base';
 
 export function HeaderSection(props) {

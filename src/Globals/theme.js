@@ -1,14 +1,14 @@
-import {Dimensions, Platform, PixelRatio} from 'react-native';;
+import {Dimensions, Platform, PixelRatio} from 'react-native';
 
-const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');;
+const {width: SCREEN_WIDTH, height: SCREEN_HEIGHT} = Dimensions.get('window');
 
 export const scaleWidth = SCREEN_WIDTH / 375;
 export const scaleHeight = SCREEN_HEIGHT / 812;
 export const scale = Math.min(scaleWidth, scaleHeight);
 
 export function normalize(size) {
-  const newSize = Math.ceil(size * scale);;
-  return newSize;;
+  const newSize = Math.ceil(size * scale);
+  return newSize;
 }
 export const isTab = () => {
   const pixelDensity = PixelRatio.get();
@@ -20,9 +20,9 @@ export const isTab = () => {
     pixelDensity === 2 &&
     (adjustedWidth >= 1824 || adjustedHeight >= 1824)
   ) {
-    return true;;
+    return true;
   } else {
-    return false;;
+    return false;
   }
 };
 
@@ -70,9 +70,10 @@ export default {
   PRIMARY_COLOR_LIGHT_OPACITY_20: 'rgba(0, 138, 188, 0.2)',
   PRIMARY_COLOR_LIGHT_OPACITY_30: 'rgba(0, 138, 188, 0.3)',
   PRIMARY_COLOR_LIGHT_OPACITY_50: 'rgba(0, 138, 188, 0.5)',
-  ADD_DOSE_COLOR: 'rgb(110,183,11)',
+  EDU_COLOR: '#93CB54',
+  LANG_COLOR: '#4CA4D3',
   SECONDARY_COLOR: 'rgb(88, 89, 91)',
-  SCREEN_BACKGROUND_COLOR: 'rgb(255, 255, 255)',
+  SCREEN_BACKGROUND_COLOR: '#d1fae5',
   WHITE_COLOR: 'rgb(255, 255, 255)',
   ERROR: 'rgb(255, 45, 85)',
   SUCCESS: 'rgb(110, 183, 11)',
@@ -179,53 +180,34 @@ export default {
   SLIDER_OFFLINE_COLOR: '#CCE8F2',
   NEW_THEME_BLUE: '#0B3471',
   PINK_RED: '#FCE6EB',
-
-  NEW_ROW_BACKGROUND: '#F4F4F4',
-  PENTAIR_BLUE: '#0B3471',
-  DEVICE_STATUS_GREEN: '#4F8309',
-  GRAPH_DARK_BLUE: '#0B3471',
-  NEW_DIVIDER_STYLE: '#EBEBEB',
-  NEW_THEME_BLUE_OPACITY_70: '#0B347178',
-  SWIPE_LIST_BACKGROUND: '#DDD',
-  DRAWER_BG: '#47618c',
-  PENTAIR_GREEN: '#4F8309',
-  PENTAIR_GREEN_OPACITY: '#E3EBD8',
-  WARNING_MED: '#FA6400',
-  LOW_ORANGE: '#FA6400',
-  PENTAIR_BLUE_LIGHT: '#e6ebf0',
-  SUCCESS_DARK: '#4A7B09',
-  WARNING_ORANGE: '#FF9D00',
-  STATUS_BAR_BLUE: '#3F51B5',
-  DISABLE_PUMP_COLOR: 'rgba(88, 89, 91, 0.75)',
-  OPTION_BUTTON_GRAY: '#e5e1e0',
-  CYAN_BG_COLOR: '#F1FBFF',,
 };
 
+//NEED TO ADD APP FONTS HERE
 export const FONT_FAMILY =
-  Platform.OS === 'ios' ? 'SFProText-Regular' : 'Roboto';;
+  Platform.OS === 'ios' ? 'SFProText-Regular' : 'Roboto';
 
-export const Fonts = {
-  regular: 'SFProText-Regular',
-  heavy: 'SFProText-Heavy',
-  medium: 'SFProText-Medium',
-  semiBold: 'SFProText-Semibold',
-  bold: 'SFProText-Bold',
-  black: Platform.OS === 'ios' ? 'SFProText-Black' : 'SF-Pro-Text-Black',
-  regularDisplay:
-    Platform.OS === 'ios' ? 'SFProDisplay-Regular' : 'SF-Pro-Display-Regular',
-  heavyDisplay:
-    Platform.OS === 'ios' ? 'SFProDisplay-Heavy' : 'SF-Pro-Display-Heavy',
-  mediumDisplay:
-    Platform.OS === 'ios' ? 'SFProDisplay-Medium' : 'SF-Pro-Display-Medium',
-  boldDisplay:
-    Platform.OS === 'ios' ? 'SFProDisplay-Bold' : 'SF-Pro-Display-Bold',
-  barlowMedium: 'Barlow-Medium',,
-};
+// export const Fonts = {
+//   regular: 'SFProText-Regular',
+//   heavy: 'SFProText-Heavy',
+//   medium: 'SFProText-Medium',
+//   semiBold: 'SFProText-Semibold',
+//   bold: 'SFProText-Bold',
+//   black: Platform.OS === 'ios' ? 'SFProText-Black' : 'SF-Pro-Text-Black',
+//   regularDisplay:
+//     Platform.OS === 'ios' ? 'SFProDisplay-Regular' : 'SF-Pro-Display-Regular',
+//   heavyDisplay:
+//     Platform.OS === 'ios' ? 'SFProDisplay-Heavy' : 'SF-Pro-Display-Heavy',
+//   mediumDisplay:
+//     Platform.OS === 'ios' ? 'SFProDisplay-Medium' : 'SF-Pro-Display-Medium',
+//   boldDisplay:
+//     Platform.OS === 'ios' ? 'SFProDisplay-Bold' : 'SF-Pro-Display-Bold',
+//   barlowMedium: 'Barlow-Medium',
+// };
 
-export const Poppins = {
-  bold: 'Poppins-Bold',
-  regular: 'Poppins-Regular',
-  medium: 'Poppins-Medium',
-  semibold: 'Poppins-Semibold',
-  light: 'Poppins-Light',
-};
+// export const Poppins = {
+//   bold: 'Poppins-Bold',
+//   regular: 'Poppins-Regular',
+//   medium: 'Poppins-Medium',
+//   semibold: 'Poppins-Semibold',
+//   light: 'Poppins-Light',
+// };
