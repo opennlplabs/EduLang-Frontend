@@ -280,11 +280,16 @@ export function App() {
   );
 }
 
-const TabIcon = ({name, size, color, tabBarLabel}) => {
+const TabIcon = ({name, size, focused, tabBarLabel}) => {
   return (
     <Center>
-      <Icon as={Ionicons} name={name} size={size} color={color} />
-      <Text mt="1.5" color={color}>
+      <Icon
+        as={Ionicons}
+        name={name}
+        size={size}
+        color={focused ? '#4ade80' : '#ffffff'}
+      />
+      <Text mt="1.5" color={focused ? '#4ade80' : '#ffffff'}>
         {tabBarLabel}
       </Text>
     </Center>
@@ -335,7 +340,7 @@ const BottomTabs = () => {
               name="home"
               tabBarLabel="Home"
               size={size}
-              color={focused ? '#4ade80' : '#ffff'}
+              focused={focused}
             />
           ),
         }}
@@ -349,7 +354,7 @@ const BottomTabs = () => {
               name="library"
               tabBarLabel="Library"
               size={size}
-              color={focused ? '#4ade80' : '#ffff'}
+              focused={focused}
             />
           ),
         }}
@@ -363,7 +368,7 @@ const BottomTabs = () => {
               name="lock-closed"
               tabBarLabel="Admin"
               size={size}
-              color={focused ? '#4ade80' : '#ffff'}
+              focused={focused}
             />
           ),
         }}
@@ -377,7 +382,7 @@ const BottomTabs = () => {
               tabBarLabel="Settings"
               name="cog"
               size={size}
-              color={focused ? '#4ade80' : '#ffff'}
+              focused={focused}
             />
           ),
         }}
@@ -395,7 +400,7 @@ function AuthStack() {
 }
 
 export default function Navigation() {
-  const isAuth = true;
+  const isAuth = false;
 
   return (
     <NavigationContainer>
