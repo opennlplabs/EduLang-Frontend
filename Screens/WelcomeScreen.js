@@ -112,7 +112,6 @@ const WelcomeScreenNew = ({ navigation, route }) => {
   };
   const exitHandler = () => {
     imagePosition.value = 1;
-    // setFormSelected(null);
   };
 
   useEffect(async () => {

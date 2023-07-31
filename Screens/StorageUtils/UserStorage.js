@@ -47,23 +47,24 @@ export function getUserInfoFirebase() {
                     var translatedLanguageConfig = snapshot.data()?.translatedLanguageConfig
                     var username = snapshot.data()?.username
                     var isAdmin = snapshot.data()?.isAdmin
-
+                    
+                    var isInvalid = false
                     // Check if variable are undefined and set to default values
                     if (grade == undefined) {
-                        await setUserInfo(undefined, undefined, 1, undefined)
+                        isInvalid = true
                         grade = 1
                     }
                     if (nativeLanguage == undefined) {
-                        const val = "EN"
-                        await setUserInfo(val, undefined, undefined, undefined)
-                        nativeLanguage = val
-
+                        isInvalid = true
+                        nativeLanguage = "EN"
                     }
                     if (translatedLanguageConfig == undefined) {
-                        const val = "XH"
-                        await setUserInfo(undefined, val, undefined, undefined)
-                        translatedLanguageConfig = val
+                        isInvalid = true
+                        translatedLanguageConfig = "XH"
                     }
+
+                    if (isInvalid)
+                        await setUserInfo(nativeLanguage, translatedLanguageConfig, grade, usernmae)
                     resolve([grade, nativeLanguage, translatedLanguageConfig, username, isAdmin])
                 }
                 else {
@@ -95,7 +96,7 @@ export function setUserInfo(nativelanguage, translatedlanguage, grade, username)
     })
 }
 
-export const deleteAccount = () => {
+export function deleteAccount () {
     return new Promise((resolve, reject) => {
         firebase
             .firestore()
@@ -110,7 +111,7 @@ export const deleteAccount = () => {
     })
 };
 
-export const test_request = async () => {
+export async function test_request () {
     const response = await axios({
         method: "post",
         url: `${server}/test`,

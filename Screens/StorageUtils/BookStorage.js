@@ -20,7 +20,7 @@ export async function clearAllStorageData() {
     })
 }
 
-export const getLocalStorageBook = async () => {
+export async function getLocalStorageBook () {
     var storageData = await Storage.getItem({ key: "data" })
     if (storageData == undefined) storageData = []
     else storageData = Array.from(JSON.parse(storageData))
@@ -40,11 +40,10 @@ export const getLocalStorageBook = async () => {
     return [dataLang, titlesLang]
 }
 
-export const getCloudBooks = async (languageFilter) => {
+export async function getCloudBooks (languageFilter) {
     // First get local books
-    const [dataLang, titlesLang] = await getLocalStorageBook()
+    const [, titlesLang] = await getLocalStorageBook()
 
-    // Now
     console.log(titlesLang)
     var datas = []
     const snapshot = await firebase.firestore().collection("Books").get()
@@ -59,7 +58,7 @@ export const getCloudBooks = async (languageFilter) => {
     return datas
 }
 
-export const addBookLocally = async (title, description, language, book, imageBase64, isFromLibrary = false) => {
+export async function addBookLocally (title, description, language, book, imageBase64, isFromLibrary = false) {
     var data = await Storage.getItem({ key: "data" })
     data = Array.from(JSON.parse(data))
 
