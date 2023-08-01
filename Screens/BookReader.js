@@ -33,13 +33,8 @@ const PDFExample = ({ route }) => {
   }
 
   useEffect(() => {
-
     determineAndSetOrientation();
     Dimensions.addEventListener('change', determineAndSetOrientation);
-
-    // return () => {
-    //   Dimensions.removeEventListener('change', determineAndSetOrientation)
-    // }
   }, []);
 
 

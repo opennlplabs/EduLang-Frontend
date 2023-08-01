@@ -8,7 +8,6 @@ import {
 } from "react-native";
 import { SIZES } from "../constants";
 import { AntDesign } from "@expo/vector-icons";
-import Clickable from "./components/Clickable";
 import { useTranslation } from "react-i18next";
 import { useIsFocused } from "@react-navigation/native";
 import {
